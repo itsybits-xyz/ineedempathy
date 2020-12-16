@@ -40,6 +40,7 @@ class Story(Base):
     id = Column(Integer, primary_key=True, index=True)
     room_id = Column(Integer, ForeignKey("rooms.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
+    # TODO card_id
     description = Column(Text, index=True)
 
 

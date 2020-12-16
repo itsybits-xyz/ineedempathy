@@ -2,8 +2,9 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
-from .models import User, Room
-from .schemas import RoomCreate, UserCreate
+from .models import User, Room, Story
+from .schemas import RoomCreate, UserCreate, StoryCreate
+from pprint import pprint
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -18,8 +19,20 @@ def get_users(db: Session, skip: int = 0, limit: int = 10) -> List[User]:
     return db.query(User).offset(skip).limit(limit).all()
 
 
+def create_story(db: Session, room_id: int, obj_in: StoryCreate) -> Story:
+    print(obj_in)
+    db_obj = Story(
+        room_id=room_id,
+        user_id=obj_in.user_id,
+        description=obj_in.description,
+    )
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
 def create_user(db: Session, room_id: int, obj_in: UserCreate) -> User:
-    print(room_id)
     db_obj = User(
         room_id=room_id,
         name=obj_in.name,

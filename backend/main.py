@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_db
-from .schemas import Room, RoomCreate, User, UserCreate, RoomType
+from .schemas import StoryCreate, Story, Room, RoomCreate, User, UserCreate
 
 
 app = FastAPI()
@@ -35,12 +35,12 @@ def get_rooms(
     return crud.get_rooms(db, skip, limit)
 
 
-@app.get("/rooms/{id}", response_model=Room)
+@app.get("/rooms/{room_id}", response_model=Room)
 def get_room(
-    id: int,
+    room_id: int,
     db: Session = Depends(get_db),
 ) -> models.Room:
-    return crud.get_room(db, id)
+    return crud.get_room(db, room_id)
 
 
 @app.post("/rooms/", response_model=Room)
@@ -51,13 +51,21 @@ def create_room(
     return crud.create_room(db, room)
 
 
+@app.post("/rooms/{room_id}/story", response_model=Story)
+def create_story(
+    room_id: int,
+    story: StoryCreate,
+    db: Session = Depends(get_db)
+) -> models.Story:
+    return crud.create_story(db, room_id, story)
+
+
 @app.post("/rooms/{room_id}/user", response_model=User)
 def create_user(
     room_id: int,
     user: UserCreate,
     db: Session = Depends(get_db)
 ) -> models.Room:
-    print(room_id)
     return crud.create_user(db, room_id, user)
 
 
