@@ -3,8 +3,8 @@ from typing import Any, Dict, Optional, Union, List
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from .models import User, Trail, Trip
-from .schemas import TrailCreate, TripCreate, UserCreate, UserUpdate
+from .models import User, Room
+from .schemas import RoomCreate, UserCreate, UserUpdate
 from .security import get_password_hash, verify_password
 
 
@@ -78,33 +78,17 @@ def is_superuser(user: User) -> bool:
     return user.is_superuser
 
 
-def get_trail_by_name(db: Session, name: str) -> Optional[User]:
-    return db.query(Trail).filter(Trail.name == name).first()
+def get_rooms(db: Session, skip: int = 0, limit: int = 10) -> List[Room]:
+    return db.query(Room).offset(skip).limit(limit).all()
 
 
-def get_trails(db: Session, skip: int = 0, limit: int = 10) -> List[Trail]:
-    return db.query(Trail).offset(skip).limit(limit).all()
+def get_room(db: Session, user_id: int, room_id: int) -> Room:
+    return db.query(Room).filter(Room.user_id == user_id).filter(Room.id == room_id).first()
 
 
-def get_trips(db: Session, user_id: int, skip: int = 0, limit: int = 10) -> List[Trip]:
-    return db.query(Trip).filter(Trip.user_id == user_id).offset(skip).limit(limit).all()
-
-
-def get_trip(db: Session, user_id: int, trip_id: int) -> Trip:
-    return db.query(Trip).filter(Trip.user_id == user_id).filter(Trip.id == trip_id).first()
-
-
-def create_trail(db: Session, trail: TrailCreate) -> Trail:
-    db_trail = Trail(name=trail.name, length=trail.length)
-    db.add(db_trail)
+def create_room(db: Session, room: RoomCreate) -> Room:
+    db_room = Room(**room.dict())
+    db.add(db_room)
     db.commit()
-    db.refresh(db_trail)
-    return db_trail
-
-
-def create_trip(db: Session, trip: TripCreate, user_id: int) -> Trip:
-    db_trip = Trip(**trip.dict(), user_id=user_id)
-    db.add(db_trip)
-    db.commit()
-    db.refresh(db_trip)
-    return db_trip
+    db.refresh(db_room)
+    return db_room

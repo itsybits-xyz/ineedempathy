@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_current_active_superuser, get_current_active_user, get_db
-from .schemas import Room, RoomCreate, User, UserCreate
+from .schemas import Room, RoomCreate, User, UserCreate, RoomType
 from .security import (
     create_access_token,
     get_password_hash,
@@ -38,25 +38,25 @@ def get_rooms(
     skip: int = 0,
     limit: int = 1000,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
 ) -> List[models.Room]:
-    return [Room("Random Room 1", "closed", datetime.now())]
+    return crud.get_rooms(db, skip, limit)
 
 
-# @app.get("/rooms/{id}", response_model=Room)
-# def get_room(
-#     id: int,
-#     db: Session = Depends(get_db),
-#     current_user: User = Depends(get_current_active_user),
-# ) -> models.Room:
-#     return crud.get_room(db, current_user.id, id)
+@app.get("/rooms/{id}", response_model=Room)
+def get_room(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+) -> models.Room:
+    return crud.get_room(db, current_user.id, id)
 
 
-# @app.post("/rooms/", response_model=Room)
-# def create_room_for_user(
-#     room: RoomCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)
-# ) -> models.Room:
-#     return crud.create_room(db, room, current_user.id)
+@app.post("/rooms/", response_model=Room)
+def create_room(
+    room: RoomCreate,
+    db: Session = Depends(get_db)
+) -> models.Room:
+    return crud.create_room(db, room)
 
 
 @app.get("/")

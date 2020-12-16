@@ -2,6 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, St
 from sqlalchemy.orm import relationship
 
 from .database import Base
+from sqlalchemy.sql import func
 
 class Card(Base):
     __tablename__ = "cards"
@@ -15,10 +16,10 @@ class Room(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     type = Column(Enum("open", "closed", name="type"), nullable=False, index=True)
-    created_at = Column(DateTime, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
-    users = relationship("User", back_populates="rooms")
-    guesses = relationship("Guess", back_populates="rooms")
+    #users = relationship("User", back_populates="rooms")
+    #guesses = relationship("Guess", back_populates="rooms")
 
 
 class User(Base):
@@ -29,9 +30,9 @@ class User(Base):
     is_active = Column(Boolean(), default=False)
     is_superuser = Column(Boolean(), default=False)
 
-    rooms = relationship("Room", back_populates="users")
-    stories = relationship("Story", back_populates="users")
-    guesses = relationship("Guess", back_populates="users")
+    #rooms = relationship("Room", back_populates="users")
+    #stories = relationship("Story", back_populates="users")
+    #guesses = relationship("Guess", back_populates="users")
 
 
 class Story(Base):

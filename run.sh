@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uvicorn trailheads.main:app --reload
+uvicorn backend.main:app --reload
