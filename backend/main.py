@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_db
+from .schemas import Card
 from .schemas import Room, RoomCreate
 from .schemas import User, UserCreate
 from .schemas import StoryCreate, Story
@@ -36,6 +37,13 @@ def get_rooms(
     db: Session = Depends(get_db),
 ) -> List[models.Room]:
     return crud.get_rooms(db, skip, limit)
+
+
+@app.get("/cards", response_model=List[Card])
+def get_cards(
+    db: Session = Depends(get_db),
+) -> List[models.Card]:
+    return crud.get_cards(db)
 
 
 @app.get("/rooms/{room_id}", response_model=Room)

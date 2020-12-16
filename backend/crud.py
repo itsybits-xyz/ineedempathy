@@ -2,12 +2,16 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
-from .models import Guess, User, Room, Story
+from .models import Card, Guess, User, Room, Story
 from .schemas import GuessCreate, RoomCreate, UserCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
     return db.query(User).filter(User.email == email).first()
+
+
+def get_cards(db: Session) -> Optional[Card]:
+    return db.query(Card).all()
 
 
 def get_user(db: Session, id: int) -> Optional[User]:

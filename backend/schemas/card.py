@@ -1,24 +1,31 @@
 from pydantic import BaseModel
+from enum import Enum
+
+
+class CardType(str, Enum):
+    Feeling = "feeling"
+    Need = "need"
 
 
 # Shared properties
-class TrailBase(BaseModel):
+class CardBase(BaseModel):
     name: str
-    length: float
+    type: CardType
 
 
 # Properties to receive on item creation
-class TrailCreate(TrailBase):
+class CardCreate(CardBase):
     pass
 
 
 # Properties to receive on item update
-class TrailUpdate(TrailBase):
+class CardUpdate(CardBase):
+    id: int
     pass
 
 
 # Properties shared by models stored in DB
-class TrailInDBBase(TrailBase):
+class CardInDBBase(CardBase):
     id: int
 
     class Config:
@@ -26,10 +33,10 @@ class TrailInDBBase(TrailBase):
 
 
 # Properties to return to client
-class Trail(TrailInDBBase):
+class Card(CardInDBBase):
     pass
 
 
 # Properties properties stored in DB
-class TrailInDB(TrailInDBBase):
+class CardInDB(CardInDBBase):
     pass
