@@ -9,7 +9,10 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_db
-from .schemas import StoryCreate, Story, Room, RoomCreate, User, UserCreate
+from .schemas import Room, RoomCreate
+from .schemas import User, UserCreate
+from .schemas import StoryCreate, Story
+from .schemas import GuessCreate, Guess
 
 
 app = FastAPI()
@@ -49,6 +52,16 @@ def create_room(
     db: Session = Depends(get_db)
 ) -> models.Room:
     return crud.create_room(db, room)
+
+
+@app.post("/rooms/{room_id}/story/{story_id}/guess", response_model=Guess)
+def create_guess(
+    room_id: int,
+    story_id: int,
+    guess: GuessCreate,
+    db: Session = Depends(get_db)
+) -> models.Guess:
+    return crud.create_guess(db, room_id, story_id, guess)
 
 
 @app.post("/rooms/{room_id}/story", response_model=Story)

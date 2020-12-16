@@ -2,9 +2,8 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
-from .models import User, Room, Story
-from .schemas import RoomCreate, UserCreate, StoryCreate
-from pprint import pprint
+from .models import Guess, User, Room, Story
+from .schemas import GuessCreate, RoomCreate, UserCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -19,8 +18,20 @@ def get_users(db: Session, skip: int = 0, limit: int = 10) -> List[User]:
     return db.query(User).offset(skip).limit(limit).all()
 
 
+def create_guess(db: Session, room_id: int, story_id: int, obj_in: GuessCreate) -> Guess:
+    db_obj = Guess(
+        room_id=room_id,
+        story_id=story_id,
+        user_id=obj_in.user_id,
+        card_id=obj_in.card_id,
+    )
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
 def create_story(db: Session, room_id: int, obj_in: StoryCreate) -> Story:
-    print(obj_in)
     db_obj = Story(
         room_id=room_id,
         user_id=obj_in.user_id,
