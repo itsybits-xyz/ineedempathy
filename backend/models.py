@@ -1,48 +1,51 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
 
 from .database import Base
+
+class Card(Base):
+    __tablename__ = "cards"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    type = Column(Enum("need", "feeling", name="type"), nullable=False, index=True)
+
+
+class Room(Base):
+    __tablename__ = "rooms"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    type = Column(Enum("open", "closed", name="type"), nullable=False, index=True)
+    created_at = Column(DateTime, index=True)
+
+    users = relationship("User", back_populates="rooms")
+    guesses = relationship("Guess", back_populates="rooms")
 
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    room_id = Column(Integer, ForeignKey("rooms.id"))
+    name = Column(String, index=True)
     is_active = Column(Boolean(), default=False)
     is_superuser = Column(Boolean(), default=False)
-    trips = relationship("Trip", back_populates="user")
+
+    rooms = relationship("Room", back_populates="users")
+    stories = relationship("Story", back_populates="users")
+    guesses = relationship("Guess", back_populates="users")
 
 
-# trip_trails = Table(
-#     "trip_trails",
-#     Base.metadata,
-#     Column("trip_id", Integer, ForeignKey("trips.id")),
-#     Column("trail_id", Integer, ForeignKey("trails.id")),
-# )
-
-
-class Trail(Base):
-    __tablename__ = "trails"
+class Story(Base):
+    __tablename__ = "stories"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    length = Column(Float)
-
-    # trips = relationship("Trip", secondary=trip_trails, back_populates="trails")
-
-
-class Trip(Base):
-    __tablename__ = "trips"
-    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
-    title = Column(String, index=True, nullable=False)
-    distance = Column(Float, index=True)
-    average_speed = Column(Float, index=True)
-    max_speed = Column(Float, index=True)
-    duration_s = Column(Integer, index=True)
-    date = Column(DateTime, index=True)
-    comments = Column(Text, index=False)
+    description = Column(Text, index=True)
 
-    # trails = relationship("Trail", secondary=trip_trails, back_populates="trips")
-    user = relationship("User", back_populates="trips")
+
+class Guess(Base):
+    __tablename__ = "guesses"
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    story_id = Column(Integer, ForeignKey("stories.id"))
+    card_id = Column(Integer, ForeignKey("cards.id"))

@@ -1,45 +1,45 @@
+from enum import Enum
 from typing import Optional
 from datetime import datetime
 
 from fastapi_camelcase import CamelModel
 
+class RoomType(str, Enum):
+    Open = "Open"
+    Closed = "Closed"
+
 
 # Shared properties
-class TripBase(CamelModel):
-    title: str
-    distance: float
-    average_speed: Optional[float]
-    max_speed: Optional[float]
-    duration_s: Optional[int]
-    comments: Optional[str]
-    date: datetime
+class RoomBase(CamelModel):
+    name: str
+    type: RoomType
+    created_at: datetime
 
 
 # Properties to receive on item creation
-class TripCreate(TripBase):
+class RoomCreate(RoomBase):
     pass
 
 
 # Properties to receive on item update
-class TripUpdate(TripBase):
+class RoomUpdate(RoomBase):
     id: int
     pass
 
 
 # Properties shared by models stored in DB
-class TripInDBBase(TripBase):
+class RoomInDBBase(RoomBase):
     id: int
-    user_id: int
 
     class Config:
         orm_mode = True
 
 
 # Properties to return to client
-class Trip(TripInDBBase):
+class Room(RoomInDBBase):
     pass
 
 
 # Properties properties stored in DB
-class TripInDB(TripInDBBase):
+class RoomInDB(RoomInDBBase):
     pass
