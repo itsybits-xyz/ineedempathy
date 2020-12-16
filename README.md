@@ -8,6 +8,7 @@ An app to train NVC and _needs consciousness_.
 ## Run Server
 
 ```
+workon ineedempathy
 ./run.sh
 ```
 

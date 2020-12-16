@@ -8,15 +8,8 @@ from sqlalchemy.orm import Session
 
 from . import crud, models
 from .config import settings
-from .deps import get_current_active_superuser, get_current_active_user, get_db
+from .deps import get_db
 from .schemas import Room, RoomCreate, User, UserCreate, RoomType
-from .security import (
-    create_access_token,
-    get_password_hash,
-    generate_token,
-    verify_token,
-)
-from .utils import send_new_account_email, send_reset_password_email
 
 
 app = FastAPI()
@@ -46,9 +39,8 @@ def get_rooms(
 def get_room(
     id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
 ) -> models.Room:
-    return crud.get_room(db, current_user.id, id)
+    return crud.get_room(db, id)
 
 
 @app.post("/rooms/", response_model=Room)
@@ -57,6 +49,16 @@ def create_room(
     db: Session = Depends(get_db)
 ) -> models.Room:
     return crud.create_room(db, room)
+
+
+@app.post("/rooms/{room_id}/user", response_model=User)
+def create_user(
+    room_id: int,
+    user: UserCreate,
+    db: Session = Depends(get_db)
+) -> models.Room:
+    print(room_id)
+    return crud.create_user(db, room_id, user)
 
 
 @app.get("/")
