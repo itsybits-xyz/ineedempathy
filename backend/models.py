@@ -14,7 +14,7 @@ class Card(Base):
 class Room(Base):
     __tablename__ = "rooms"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, nullable=False)
+    name = Column(String, unique=True, index=True, nullable=False)
     type = Column(Enum("open", "closed", name="type"), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
