@@ -9,7 +9,7 @@ from .config import settings
 from .deps import get_db
 from .schemas import Card
 from .schemas import Room
-from .schemas import User, UserCreate
+from .schemas import User
 from .schemas import StoryCreate, Story
 from .schemas import GuessCreate, Guess
 
@@ -81,10 +81,9 @@ def create_story(
 @app.post("/rooms/{room_id}/user", response_model=User)
 def create_user(
     room_id: int,
-    user: UserCreate,
     db: Session = Depends(get_db)
 ) -> models.Room:
-    return crud.create_user(db, room_id, user)
+    return crud.create_user(db, room_id)
 
 
 @app.get("/")

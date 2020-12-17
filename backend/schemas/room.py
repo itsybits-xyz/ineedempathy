@@ -14,11 +14,6 @@ class RoomBase(CamelModel):
     pass
 
 
-# Properties to receive on item creation
-class RoomCreate(RoomBase):
-    pass
-
-
 # Properties to receive on item update
 class RoomUpdate(RoomBase):
     id: int

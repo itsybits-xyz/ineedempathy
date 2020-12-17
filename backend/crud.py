@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from coolname import generate_slug
 
 from .models import Card, Guess, User, Room, Story
-from .schemas import RoomType, GuessCreate, UserCreate, StoryCreate
+from .schemas import RoomType, GuessCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -48,10 +48,10 @@ def create_story(db: Session, room_id: int, obj_in: StoryCreate) -> Story:
     return db_obj
 
 
-def create_user(db: Session, room_id: int, obj_in: UserCreate) -> User:
+def create_user(db: Session, room_id: int) -> User:
     db_obj = User(
         room_id=room_id,
-        name=obj_in.name,
+        name=generate_slug(3)
     )
     db.add(db_obj)
     db.commit()
