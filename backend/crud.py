@@ -39,6 +39,7 @@ def create_story(db: Session, room_id: int, obj_in: StoryCreate) -> Story:
     db_obj = Story(
         room_id=room_id,
         user_id=obj_in.user_id,
+        card_id=obj_in.card_id,
         description=obj_in.description,
     )
     db.add(db_obj)

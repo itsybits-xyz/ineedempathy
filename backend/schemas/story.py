@@ -4,14 +4,14 @@ from pydantic import BaseModel
 # Shared properties
 class StoryBase(BaseModel):
     user_id: int
-    # TODO card_id
+    card_id: int
     description: str
 
 
 # Properties to receive via API on creation
 class StoryCreate(StoryBase):
     user_id: int
-    # TODO card_id
+    card_id: int
     description: str
 
 
@@ -26,7 +26,7 @@ class StoryInDBBase(StoryBase):
 class Story(StoryInDBBase):
     user_id: int
     room_id: int
-    # TODO card_id
+    card_id: int
     description: str
 
 

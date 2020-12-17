@@ -1,8 +1,10 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Text, Enum
+# from sqlalchemy.orm import relationship
 
 from .database import Base
 from sqlalchemy.sql import func
+
 
 class Card(Base):
     __tablename__ = "cards"
@@ -40,7 +42,7 @@ class Story(Base):
     id = Column(Integer, primary_key=True, index=True)
     room_id = Column(Integer, ForeignKey("rooms.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
-    # TODO card_id
+    card_id = Column(Integer, ForeignKey("cards.id"))
     description = Column(Text, index=True)
 
 
