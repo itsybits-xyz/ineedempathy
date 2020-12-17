@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import Optional
 from datetime import datetime
 
 from fastapi_camelcase import CamelModel
+
 
 class RoomType(str, Enum):
     Open = "open"
@@ -11,8 +11,7 @@ class RoomType(str, Enum):
 
 # Shared properties
 class RoomBase(CamelModel):
-    name: str
-    type: RoomType
+    pass
 
 
 # Properties to receive on item creation
@@ -29,6 +28,8 @@ class RoomUpdate(RoomBase):
 # Properties shared by models stored in DB
 class RoomInDBBase(RoomBase):
     id: int
+    name: str
+    type: RoomType
     created_at: datetime
 
     class Config:

@@ -1,9 +1,9 @@
 from typing import Optional, List
-
 from sqlalchemy.orm import Session
+from coolname import generate_slug
 
 from .models import Card, Guess, User, Room, Story
-from .schemas import GuessCreate, RoomCreate, UserCreate, StoryCreate
+from .schemas import RoomType, GuessCreate, UserCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -67,8 +67,11 @@ def get_room(db: Session, room_id: int) -> Room:
     return db.query(Room).filter(Room.id == room_id).first()
 
 
-def create_room(db: Session, room: RoomCreate) -> Room:
-    db_room = Room(**room.dict())
+def create_room(db: Session) -> Room:
+    db_room = Room(
+        type=RoomType.Open,
+        name=generate_slug(4)
+    )
     db.add(db_room)
     db.commit()
     db.refresh(db_room)

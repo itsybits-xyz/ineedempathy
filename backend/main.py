@@ -1,8 +1,6 @@
-from datetime import timedelta, datetime
-from typing import Any, List, Dict
+from typing import List, Dict
 
-from fastapi import Body, Depends, FastAPI, HTTPException, Response
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -10,7 +8,7 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import Card
-from .schemas import Room, RoomCreate
+from .schemas import Room
 from .schemas import User, UserCreate
 from .schemas import StoryCreate, Story
 from .schemas import GuessCreate, Guess
@@ -56,10 +54,9 @@ def get_room(
 
 @app.post("/rooms/", response_model=Room)
 def create_room(
-    room: RoomCreate,
     db: Session = Depends(get_db)
 ) -> models.Room:
-    return crud.create_room(db, room)
+    return crud.create_room(db)
 
 
 @app.post("/rooms/{room_id}/story/{story_id}/guess", response_model=Guess)
