@@ -37,4 +37,17 @@ def test_root():
     rv = test_client.get("/")
     assert rv.status_code == 200
     assert rv.headers["content-type"] == "application/json"
-    assert rv.json() == "Check /docs"
+    assert rv.json()['msg'] == "Check /docs"
+
+
+def test_create_room():
+    response = test_client.post(
+        "/rooms",
+        json={},
+    )
+    assert response.status_code == 201
+    assert len(list(response.json().keys())) == 4
+    assert type(response.json()['id']) == int
+    assert type(response.json()['name']) == str
+    assert type(response.json()['type']) == str
+    assert type(response.json()['createdAt']) == str
