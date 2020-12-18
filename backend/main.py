@@ -28,7 +28,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-@app.get("/rooms/", response_model=List[Room])
+@app.get("/rooms", response_model=List[Room])
 def get_rooms(
     skip: int = 0,
     limit: int = 1000,
@@ -52,14 +52,14 @@ def get_room(
     return crud.get_room(db, room_id)
 
 
-@app.post("/rooms/", response_model=Room)
+@app.post("/rooms", status_code=201, response_model=Room)
 def create_room(
     db: Session = Depends(get_db)
 ) -> models.Room:
     return crud.create_room(db)
 
 
-@app.post("/rooms/{room_id}/story/{story_id}/guess", response_model=Guess)
+@app.post("/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess)
 def create_guess(
     room_id: int,
     story_id: int,
@@ -69,7 +69,7 @@ def create_guess(
     return crud.create_guess(db, room_id, story_id, guess)
 
 
-@app.post("/rooms/{room_id}/story", response_model=Story)
+@app.post("/rooms/{room_id}/story", status_code=201, response_model=Story)
 def create_story(
     room_id: int,
     story: StoryCreate,
@@ -78,7 +78,7 @@ def create_story(
     return crud.create_story(db, room_id, story)
 
 
-@app.post("/rooms/{room_id}/user", response_model=User)
+@app.post("/rooms/{room_id}/user", status_code=201, response_model=User)
 def create_user(
     room_id: int,
     db: Session = Depends(get_db)
