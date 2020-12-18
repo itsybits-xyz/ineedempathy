@@ -1,0 +1,31 @@
+[flake8]
+ignore =
+    ; D100-D107: Missing docstring in <blank>
+    D1
+    ; E203: whitepsace before ':'
+    ; black disagrees, strictly following pep8
+    E203
+    ; W503 line break before binary operator
+    ; TODO: pep8 (and black) does the opposite, so flake8 will change this soon
+    W503
+    ; D202 No blank lines allowed after function docstring
+    ; TODO: unresolvable conflict with black when first line after docstring is a def, and can't NOQA the docstring
+    D202
+    ; Ignore line length. Black will take care of it
+    E501
+    D200
+per-file-ignores = 
+    tests/*:C901
+    ; 'comparison to True/False', useful in assertions with side effects
+    tests/*:E712
+exclude =
+    *.egg-info,
+    *.pyc,
+    .cache,
+    .coverage.*,
+    .gradle,
+    .tox,
+    build,
+    dist,
+    htmlcov.*
+    */cachetools/*
