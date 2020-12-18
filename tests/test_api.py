@@ -51,3 +51,51 @@ def test_create_room():
     assert type(response.json()['name']) == str
     assert type(response.json()['type']) == str
     assert type(response.json()['createdAt']) == str
+
+
+def test_create_user():
+    response = test_client.post(
+        "/rooms/1/user",
+        json={},
+    )
+    assert response.status_code == 201
+    json = response.json()
+    assert len(list(json.keys())) == 3
+    assert json['room_id'] == 1
+    assert type(json['id']) == int
+    assert type(json['name']) == str
+
+
+def test_create_story():
+    response = test_client.post(
+        "/rooms/1/story",
+        json={
+            "user_id": 1,
+            "card_id": 10,
+            "description": 'meow'
+        },
+    )
+    assert response.status_code == 201
+    json = response.json()
+    assert len(list(json.keys())) == 5
+    assert json['room_id'] == 1
+    assert json['user_id'] == 1
+    assert json['card_id'] == 10
+    assert json['description'] == 'meow'
+
+
+def test_create_guess():
+    response = test_client.post(
+        "/rooms/1/story/1/guess",
+        json={
+            "user_id": 1,
+            "card_id": 10
+        },
+    )
+    assert response.status_code == 201
+    json = response.json()
+    assert len(list(json.keys())) == 5
+    assert json['room_id'] == 1
+    assert json['user_id'] == 1
+    assert json['card_id'] == 10
+    assert json['story_id'] == 1
