@@ -2,15 +2,17 @@
 
 An app to train NVC and _needs consciousness_.
 
-# Development
-
+# Backend Development
 
 ## Run Server
 
 ```
 workon ineedempathy
+poetry install
 ./run.sh
 ```
+
+Check http://localhost:8000/
 
 ## Migrations
 
@@ -37,3 +39,14 @@ Rewind a migration
 ```
 alembic downgrade -1  # This can also take a sha version.
 ```
+
+# Frontned Development
+
+```
+nvm use 14
+cd frontend
+npm install
+npm start
+```
+
+Check http://localhost:3000/
