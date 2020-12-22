@@ -9,7 +9,6 @@ export const Search: FC = () => {
           <div className="input-group no-border">
             <input
               type="text"
-              value=""
               className="form-control"
               placeholder="Search..."
             />
