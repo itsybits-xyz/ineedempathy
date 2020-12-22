@@ -40,6 +40,10 @@ Rewind a migration
 alembic downgrade -1  # This can also take a sha version.
 ```
 
+### Seed Data
+
+./script/seed.sh
+
 # Frontned Development
 
 ```

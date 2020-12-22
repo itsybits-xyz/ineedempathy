@@ -1,5 +1,6 @@
 from typing import List, Dict
 
+from fastapi.staticfiles import StaticFiles
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_db
-from .schemas import Card
+from .schemas import CardCreate, Card
 from .schemas import Room
 from .schemas import User
 from .schemas import StoryCreate, Story
@@ -15,6 +16,7 @@ from .schemas import GuessCreate, Guess
 
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
@@ -42,6 +44,14 @@ def get_cards(
     db: Session = Depends(get_db),
 ) -> List[models.Card]:
     return crud.get_cards(db)
+
+
+@app.post("/cards", status_code=201, response_model=Card)
+def create_card(
+    card: CardCreate,
+    db: Session = Depends(get_db)
+) -> models.Room:
+    return crud.create_card(db, card)
 
 
 @app.get("/rooms/{room_id}", response_model=Room)

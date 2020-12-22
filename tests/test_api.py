@@ -99,3 +99,20 @@ def test_create_guess():
     assert json['user_id'] == 1
     assert json['card_id'] == 10
     assert json['story_id'] == 1
+
+
+def test_create_card():
+    response = test_client.post(
+        "/cards",
+        json={
+            "name": 'angry',
+            "type": 'feeling'
+        },
+    )
+    assert response.status_code == 201
+    json = response.json()
+    assert len(list(json.keys())) == 4
+    assert json['id'] == 1
+    assert json['name'] == 'angry'
+    assert json['type'] == 'feeling'
+    assert json['url'] == 'static/angry.jpg'

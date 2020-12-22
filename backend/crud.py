@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from coolname import generate_slug
 
 from .models import Card, Guess, User, Room, Story
-from .schemas import RoomType, GuessCreate, StoryCreate
+from .schemas import CardCreate, RoomType, GuessCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -20,6 +20,17 @@ def get_user(db: Session, id: int) -> Optional[User]:
 
 def get_users(db: Session, skip: int = 0, limit: int = 10) -> List[User]:
     return db.query(User).offset(skip).limit(limit).all()
+
+
+def create_card(db: Session, card: CardCreate) -> Card:
+    db_obj = Card(
+        name=card.name,
+        type=card.type
+    )
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
 
 
 def create_guess(db: Session, room_id: int, story_id: int, obj_in: GuessCreate) -> Guess:
