@@ -115,5 +115,5 @@ def test_create_card():
     assert json['id'] == 1
     assert json['name'] == 'angry'
     assert json['type'] == 'feeling'
-    assert json['text_url'] == 'static/angry.jpg'
-    assert json['blank_url'] == 'static/angry_blank.jpg'
+    assert json['textUrl'] == 'static/angry.jpg'
+    assert json['blankUrl'] == 'static/angry_blank.jpg'

@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from enum import Enum
+from fastapi_camelcase import CamelModel
 
 
 class CardType(str, Enum):
@@ -8,7 +8,7 @@ class CardType(str, Enum):
 
 
 # Shared properties
-class CardBase(BaseModel):
+class CardBase(CamelModel):
     name: str
     type: CardType
 
