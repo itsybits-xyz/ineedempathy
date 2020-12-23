@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey
 from sqlalchemy import Integer, String, Text, Enum
+from sqlalchemy.ext.hybrid import hybrid_property
 # from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -11,6 +12,14 @@ class Card(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     type = Column(Enum("need", "feeling", name="type"), nullable=False, index=True)
+
+    @hybrid_property
+    def text_url(self):
+        return 'static/' + self.name + '.jpg'
+
+    @hybrid_property
+    def blank_url(self):
+        return 'static/' + self.name + '_blank.jpg'
 
 
 class Room(Base):

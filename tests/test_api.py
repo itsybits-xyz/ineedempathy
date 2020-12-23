@@ -111,8 +111,9 @@ def test_create_card():
     )
     assert response.status_code == 201
     json = response.json()
-    assert len(list(json.keys())) == 4
+    assert len(list(json.keys())) == 5
     assert json['id'] == 1
     assert json['name'] == 'angry'
     assert json['type'] == 'feeling'
-    assert json['url'] == 'static/angry.jpg'
+    assert json['text_url'] == 'static/angry.jpg'
+    assert json['blank_url'] == 'static/angry_blank.jpg'

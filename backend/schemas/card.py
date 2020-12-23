@@ -34,6 +34,8 @@ class CardInDBBase(CardBase):
 
 # Properties to return to client
 class Card(CardInDBBase):
+    blank_url: str
+    text_url: str
     pass
 
 
