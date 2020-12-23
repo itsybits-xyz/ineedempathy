@@ -15,11 +15,11 @@ class Card(Base):
 
     @hybrid_property
     def text_url(self):
-        return 'static/' + self.name + '.jpg'
+        return '/static/' + self.name + '.jpg'
 
     @hybrid_property
     def blank_url(self):
-        return 'static/' + self.name + '_blank.jpg'
+        return '/static/' + self.name + '_blank.jpg'
 
 
 class Room(Base):

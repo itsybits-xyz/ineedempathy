@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '../config';
-import { Room, RoomCreate } from '../schemas';
+import { Card, Room, RoomCreate } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 async function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
@@ -55,6 +55,10 @@ export const getMessage = async () => {
     return data.msg;
   }
   return Promise.reject('Failed to get message from backend');
+};
+
+export const getCards = async () => {
+  return get<Card[]>(`${BACKEND_URL}/cards`);
 };
 
 export const getRooms = async () => {
