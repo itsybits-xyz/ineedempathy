@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import {MdDashboard, MdPerson} from 'react-icons/md';
+import { MdExtension, MdWbCloudy, MdDashboard, MdTerrain, MdLayers } from 'react-icons/md';
 
 export const SideBar: FC = () => {
   return (
@@ -12,24 +12,48 @@ export const SideBar: FC = () => {
       >
         <div className="logo">
           <a href="http://ineedempathy.com" className="simple-text logo-normal">
-            iNeedEmpathy
+            I NEED EMPATHY
           </a>
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
-            <li className="nav-item active  ">
-              <a className="nav-link" href="/trips">
+            <li className="nav-item active">
+              <a className="nav-link" href="/">
+                <MdDashboard size={24}/>
                 <p>
-                  <MdDashboard size={24}/>
-                  Game
+                  Play
                 </p>
               </a>
             </li>
-            <li className="nav-item ">
-              <a className="nav-link" href="/user">
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                <MdExtension size={24}/>
                 <p>
-                  <MdPerson size={24}/>
-                  User Profile
+                  How to Play
+                </p>
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/user">
+                <MdWbCloudy size={24}/>
+                <p>
+                  Feelings
+                </p>
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/user">
+                <MdTerrain size={24}/>
+                <p>
+                  Needs
+                </p>
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/user">
+                <MdLayers size={24}/>
+                <p>
+                  About
                 </p>
               </a>
             </li>
