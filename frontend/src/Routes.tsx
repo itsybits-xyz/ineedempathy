@@ -6,6 +6,7 @@ import {
   Home,
   Room,
   RoomProps,
+  About,
 } from './views';
 import { NavBar, SideBar } from './components';
 
@@ -21,6 +22,7 @@ export const Routes: FC = () => {
           <NavBar />
           <Route exact path="/" component={Home} />
           <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
+          <Route path="/about" component={About} />
         </div>
       </div>
     </BrowserRouter>

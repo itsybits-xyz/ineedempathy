@@ -34,7 +34,7 @@ export const SideBar: FC = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/user">
+              <a className="nav-link" href="/feelings">
                 <MdWbCloudy size={24}/>
                 <p>
                   Feelings
@@ -42,7 +42,7 @@ export const SideBar: FC = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/user">
+              <a className="nav-link" href="/needs">
                 <MdTerrain size={24}/>
                 <p>
                   Needs
@@ -50,7 +50,7 @@ export const SideBar: FC = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/user">
+              <a className="nav-link" href="/about">
                 <MdLayers size={24}/>
                 <p>
                   About
