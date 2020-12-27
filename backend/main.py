@@ -9,7 +9,7 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card
-from .schemas import Room
+from .schemas import Room, RoomCreate
 from .schemas import User
 from .schemas import StoryCreate, Story
 from .schemas import GuessCreate, Guess
@@ -64,9 +64,10 @@ def get_room(
 
 @app.post("/rooms", status_code=201, response_model=Room)
 def create_room(
+    room: RoomCreate,
     db: Session = Depends(get_db)
 ) -> models.Room:
-    return crud.create_room(db)
+    return crud.create_room(db, room)
 
 
 @app.post("/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess)

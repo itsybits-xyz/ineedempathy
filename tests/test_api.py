@@ -43,13 +43,13 @@ def test_root():
 def test_create_room():
     response = test_client.post(
         "/rooms",
-        json={},
+        json={"type": "singleplayer"},
     )
     assert response.status_code == 201
     assert len(list(response.json().keys())) == 4
     assert type(response.json()['id']) == int
     assert type(response.json()['name']) == str
-    assert type(response.json()['type']) == str
+    assert response.json()['type'] == 'singleplayer'
     assert type(response.json()['createdAt']) == str
 
 
@@ -115,5 +115,5 @@ def test_create_card():
     assert json['id'] == 1
     assert json['name'] == 'angry'
     assert json['type'] == 'feeling'
-    assert json['textUrl'] == 'static/angry.jpg'
-    assert json['blankUrl'] == 'static/angry_blank.jpg'
+    assert json['textUrl'] == '/static/angry.jpg'
+    assert json['blankUrl'] == '/static/angry_blank.jpg'

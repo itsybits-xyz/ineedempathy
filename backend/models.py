@@ -26,7 +26,7 @@ class Room(Base):
     __tablename__ = "rooms"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True, nullable=False)
-    type = Column(Enum("open", "closed", name="type"), nullable=False, index=True)
+    type = Column(Enum("singleplayer", "multiplayer", "public-multiplayer", name="type"), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
     #users = relationship("User", back_populates="rooms")

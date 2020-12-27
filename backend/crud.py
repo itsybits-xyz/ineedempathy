@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from coolname import generate_slug
 
 from .models import Card, Guess, User, Room, Story
-from .schemas import CardCreate, RoomType, GuessCreate, StoryCreate
+from .schemas import CardCreate, RoomCreate, GuessCreate, StoryCreate
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -78,9 +78,9 @@ def get_room(db: Session, room_id: int) -> Room:
     return db.query(Room).filter(Room.id == room_id).first()
 
 
-def create_room(db: Session) -> Room:
+def create_room(db: Session, room: RoomCreate) -> Room:
     db_room = Room(
-        type=RoomType.Open,
+        type=room.type,
         name=generate_slug(4)
     )
     db.add(db_room)

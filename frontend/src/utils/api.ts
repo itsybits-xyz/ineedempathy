@@ -3,8 +3,7 @@ import { Card, Room, RoomCreate } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 async function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
-  const headers = new Headers();
-  headers.append('Content-Type', 'application/json');
+  const headers = new Headers(); headers.append('Content-Type', 'application/json');
   if (authenticated) {
     const token = localStorage.getItem('token');
     headers.append('Authorization', `Bearer ${token}`);

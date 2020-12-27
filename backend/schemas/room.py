@@ -5,8 +5,9 @@ from fastapi_camelcase import CamelModel
 
 
 class RoomType(str, Enum):
-    Open = "open"
-    Closed = "closed"
+    Singleplayer = "singleplayer"
+    Multiplayer = "multiplayer"
+    PublicMultiplayer = "public-multiplayer"
 
 
 # Shared properties
@@ -18,6 +19,10 @@ class RoomBase(CamelModel):
 class RoomUpdate(RoomBase):
     id: int
     pass
+
+
+class RoomCreate(RoomBase):
+    type: RoomType
 
 
 # Properties shared by models stored in DB

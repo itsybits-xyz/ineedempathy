@@ -4,6 +4,8 @@ import { useHistory } from 'react-router';
 
 import {
   Home,
+  Room,
+  RoomProps,
 } from './views';
 import { NavBar, SideBar } from './components';
 
@@ -18,6 +20,7 @@ export const Routes: FC = () => {
         <div className="main-panel">
           <NavBar />
           <Route exact path="/" component={Home} />
+          <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
         </div>
       </div>
     </BrowserRouter>
