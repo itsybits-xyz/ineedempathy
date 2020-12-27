@@ -40,28 +40,34 @@ def test_root():
     assert rv.json()['msg'] == "Check /docs"
 
 
-def test_create_room():
-    response = test_client.post(
+def create_room(type):
+    room = test_client.post(
         "/rooms",
         json={"type": "singleplayer"},
     )
-    assert response.status_code == 201
-    assert len(list(response.json().keys())) == 4
-    assert type(response.json()['id']) == int
-    assert type(response.json()['name']) == str
-    assert response.json()['type'] == 'singleplayer'
-    assert type(response.json()['createdAt']) == str
+    assert room.status_code == 201
+    return room.json()
+
+
+def test_create_room():
+    room = create_room("singleplayer")
+    assert len(list(room.keys())) == 4
+    assert type(room['id']) == int
+    assert type(room['name']) == str
+    assert room['type'] == 'singleplayer'
+    assert type(room['createdAt']) == str
 
 
 def test_create_user():
+    room = create_room("singleplayer")
     response = test_client.post(
-        "/rooms/1/user",
+        f"/rooms/{room['name']}/user",
         json={},
     )
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 3
-    assert json['room_id'] == 1
+    assert json['room_id'] == room['id']
     assert type(json['id']) == int
     assert type(json['name']) == str
 

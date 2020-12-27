@@ -70,6 +70,10 @@ def create_user(db: Session, room_id: int) -> User:
     return db_obj
 
 
+def get_room_by_name(db: Session, room: str) -> Room:
+    return db.query(Room).filter(Room.name == room).first()
+
+
 def get_rooms(db: Session, skip: int = 0, limit: int = 10) -> List[Room]:
     return db.query(Room).offset(skip).limit(limit).all()
 

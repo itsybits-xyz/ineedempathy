@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from fastapi.staticfiles import StaticFiles
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -89,12 +89,15 @@ def create_story(
     return crud.create_story(db, room_id, story)
 
 
-@app.post("/rooms/{room_id}/user", status_code=201, response_model=User)
+@app.post("/rooms/{room_name}/user", status_code=201, response_model=User)
 def create_user(
-    room_id: int,
+    room_name: str,
     db: Session = Depends(get_db)
 ) -> models.Room:
-    return crud.create_user(db, room_id)
+    room = crud.get_room_by_name(db, room_name)
+    if room is None:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return crud.create_user(db, room.id)
 
 
 @app.get("/")
