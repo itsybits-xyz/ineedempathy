@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from fastapi_camelcase import CamelModel
 
 
 # Shared properties
-class UserBase(BaseModel):
+class UserBase(CamelModel):
     name: str
 
 

@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '../config';
-import { Card, Room, RoomCreate } from '../schemas';
+import { Card, Room, User, UserCreate, RoomCreate } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 async function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
@@ -9,8 +9,7 @@ async function http<T>(path: string, authenticated: boolean = true, config: Requ
     headers.append('Authorization', `Bearer ${token}`);
   }
   const request = new Request(path, {headers, ...config});
-  const response = await fetch(request);
-  if (authenticated && (response.status === 401 || response.status === 403)) {
+  const response = await fetch(request); if (authenticated && (response.status === 401 || response.status === 403)) {
     localStorage.removeItem('token');
     localStorage.removeItem('permissions');
     return Promise.reject("Unauthorized Access!");
@@ -66,6 +65,10 @@ export const getRooms = async () => {
 
 export const getRoom: PromiseFn<Room> = async ({roomId}) => {
   return get<Room>(`${BACKEND_URL}/rooms/${roomId}`);
+};
+
+export const createUser = async (roomName: string) => {
+  return post<UserCreate, User>(`${BACKEND_URL}/rooms/${roomName}/user`, {});
 };
 
 export const postRoom = async (payload: RoomCreate) => {

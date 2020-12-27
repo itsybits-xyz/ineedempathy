@@ -1,24 +1,24 @@
 import React, { FC, useState } from 'react';
 import { Container, Row } from 'react-bootstrap';
-import { postRoom } from '../utils/api';
+import { createUser, postRoom } from '../utils/api';
 import { RoomCreate } from '../schemas';
 import { useForm } from "react-hook-form";
+import { Redirect } from 'react-router-dom';
 
 export const Home: FC = () => {
   const { register, handleSubmit } = useForm();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [roomName, setRoomName] = useState<string>();
 
-  const onSubmit = (data: RoomCreate) => {
-    setIsLoading(true);
-    postRoom(data).then((data) => {
-      debugger;
+  const onSubmit = (roomData: RoomCreate) => {
+    postRoom(roomData).then((newRoom) => {
+      return createUser(newRoom.name).then((user) => {
+        setRoomName(newRoom.name);
+      });
     });
   };
 
-  return isLoading ? (
-    <>
-      <label>Loading...</label>
-    </>
+  return roomName ? (
+    <Redirect to={`/room/${roomName}`} />
   ) : (
     <>
       <div className="content">
