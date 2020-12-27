@@ -1,13 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import { postRoom } from '../utils/api';
-import { useAsync } from 'react-async';
-import { BACKEND_URL } from '../config';
-import { RoomType, RoomCreate } from '../schemas';
+import { RoomCreate } from '../schemas';
 import { useForm } from "react-hook-form";
 
 export const Home: FC = () => {
-  debugger;
   const { register, handleSubmit } = useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
