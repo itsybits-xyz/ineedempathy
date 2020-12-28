@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Container, Row } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { MdCloudCircle, MdAddAPhoto } from 'react-icons/md';
 
 export const About: FC = () => {
