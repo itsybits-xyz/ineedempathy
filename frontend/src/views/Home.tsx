@@ -1,42 +1,70 @@
-import React, { FC, useState } from 'react';
-import { Container, Row } from 'react-bootstrap';
-import { createUser, postRoom } from '../utils/api';
-import { RoomCreate } from '../schemas';
-import { useForm } from "react-hook-form";
-import { Redirect } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-export const Home: FC = () => {
-  const { register, handleSubmit } = useForm();
-  const [roomName, setRoomName] = useState<string>();
+const urls = [
+  'wss://echo.websocket.org',
+  'wss://demos.kaazing.com/echo',
+];
 
-  const onSubmit = (roomData: RoomCreate) => {
-    postRoom(roomData).then((newRoom) => {
-      return createUser(newRoom.name).then((user) => {
-        setRoomName(newRoom.name);
-      });
-    });
-  };
+interface message {
+  data: string
+}
 
-  return roomName ? (
-    <Redirect to={`/room/${roomName}`} />
-  ) : (
-    <>
-      <div className="content">
-        <Container fluid>
-          <Row>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <label>Room Type
-                <select name="type" ref={register}>
-                  <option value="singleplayer">Singleplayer</option>
-                  <option value="multiplayer">Multiplayer</option>
-                  <option value="public-multiplayer">Public Multiplayer</option>
-                </select>
-              </label>
-              <input type="submit" value="Create Room" />
-            </form>
-          </Row>
-        </Container>
-      </div>
-    </>
+export const Home = () => {
+  //Public API that will echo messages sent to it back to the client
+  const [socketUrl, setSocketUrl] = useState<string>(urls[0]);
+  const [messageHistory, setMessageHistory] = useState<message[]>([]);
+
+  const {
+    sendMessage,
+    lastMessage,
+    readyState,
+  } = useWebSocket(socketUrl);
+
+  useEffect(
+    () => {
+      if (lastMessage) {
+        setMessageHistory((prevHistory) => [...prevHistory, lastMessage]);
+      }
+    },
+    [lastMessage],
+  );
+
+  const handleClickToggleSocketUrl = useCallback(() =>
+    setSocketUrl((prevUrl) => prevUrl === urls[0] ? urls[1] : urls[0]), []);
+
+  const handleClickSendMessage = useCallback(() =>
+    sendMessage('Hello'), []);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
+
+  return (
+    <div>
+      <p>
+        <button
+          onClick={handleClickToggleSocketUrl}
+        >
+          Click Me to toggle Socket URL
+        </button>
+        <button
+          onClick={handleClickSendMessage}
+          disabled={readyState !== ReadyState.OPEN}
+        >
+          Click Me to send 'Hello'
+        </button>
+      </p>
+      <p>Socket URL: {socketUrl}</p>
+      <p>The WebSocket is currently {connectionStatus}</p>
+      {lastMessage && <p>Last message: {lastMessage.data}</p>}
+      <ul>
+        {messageHistory.map((message, idx) => <li key={idx}>{message.data}</li>)}
+      </ul>
+    </div>
   );
 };
