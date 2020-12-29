@@ -25,8 +25,7 @@ export const Home = () => {
     []
   );
 
-  //const handleClickSendMessage = useCallback(() => sendMessage("Hello"), []);
-  const handleClickSendMessage = () => {debugger; sendMessage("Hello");}
+  const handleClickSendMessage = useCallback(() => sendMessage("Hello"), []);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
@@ -51,7 +50,7 @@ export const Home = () => {
       </p>
       <p>Socket URL: {socketUrl}</p>
       <p>The WebSocket is currently {connectionStatus}</p>
-      {lastMessage && <p>Last message: {lastMessage.data}</p>}
+      {lastMessage && <p>Last message: {lastMessage.data}</p> || <p>No last message</p>}
       <ul>
         {messageHistory.map((message, idx) => (
           <li key={idx}>{message.data}</li>

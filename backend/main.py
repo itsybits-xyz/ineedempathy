@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from fastapi.staticfiles import StaticFiles
-from fastapi import Depends, FastAPI, HTTPException, WebSocket
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -91,8 +91,11 @@ def root() -> Dict:
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("Connection accepted!")
-    while True:
-        print("Waiting for data")
-        data = await websocket.receive_text()
-        print(f"Received {data}")
-        await websocket.send_text(f"Message text was: {data}")
+    try:
+        while True:
+            print("Waiting for data")
+            data = await websocket.receive_text()
+            print(f"Received {data}")
+            await websocket.send_text(f"Message text was: {data}")
+    except WebSocketDisconnect:
+        print('Stopping WS Reader (received WebSocketDisconnect)')
