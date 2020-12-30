@@ -242,7 +242,7 @@ class WebsocketLive(WebSocketEndpoint):
 
     async def on_receive(self, websocket: WebSocket, msg: Any):
         data = json.loads(msg)
-        if data['type'] == 'ROOM_JOIN':
+        if "type" in data and data['type'] == 'ROOM_JOIN':
             print("Register user...")
             print(data)
             self.room_id = data['data']['room_id']
