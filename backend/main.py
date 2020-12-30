@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from fastapi.staticfiles import StaticFiles
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -47,10 +47,7 @@ def get_cards(
 
 
 @app.post("/cards", status_code=201, response_model=Card)
-def create_card(
-    card: CardCreate,
-    db: Session = Depends(get_db)
-) -> models.Room:
+def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Room:
     return crud.create_card(db, card)
 
 
@@ -63,37 +60,22 @@ def get_room(
 
 
 @app.post("/rooms", status_code=201, response_model=Room)
-def create_room(
-    room: RoomCreate,
-    db: Session = Depends(get_db)
-) -> models.Room:
+def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
     return crud.create_room(db, room)
 
 
 @app.post("/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess)
-def create_guess(
-    room_id: int,
-    story_id: int,
-    guess: GuessCreate,
-    db: Session = Depends(get_db)
-) -> models.Guess:
+def create_guess(room_id: int, story_id: int, guess: GuessCreate, db: Session = Depends(get_db)) -> models.Guess:
     return crud.create_guess(db, room_id, story_id, guess)
 
 
 @app.post("/rooms/{room_id}/story", status_code=201, response_model=Story)
-def create_story(
-    room_id: int,
-    story: StoryCreate,
-    db: Session = Depends(get_db)
-) -> models.Story:
+def create_story(room_id: int, story: StoryCreate, db: Session = Depends(get_db)) -> models.Story:
     return crud.create_story(db, room_id, story)
 
 
 @app.post("/rooms/{room_name}/user", status_code=201, response_model=User)
-def create_user(
-    room_name: str,
-    db: Session = Depends(get_db)
-) -> models.Room:
+def create_user(room_name: str, db: Session = Depends(get_db)) -> models.Room:
     room = crud.get_room_by_name(db, room_name)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -103,3 +85,17 @@ def create_user(
 @app.get("/")
 def root() -> Dict:
     return {"msg": "Check /docs"}
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print("Connection accepted!")
+    try:
+        while True:
+            print("Waiting for data")
+            data = await websocket.receive_text()
+            print(f"Received {data}")
+            await websocket.send_text(f"Message text was: {data}")
+    except WebSocketDisconnect:
+        print("Stopping WS Reader (received WebSocketDisconnect)")

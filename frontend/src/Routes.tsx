@@ -19,7 +19,6 @@ export const Routes: FC = () => {
       <div className="wrapper">
         <SideBar />
         <div className="main-panel">
-          <NavBar />
           <Route exact path="/" component={Home} />
           <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
           <Route path="/about" component={About} />
