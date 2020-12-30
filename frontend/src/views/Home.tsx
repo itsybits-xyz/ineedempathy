@@ -24,7 +24,17 @@ export const Home: FC = () => {
     }
   }, [lastMessage]);
 
-  const handleClickSendMessage = useCallback(() => sendMessage("Hello"), []);
+  const handleClickSendMessage = useCallback(() => sendMessage(
+    JSON.stringify({
+      type: 'ROOM_JOIN',
+      data: {
+        room_id: 10,
+        room_name: 'foo-bar',
+        user_id: 11,
+        user_name: 'princess.wiggles',
+      }
+    })
+  ), []);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
