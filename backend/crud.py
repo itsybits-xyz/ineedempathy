@@ -6,8 +6,8 @@ from .models import Card, Guess, User, Room, Story
 from .schemas import CardCreate, RoomCreate, GuessCreate, StoryCreate
 
 
-def get_user_by_email(db: Session, email: str) -> Optional[User]:
-    return db.query(User).filter(User.email == email).first()
+def get_user_by_name(db: Session, name: str) -> Optional[User]:
+    return db.query(User).filter(User.name == name).first()
 
 
 def get_cards(db: Session) -> Optional[Card]:

@@ -12,7 +12,7 @@ interface message {
 }
 
 export const Home: FC = () => {
-  const socketUrl = `${BACKEND_URL.replace("http", "ws")}/ws`;
+  const socketUrl = `${BACKEND_URL.replace("http", "ws")}/rooms/foo-bar/users/princess.wiggles.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const { register, handleSubmit } = useForm();
   const [roomName, setRoomName] = useState<string>();
