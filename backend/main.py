@@ -41,7 +41,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 class UserInfo(BaseModel):
     user_id: int
-    username: str
+    user_name: str
     socket: WebSocket
 
     class Config:
@@ -53,6 +53,11 @@ class RoomInfo(BaseModel):
     room_id: int
     users: Dict[int, UserInfo]
 
+    def get_user(self, user_id: int):
+        if user_id in self.users:
+            return self.users[user_id]
+        return None
+
     def add_user(self, user: UserInfo):
         self.users[user.user_id] = user
 
@@ -61,8 +66,10 @@ class RoomInfo(BaseModel):
             del self.users[user_id]
 
     async def broadcast_message(self, msg: Dict):
-        for user in self.users:
-            await user.socket.send_json(msg)
+        print('sending')
+        print(msg)
+        for user_id in self.users:
+            await self.users[user_id].socket.send_json(msg)
 
 
 class EmpathyMansion:
@@ -101,16 +108,14 @@ class EmpathyMansion:
             raise ValueError("Room not found")
         room.remove_user(user_id)
 
-    def get_user(self, user_id: str) -> Optional[UserInfo]:
-        """TODO Get metadata on a user."""
-        return self._user_meta.get(user_id)
-
     async def broadcast_user_joined(self, room_id: int, user_id: int):
         room = self._rooms.get(room_id)
         if room is None:
             raise ValueError("Room not found")
         user = room.get_user(user_id)
-        room.broadcast_message({
+        if user is None:
+            raise ValueError("User not found")
+        await room.broadcast_message({
             "type": "USER_JOIN",
             "data": {
                 "user_id": user.user_id,
@@ -123,7 +128,9 @@ class EmpathyMansion:
         if room is None:
             raise ValueError("Room not found")
         user = room.get_user(user_id)
-        room.broadcast_message({
+        if user is None:
+            raise ValueError("User not found")
+        await room.broadcast_message({
             "type": "USER_LEFT",
             "data": {
                 "user_id": user.user_id,
@@ -244,42 +251,11 @@ class WebsocketLive(WebSocketEndpoint):
             user_name = data['data']['user_name']
             self.empathy_mansion.add_user(self.room_id, room_name, UserInfo(
                 user_id=self.user_id,
-                username=user_name,
+                user_name=user_name,
                 socket=websocket,
             ))
+            await self.empathy_mansion.broadcast_user_joined(self.room_id, self.user_id)
         else:
             await websocket.send_json(
                 {"type": "ERROR", "msg": "Responds to ROOM_JOIN message only"}
             )
-
-
-"""
-async def websocket_endpoint(websocket: WebSocket):
-    empathy_mansion = websocket.scope.get("empathy_mansion")
-    await websocket.accept()
-    data = await websocket.receive_json()
-
-    data = {
-        type: 'ROOM_JOIN',
-        data: {
-            room_id: int,
-            room_name: str,
-            user_id: int,
-            user_name: str,
-        }
-    }
-    if (data.type == 'ROOM_JOIN') {
-        empathy_mansion.add_user(room_id, room_name, UserInfo(
-            user_id: int
-            username: str
-            socket: Websocket
-        ));
-    } else {
-            throw 400 need to room_join
-    }
-    try:
-        while True:
-            await websocket.send_text(f"Message text was: {data}")
-    except WebSocketDisconnect:
-        print("Stopping WS Reader (received WebSocketDisconnect)")
-"""
