@@ -67,7 +67,7 @@ def test_create_user():
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 3
-    assert json['room_id'] == room['id']
+    assert json['roomId'] == room['id']
     assert type(json['id']) == int
     assert type(json['name']) == str
 
@@ -84,9 +84,9 @@ def test_create_story():
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 5
-    assert json['room_id'] == 1
-    assert json['user_id'] == 1
-    assert json['card_id'] == 10
+    assert json['roomId'] == 1
+    assert json['userId'] == 1
+    assert json['cardId'] == 10
     assert json['description'] == 'meow'
 
 
