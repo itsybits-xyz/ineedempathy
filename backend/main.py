@@ -98,4 +98,4 @@ async def websocket_endpoint(websocket: WebSocket):
             print(f"Received {data}")
             await websocket.send_text(f"Message text was: {data}")
     except WebSocketDisconnect:
-        print('Stopping WS Reader (received WebSocketDisconnect)')
+        print("Stopping WS Reader (received WebSocketDisconnect)")
