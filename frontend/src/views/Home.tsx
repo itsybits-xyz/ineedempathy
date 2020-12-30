@@ -19,6 +19,7 @@ export const Home: FC = () => {
   const [messageHistory, setMessageHistory] = useState<message[]>([]);
 
   useEffect(() => {
+    console.info('received', lastMessage);
     if (lastMessage) {
       setMessageHistory((prevHistory) => [...prevHistory, lastMessage]);
     }
