@@ -47,11 +47,13 @@ class UserInfo(BaseModel):
 
 
 class RoomInfo(BaseModel):
-    room_name: str
-    room_id: int
+    room: Room
     users: Dict[int, UserInfo]
 
-    def get_user(self, user_id: int) -> Optional[UserInfo]:
+    def empty(self):
+        return len(self.users) == 0
+
+    def get_user(self, user_id: int):
         if user_id in self.users:
             return self.users[user_id]
         return None
@@ -59,11 +61,11 @@ class RoomInfo(BaseModel):
     def add_user(self, userInfo: UserInfo):
         self.users[userInfo.user.id] = userInfo
 
-    async def remove_user(self, user_id: int) -> None:
+    def remove_user(self, user_id: int):
         if user_id in self.users:
             del self.users[user_id]
 
-    async def broadcast_message(self, msg: Dict) -> None:
+    async def broadcast_message(self, msg: Dict):
         print("sending")
         print(msg)
         for user_id in self.users:
@@ -91,45 +93,35 @@ class EmpathyMansion:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    def add_user(self, room: Room, user: UserInfo) -> None:
+    def add_user(self, room: Room, user: UserInfo):
         if room.id not in self._rooms:
             self._rooms[room.id] = RoomInfo(
-                room_name=room.name,
-                room_id=room.id,
+                room=room,
                 users={},
             )
         self._rooms[room.id].add_user(user)
 
-    def remove_user(self, room_id: int, user_id: int) -> None:
-        room = self._rooms.get(room_id)
-        if room is None:
-            raise ValueError("Room not found")
-        room.remove_user(user_id)
+    def remove_user(self, room: Room, user: User):
+        roomInfo = self._rooms.get(room.id)
+        roomInfo.remove_user(user.id)
+        if roomInfo.empty():
+            del self._rooms[room.id]
 
-    async def broadcast_user_joined(self, room_id: int, user_id: int) -> None:
-        room = self._rooms.get(room_id)
-        if room is None:
-            raise ValueError("Room not found")
-        user = room.get_user(user_id)
-        if user is None:
-            raise ValueError("User not found")
-        await room.broadcast_message(
+    async def broadcast_user_joined(self, room: Room, user: User):
+        roomInfo = self._rooms.get(room.id)
+        await roomInfo.broadcast_message(
             {
                 "type": "USER_JOIN",
                 "data": {
-                    "user_id": user.user.id,
-                    "user_name": user.user.name,
+                    "user_id": user.id,
+                    "user_name": user.name,
                 },
             }
         )
 
-    async def broadcast_user_left(self, room_id: int, user: Optional[User] = None) -> None:
-        room = self._rooms.get(room_id)
-        if room is None:
-            raise ValueError("Room not found")
-        if user is None:
-            raise ValueError("User not found")
-        await room.broadcast_message(
+    async def broadcast_user_left(self, room: Room, user: User):
+        roomInfo = self._rooms.get(room.id)
+        await roomInfo.broadcast_message(
             {
                 "type": "USER_LEFT",
                 "data": {
@@ -226,10 +218,11 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
         raise RuntimeError(f"User instance  '{user_name}' unavailable!")
     await websocket.accept()
     empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
-    await empathy_mansion.broadcast_user_joined(room.id, user.id)
+    await empathy_mansion.broadcast_user_joined(room, user)
     try:
         while True:
             await websocket.receive_json()
+            await websocket.send_json({"error": "read only server"})
     except WebSocketDisconnect:
-        user = await empathy_mansion.remove_user(room.id, user.id)
-        await empathy_mansion.broadcast_user_left(room.id, user)
+        await empathy_mansion.broadcast_user_left(room, user)
+        empathy_mansion.remove_user(room, user)

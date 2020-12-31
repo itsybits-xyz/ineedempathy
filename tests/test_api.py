@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Dict
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -40,13 +40,22 @@ def test_root():
     assert rv.json()['msg'] == "Check /docs"
 
 
-def create_room(type):
+def create_room(type: str):
     room = test_client.post(
         "/rooms",
-        json={"type": "singleplayer"},
+        json={"type": type},
     )
     assert room.status_code == 201
     return room.json()
+
+
+def create_user(room: Dict):
+    user = test_client.post(
+        f"/rooms/{room['name']}/user",
+        json={},
+    )
+    assert user.status_code == 201
+    return user.json()
 
 
 def test_create_room():
@@ -60,16 +69,11 @@ def test_create_room():
 
 def test_create_user():
     room = create_room("singleplayer")
-    response = test_client.post(
-        f"/rooms/{room['name']}/user",
-        json={},
-    )
-    assert response.status_code == 201
-    json = response.json()
-    assert len(list(json.keys())) == 3
-    assert json['roomId'] == room['id']
-    assert type(json['id']) == int
-    assert type(json['name']) == str
+    user = create_user(room)
+    assert len(list(user.keys())) == 3
+    assert user['roomId'] == room['id']
+    assert type(user['id']) == int
+    assert type(user['name']) == str
 
 
 def test_create_story():
@@ -125,17 +129,19 @@ def test_create_card():
     assert json['blankUrl'] == '/static/angry_blank.jpg'
 
 
-def test_incorrect_websocket_connect():
-    client = TestClient(app)
-    with client.websocket_connect("/ws") as websocket:
-        websocket.send_json({"msg": "Hello WebSocket"})
-        data = websocket.receive_json()
-        assert data == {"type": "ERROR", "msg": "Responds to ROOM_JOIN message only"}
-
-
 def test_websocket_connect():
     client = TestClient(app)
-    with client.websocket_connect("/ws") as websocket:
+    room = create_room("singleplayer")
+    user = create_user(room)
+    with client.websocket_connect(f"/rooms/{room['name']}/users/{user['name']}.ws") as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "type": "USER_JOIN",
+            "data": {
+                "user_id": user['id'],
+                "user_name": user['name'],
+            },
+        }
         websocket.send_json({
             "type": "ROOM_JOIN",
             "data": {
@@ -146,10 +152,4 @@ def test_websocket_connect():
             },
         })
         data = websocket.receive_json()
-        assert data == {
-            "type": "USER_JOIN",
-            "data": {
-                "user_id": 15,
-                "user_name": "princess.wiggles",
-            },
-        }
+        assert data == {"error": "read only server"}
