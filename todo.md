@@ -8,6 +8,13 @@
 * [ ] Insert Story Screen (or next)
 * [ ] Waiting Screen
 * [ ] Picker needs picking
+* [ ] Restrict POST /cards
+* [ ] Send socket messages for Users
+* [ ] Send socket messages for Stories
+* [ ] Send socket messages for Guesses
+* [ ] Include "speaker" key for messages
+* [ ] Error socket message could be a status message
+* [ ] Logging
 
 
 # Done:
