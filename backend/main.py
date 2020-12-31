@@ -10,17 +10,16 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from starlette.types import ASGIApp, Receive, Scope, Send
 
 from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card
 from .schemas import Room, RoomCreate
-from .schemas import User
+from .schemas import User, UserInfo
 from .schemas import StoryCreate, Story
 from .schemas import GuessCreate, Guess
-from pydantic import BaseModel
+from .middleware import EmpathyEventMiddleware, EmpathyMansion
 
 
 app = FastAPI()
@@ -36,112 +35,6 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
         expose_headers=["*"],
     )
-
-
-class UserInfo(BaseModel):
-    user: User
-    socket: WebSocket
-
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class RoomInfo(BaseModel):
-    room: Room
-    users: Dict[int, UserInfo]
-
-    def empty(self):
-        return len(self.users) == 0
-
-    def get_user(self, user_id: int):
-        if user_id in self.users:
-            return self.users[user_id]
-        return None
-
-    def add_user(self, userInfo: UserInfo):
-        self.users[userInfo.user.id] = userInfo
-
-    def remove_user(self, user_id: int):
-        if user_id in self.users:
-            del self.users[user_id]
-
-    async def broadcast_message(self, msg: Dict):
-        print("sending")
-        print(msg)
-        for user_id in self.users:
-            await self.users[user_id].socket.send_json(msg)
-
-
-class EmpathyMansion:
-    """Room state, comprising connected users."""
-
-    def __init__(self):
-        print("Creating new empty room")
-        self._rooms: Dict[int, RoomInfo] = {}
-
-    def __len__(self) -> int:
-        """Get the number of users in the room."""
-        return len(self._rooms)
-
-    @property
-    def empty(self) -> bool:
-        """Check if the room is empty."""
-        return len(self._rooms) == 0
-
-    @property
-    def user_list(self) -> List[str]:
-        """Return a list of IDs for connected users."""
-        return list(self._rooms)
-
-    def add_user(self, room: Room, user: UserInfo):
-        if room.id not in self._rooms:
-            self._rooms[room.id] = RoomInfo(
-                room=room,
-                users={},
-            )
-        self._rooms[room.id].add_user(user)
-
-    def remove_user(self, room: Room, user: User):
-        roomInfo = self._rooms.get(room.id)
-        roomInfo.remove_user(user.id)
-        if roomInfo.empty():
-            del self._rooms[room.id]
-
-    async def broadcast_user_joined(self, room: Room, user: User):
-        roomInfo = self._rooms.get(room.id)
-        await roomInfo.broadcast_message(
-            {
-                "type": "USER_JOIN",
-                "data": {
-                    "user_id": user.id,
-                    "user_name": user.name,
-                },
-            }
-        )
-
-    async def broadcast_user_left(self, room: Room, user: User):
-        roomInfo = self._rooms.get(room.id)
-        await roomInfo.broadcast_message(
-            {
-                "type": "USER_LEFT",
-                "data": {
-                    "user_id": user.id,
-                    "user_name": user.name,
-                },
-            }
-        )
-
-
-class EmpathyEventMiddleware:
-    def __init__(self, app: ASGIApp):
-        self._app = app
-        self._empathy_mansion = EmpathyMansion()
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        if scope["type"] in ("lifespan", "http", "websocket"):
-            scope["empathy_mansion"] = self._empathy_mansion
-        await self._app(scope, receive, send)
-
 
 app.add_middleware(EmpathyEventMiddleware)
 
