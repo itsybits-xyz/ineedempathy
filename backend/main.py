@@ -1,5 +1,4 @@
-from typing import List, Dict, Optional, Any, Tuple
-import json
+from typing import List, Dict, Optional
 
 from fastapi.staticfiles import StaticFiles
 from fastapi import (
@@ -11,7 +10,6 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette.types import ASGIApp, Receive, Scope, Send
-from starlette.endpoints import WebSocketEndpoint
 
 from . import crud, models
 from .config import settings
@@ -40,8 +38,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 
 class UserInfo(BaseModel):
-    user_id: int
-    user_name: str
+    user: User
     socket: WebSocket
 
     class Config:
@@ -58,15 +55,15 @@ class RoomInfo(BaseModel):
             return self.users[user_id]
         return None
 
-    def add_user(self, user: UserInfo):
-        self.users[user.user_id] = user
+    def add_user(self, userInfo: UserInfo):
+        self.users[userInfo.user.id] = userInfo
 
     def remove_user(self, user_id: int):
         if user_id in self.users:
             del self.users[user_id]
 
     async def broadcast_message(self, msg: Dict):
-        print('sending')
+        print("sending")
         print(msg)
         for user_id in self.users:
             await self.users[user_id].socket.send_json(msg)
@@ -93,14 +90,14 @@ class EmpathyMansion:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    def add_user(self, room_id: int, room_name: str, user: UserInfo):
-        if room_id not in self._rooms:
-            self._rooms[room_id] = RoomInfo(
-                room_name=room_name,
-                room_id=room_id,
+    def add_user(self, room: Room, user: UserInfo):
+        if room.id not in self._rooms:
+            self._rooms[room.id] = RoomInfo(
+                room_name=room.name,
+                room_id=room.id,
                 users={},
             )
-        self._rooms[room_id].add_user(user)
+        self._rooms[room.id].add_user(user)
 
     def remove_user(self, room_id: int, user_id: int):
         room = self._rooms.get(room_id)
@@ -115,13 +112,15 @@ class EmpathyMansion:
         user = room.get_user(user_id)
         if user is None:
             raise ValueError("User not found")
-        await room.broadcast_message({
-            "type": "USER_JOIN",
-            "data": {
-                "user_id": user.user_id,
-                "user_name": user.user_name,
+        await room.broadcast_message(
+            {
+                "type": "USER_JOIN",
+                "data": {
+                    "user_id": user.user_id,
+                    "user_name": user.user_name,
+                },
             }
-        })
+        )
 
     async def broadcast_user_left(self, room_id: int, user_id: int):
         room = self._rooms.get(room_id)
@@ -130,13 +129,15 @@ class EmpathyMansion:
         user = room.get_user(user_id)
         if user is None:
             raise ValueError("User not found")
-        await room.broadcast_message({
-            "type": "USER_LEFT",
-            "data": {
-                "user_id": user.user_id,
-                "user_name": user.user_name,
+        await room.broadcast_message(
+            {
+                "type": "USER_LEFT",
+                "data": {
+                    "user_id": user.user_id,
+                    "user_name": user.user_name,
+                },
             }
-        })
+        )
 
 
 class EmpathyEventMiddleware:
@@ -187,19 +188,13 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
     return crud.create_room(db, room)
 
 
-@app.post(
-    "/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess
-)
-def create_guess(
-    room_id: int, story_id: int, guess: GuessCreate, db: Session = Depends(get_db)
-) -> models.Guess:
+@app.post("/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess)
+def create_guess(room_id: int, story_id: int, guess: GuessCreate, db: Session = Depends(get_db)) -> models.Guess:
     return crud.create_guess(db, room_id, story_id, guess)
 
 
 @app.post("/rooms/{room_id}/story", status_code=201, response_model=Story)
-def create_story(
-    room_id: int, story: StoryCreate, db: Session = Depends(get_db)
-) -> models.Story:
+def create_story(room_id: int, story: StoryCreate, db: Session = Depends(get_db)) -> models.Story:
     return crud.create_story(db, room_id, story)
 
 
@@ -216,46 +211,29 @@ def root() -> Dict:
     return {"msg": "Check /docs"}
 
 
-@app.websocket_route("/ws", name="ws")
-class WebsocketLive(WebSocketEndpoint):
-    encoding: str = "text"
-    session_name: str = ""
+@app.websocket("/rooms/{room_name}/users/{user_name}.ws")
+async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
+    scope = websocket.scope
+    print("Connecting new user...")
+    empathy_mansion: Optional[EmpathyMansion] = scope.get("empathy_mansion")
+    if empathy_mansion is None:
+        raise RuntimeError("Global `empathy_mansion` instance unavailable!")
+    room = crud.get_room_by_name(db, room_name)
+    if room is None:
+        raise RuntimeError("Room instance unavailable!")
+    user = crud.get_user_by_name(db, user_name)
+    empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
+    await empathy_mansion.broadcast_user_joined(room.id, user.id)
+    await websocket.accept()
+    while True:
+        pass
 
-    def __init__(self, scope: Scope, receive: Receive, send: Send):
-        super().__init__(scope, receive, send)
-        self.empathy_mansion: Optional[EmpathyMansion] = None
-        self.user_id = None
-        self.room_id = None
+    # async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
+    #     if self.room and self.user:
+    #         print("Disconnecting user...")
+    #         self.empathy_mansion.remove_user(self.room.id, self.user.id)
 
-    async def on_connect(self, websocket: WebSocket):
-        print("Connecting new user...")
-        empathy_mansion: Optional[EmpathyMansion] = self.scope.get("empathy_mansion")
-        if empathy_mansion is None:
-            raise RuntimeError("Global `empathy_mansion` instance unavailable!")
-        self.empathy_mansion = empathy_mansion
-        await websocket.accept()
-
-    async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
-        if self.room_id and self.user_id:
-            print("Disconnecting user...")
-            self.empathy_mansion.remove_user(self.room_id, self.user_id)
-
-    async def on_receive(self, websocket: WebSocket, msg: Any):
-        data = json.loads(msg)
-        if data['type'] == 'ROOM_JOIN':
-            print("Register user...")
-            print(data)
-            self.room_id = data['data']['room_id']
-            self.user_id = data['data']['user_id']
-            room_name = data['data']['room_name']
-            user_name = data['data']['user_name']
-            self.empathy_mansion.add_user(self.room_id, room_name, UserInfo(
-                user_id=self.user_id,
-                user_name=user_name,
-                socket=websocket,
-            ))
-            await self.empathy_mansion.broadcast_user_joined(self.room_id, self.user_id)
-        else:
-            await websocket.send_json(
-                {"type": "ERROR", "msg": "Responds to ROOM_JOIN message only"}
-            )
+    # async def on_receive(self, websocket: WebSocket, msg: Any):
+    #     await websocket.send_json(
+    #         {"type": "ERROR", "msg": "This socket is a read only stream."}
+    #     )

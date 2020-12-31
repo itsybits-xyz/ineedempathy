@@ -123,3 +123,33 @@ def test_create_card():
     assert json['type'] == 'feeling'
     assert json['textUrl'] == '/static/angry.jpg'
     assert json['blankUrl'] == '/static/angry_blank.jpg'
+
+
+def test_incorrect_websocket_connect():
+    client = TestClient(app)
+    with client.websocket_connect("/ws") as websocket:
+        websocket.send_json({"msg": "Hello WebSocket"})
+        data = websocket.receive_json()
+        assert data == {"type": "ERROR", "msg": "Responds to ROOM_JOIN message only"}
+
+
+def test_websocket_connect():
+    client = TestClient(app)
+    with client.websocket_connect("/ws") as websocket:
+        websocket.send_json({
+            "type": "ROOM_JOIN",
+            "data": {
+                "room_id": 10,
+                "room_name": "princess.tower",
+                "user_id": 15,
+                "user_name": "princess.wiggles",
+            },
+        })
+        data = websocket.receive_json()
+        assert data == {
+            "type": "USER_JOIN",
+            "data": {
+                "user_id": 15,
+                "user_name": "princess.wiggles",
+            },
+        }
