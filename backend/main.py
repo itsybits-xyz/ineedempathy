@@ -6,6 +6,7 @@ from fastapi import (
     FastAPI,
     HTTPException,
     WebSocket,
+    WebSocketDisconnect,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -50,7 +51,7 @@ class RoomInfo(BaseModel):
     room_id: int
     users: Dict[int, UserInfo]
 
-    def get_user(self, user_id: int):
+    def get_user(self, user_id: int) -> Optional[UserInfo]:
         if user_id in self.users:
             return self.users[user_id]
         return None
@@ -58,11 +59,11 @@ class RoomInfo(BaseModel):
     def add_user(self, userInfo: UserInfo):
         self.users[userInfo.user.id] = userInfo
 
-    def remove_user(self, user_id: int):
+    async def remove_user(self, user_id: int) -> None:
         if user_id in self.users:
             del self.users[user_id]
 
-    async def broadcast_message(self, msg: Dict):
+    async def broadcast_message(self, msg: Dict) -> None:
         print("sending")
         print(msg)
         for user_id in self.users:
@@ -90,7 +91,7 @@ class EmpathyMansion:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    def add_user(self, room: Room, user: UserInfo):
+    def add_user(self, room: Room, user: UserInfo) -> None:
         if room.id not in self._rooms:
             self._rooms[room.id] = RoomInfo(
                 room_name=room.name,
@@ -99,13 +100,13 @@ class EmpathyMansion:
             )
         self._rooms[room.id].add_user(user)
 
-    def remove_user(self, room_id: int, user_id: int):
+    def remove_user(self, room_id: int, user_id: int) -> None:
         room = self._rooms.get(room_id)
         if room is None:
             raise ValueError("Room not found")
         room.remove_user(user_id)
 
-    async def broadcast_user_joined(self, room_id: int, user_id: int):
+    async def broadcast_user_joined(self, room_id: int, user_id: int) -> None:
         room = self._rooms.get(room_id)
         if room is None:
             raise ValueError("Room not found")
@@ -116,25 +117,24 @@ class EmpathyMansion:
             {
                 "type": "USER_JOIN",
                 "data": {
-                    "user_id": user.user_id,
-                    "user_name": user.user_name,
+                    "user_id": user.user.id,
+                    "user_name": user.user.name,
                 },
             }
         )
 
-    async def broadcast_user_left(self, room_id: int, user_id: int):
+    async def broadcast_user_left(self, room_id: int, user: Optional[User] = None) -> None:
         room = self._rooms.get(room_id)
         if room is None:
             raise ValueError("Room not found")
-        user = room.get_user(user_id)
         if user is None:
             raise ValueError("User not found")
         await room.broadcast_message(
             {
                 "type": "USER_LEFT",
                 "data": {
-                    "user_id": user.user_id,
-                    "user_name": user.user_name,
+                    "user_id": user.id,
+                    "user_name": user.name,
                 },
             }
         )
@@ -220,20 +220,16 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
         raise RuntimeError("Global `empathy_mansion` instance unavailable!")
     room = crud.get_room_by_name(db, room_name)
     if room is None:
-        raise RuntimeError("Room instance unavailable!")
+        raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     user = crud.get_user_by_name(db, user_name)
+    if user is None or user.room_id != room.id:
+        raise RuntimeError(f"User instance  '{user_name}' unavailable!")
+    await websocket.accept()
     empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
     await empathy_mansion.broadcast_user_joined(room.id, user.id)
-    await websocket.accept()
-    while True:
-        pass
-
-    # async def on_disconnect(self, _websocket: WebSocket, _close_code: int):
-    #     if self.room and self.user:
-    #         print("Disconnecting user...")
-    #         self.empathy_mansion.remove_user(self.room.id, self.user.id)
-
-    # async def on_receive(self, websocket: WebSocket, msg: Any):
-    #     await websocket.send_json(
-    #         {"type": "ERROR", "msg": "This socket is a read only stream."}
-    #     )
+    try:
+        while True:
+            await websocket.receive_json()
+    except WebSocketDisconnect:
+        user = await empathy_mansion.remove_user(room.id, user.id)
+        await empathy_mansion.broadcast_user_left(room.id, user)
