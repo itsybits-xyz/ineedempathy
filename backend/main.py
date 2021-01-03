@@ -111,11 +111,11 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
         raise RuntimeError(f"User instance  '{user_name}' unavailable!")
     await websocket.accept()
     empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
-    await empathy_mansion.broadcast_user_joined(room, user)
+    await empathy_mansion.send_update(room)
     try:
         while True:
             await websocket.receive_json()
-            await websocket.send_json({"error": "read only server"})
+            await empathy_mansion.send_update(room)
     except WebSocketDisconnect:
-        await empathy_mansion.broadcast_user_left(room, user)
         empathy_mansion.remove_user(room, user)
+        await empathy_mansion.send_update(room)

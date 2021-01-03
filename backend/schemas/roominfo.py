@@ -22,6 +22,15 @@ class RoomInfo(BaseModel):
         if user_id in self.users:
             del self.users[user_id]
 
+    async def send_update(self):
+        await self.broadcast_message(
+            {
+                "status": 0,
+                "waitingOn": [user_id for user_id in self.users.keys()],
+                "currentUsers": [userinfo.user.dict() for userinfo in self.users.values()],
+            }
+        )
+
     async def broadcast_message(self, msg: Dict):
         print("sending")
         print(msg)

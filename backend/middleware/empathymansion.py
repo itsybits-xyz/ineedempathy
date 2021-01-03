@@ -38,26 +38,6 @@ class EmpathyMansion:
         if roomInfo.empty():
             del self._rooms[room.id]
 
-    async def broadcast_user_joined(self, room: Room, user: User):
+    async def send_update(self, room: Room):
         roomInfo = self._rooms.get(room.id)
-        await roomInfo.broadcast_message(
-            {
-                "type": "USER_JOIN",
-                "data": {
-                    "user_id": user.id,
-                    "user_name": user.name,
-                },
-            }
-        )
-
-    async def broadcast_user_left(self, room: Room, user: User):
-        roomInfo = self._rooms.get(room.id)
-        await roomInfo.broadcast_message(
-            {
-                "type": "USER_LEFT",
-                "data": {
-                    "user_id": user.id,
-                    "user_name": user.name,
-                },
-            }
-        )
+        await roomInfo.send_update()
