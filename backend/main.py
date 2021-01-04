@@ -109,13 +109,16 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
     user = crud.get_user_by_name(db, user_name)
     if user is None or user.room_id != room.id:
         raise RuntimeError(f"User instance  '{user_name}' unavailable!")
-    await websocket.accept()
-    empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
-    await empathy_mansion.send_update(room)
     try:
+        await websocket.accept()
+        empathy_mansion.add_user(room, user, websocket)
+        print("send_update1")
+        await empathy_mansion.send_update(room)
         while True:
             await websocket.receive_json()
+            print("send_update2")
             await empathy_mansion.send_update(room)
     except WebSocketDisconnect:
         empathy_mansion.remove_user(room, user)
+        print("send_update3")
         await empathy_mansion.send_update(room)

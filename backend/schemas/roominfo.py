@@ -27,9 +27,12 @@ class RoomInfo(BaseModel):
             {
                 "status": 0,
                 "waitingOn": [user_id for user_id in self.users.keys()],
-                "currentUsers": [userinfo.user.dict() for userinfo in self.users.values()],
+                "currentUsers": self.current_users(),
             }
         )
+
+    def current_users(self):
+        return [userinfo.user.dict() for userinfo in self.users.values()]
 
     async def broadcast_message(self, msg: Dict):
         print("sending")

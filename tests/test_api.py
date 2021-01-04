@@ -129,6 +129,17 @@ def test_create_card():
     assert json['blankUrl'] == '/static/angry_blank.jpg'
 
 
+def test_invalid_websocket_connect():
+    try:
+        client = TestClient(app)
+        room = {"name" : "fake-room"}
+        user = {"name" : "fake-user"}
+        client.websocket_connect(f"/rooms/{room['name']}/users/{user['name']}.ws")
+        assert False
+    except RuntimeError:
+        assert True
+
+
 def test_websocket_connect():
     client = TestClient(app)
     room = create_room("singleplayer")
@@ -136,20 +147,13 @@ def test_websocket_connect():
     with client.websocket_connect(f"/rooms/{room['name']}/users/{user['name']}.ws") as websocket:
         data = websocket.receive_json()
         assert data == {
-            "type": "USER_JOIN",
-            "data": {
-                "user_id": user['id'],
-                "user_name": user['name'],
-            },
+            "status": 0,
+            "waitingOn": [user.get("id")],
+            "currentUsers": [
+                {
+                    "id": user.get("id"),
+                    "name": user.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
         }
-        websocket.send_json({
-            "type": "ROOM_JOIN",
-            "data": {
-                "room_id": 10,
-                "room_name": "princess.tower",
-                "user_id": 15,
-                "user_name": "princess.wiggles",
-            },
-        })
-        data = websocket.receive_json()
-        assert data == {"error": "read only server"}
