@@ -1,4 +1,5 @@
-from backend.schemas import User, Room, RoomInfo, RoomType
+from backend.middleware import ConnectionManager
+from backend.schemas import User, Room, RoomType
 from datetime import datetime
 
 
@@ -27,15 +28,12 @@ def mock_user(roomId=1, name="princess.wiggles"):
     )
 
 
-def test_empty():
+def test_add_remove_user():
     room = mock_room()
     user = mock_user()
-    roominfo = RoomInfo(
-        room=room,
-        users={},
-    )
-    assert roominfo.empty() == True
-    roominfo.add_user(user, None)
-    assert roominfo.empty() == False
-    roominfo.remove_user(user, None)
-    assert roominfo.empty() == True
+    manager = ConnectionManager()
+    assert manager.empty == True
+    manager.add_user(room, user, None)
+    assert manager.empty == False
+    manager.remove_user(room, user, None)
+    assert manager.empty == True

@@ -2,8 +2,7 @@ from typing import List, Dict, Optional
 
 from fastapi.staticfiles import StaticFiles
 from fastapi import (
-    Depends,
-    FastAPI,
+    Depends, FastAPI,
     HTTPException,
     WebSocket,
     WebSocketDisconnect,
@@ -98,7 +97,7 @@ def root() -> Dict:
 @app.websocket("/rooms/{room_name}/users/{user_name}.ws")
 async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
     scope = websocket.scope
-    print("Connecting new user...")
+    print(f"Connecting new socket {id(websocket)}...")
     connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
     if connection_manager is None:
         raise RuntimeError("Global `connection_manager` instance unavailable!")
@@ -116,5 +115,5 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
             await websocket.receive_json()
             await connection_manager.send_update(room)
     except WebSocketDisconnect:
-        connection_manager.remove_user(room, user)
+        connection_manager.remove_user(room, user, websocket)
         await connection_manager.send_update(room)

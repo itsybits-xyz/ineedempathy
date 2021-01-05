@@ -47,9 +47,9 @@ class ConnectionManager:
             socket=socket
         )
 
-    def remove_user(self, room: Room, user: User):
+    def remove_user(self, room: Room, user: User, socket: WebSocket):
         roomInfo = self._rooms.get(room.id)
-        roomInfo.remove_user(user.id)
+        roomInfo.remove_user(user, socket)
         if roomInfo is None or roomInfo.empty():
             del self._rooms[room.id]
 

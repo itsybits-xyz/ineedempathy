@@ -22,9 +22,9 @@ class RoomInfo(BaseModel):
             socket=socket
         )
 
-    def remove_user(self, user_id: int):
-        if user_id in self.users:
-            del self.users[user_id]
+    def remove_user(self, user: User, socket: WebSocket):
+        if user.id in self.users:
+            del self.users[user.id]
 
     async def send_update(self):
         await self.broadcast_message(
