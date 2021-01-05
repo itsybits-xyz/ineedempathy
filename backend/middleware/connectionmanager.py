@@ -1,10 +1,21 @@
 from typing import List, Dict
-from ..schemas import User, UserInfo, RoomInfo
-from ..schemas import Room
+from ..schemas import User, Room, RoomInfo
 from fastapi import WebSocket
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 
-class EmpathyMansion:
+class ConnectionManagerMiddleware:
+    def __init__(self, app: ASGIApp):
+        self._app = app
+        self._connection_manager = ConnectionManager()
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        if scope["type"] in ("lifespan", "http", "websocket"):
+            scope["connection_manager"] = self._connection_manager
+        await self._app(scope, receive, send)
+
+
+class ConnectionManager:
     """Room state, comprising connected users."""
 
     def __init__(self):
@@ -31,10 +42,10 @@ class EmpathyMansion:
                 room=room,
                 users={},
             )
-        self._rooms[room.id].add_user(UserInfo(
+        self._rooms[room.id].add_user(
             user=user,
             socket=socket
-        ))
+        )
 
     def remove_user(self, room: Room, user: User):
         roomInfo = self._rooms.get(room.id)

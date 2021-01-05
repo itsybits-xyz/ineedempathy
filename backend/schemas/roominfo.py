@@ -1,6 +1,7 @@
 from typing import Dict
 from pydantic import BaseModel
-from . import Room, UserInfo
+from fastapi import WebSocket
+from . import Room, User, UserInfo
 
 
 class RoomInfo(BaseModel):
@@ -15,8 +16,11 @@ class RoomInfo(BaseModel):
             return self.users[user_id]
         return None
 
-    def add_user(self, userInfo: UserInfo):
-        self.users[userInfo.user.id] = userInfo
+    def add_user(self, user: User, socket: WebSocket):
+        self.users[user.id] = UserInfo(
+            user=user,
+            socket=socket
+        )
 
     def remove_user(self, user_id: int):
         if user_id in self.users:
