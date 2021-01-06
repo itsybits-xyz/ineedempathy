@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey
 from sqlalchemy import Integer, String, Text, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
-# from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 
 from .database import Base
 from sqlalchemy.sql import func
@@ -29,7 +29,7 @@ class Room(Base):
     type = Column(Enum("singleplayer", "multiplayer", "public-multiplayer", name="type"), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
-    #users = relationship("User", back_populates="rooms")
+    users = relationship("User", back_populates="room")
     #guesses = relationship("Guess", back_populates="rooms")
 
 
@@ -41,7 +41,7 @@ class User(Base):
     is_active = Column(Boolean(), default=False)
     is_superuser = Column(Boolean(), default=False)
 
-    #rooms = relationship("Room", back_populates="users")
+    room = relationship("Room", back_populates="users")
     #stories = relationship("Story", back_populates="users")
     #guesses = relationship("Guess", back_populates="users")
 

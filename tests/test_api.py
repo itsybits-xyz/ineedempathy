@@ -164,8 +164,6 @@ def test_websocket_connect():
 
 
 def test_websocket_with_multiple_connections():
-    assert True
-    return
     client = TestClient(app)
     room = create_room("singleplayer")
     user_1 = create_user(room)

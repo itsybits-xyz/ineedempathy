@@ -105,8 +105,10 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
     if room is None:
         raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     user = crud.get_user_by_name(db, user_name)
-    if user is None or user.room_id != room.id:
-        raise RuntimeError(f"User instance  '{user_name}' unavailable!")
+    if user is None:
+        raise RuntimeError(f"User instance '{user_name}' unavailable!")
+    if user not in room.users:
+        raise RuntimeError(f"User '{user_name}' does not belong to '{room_name}'!")
     try:
         await websocket.accept()
         connection_manager.add_user(room, user, websocket)

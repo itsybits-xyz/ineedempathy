@@ -35,7 +35,10 @@ def test_empty():
         users={},
     )
     assert roominfo.empty() == True
-    roominfo.add_user(user, None)
+    roominfo.add_user(user, 1)
+    roominfo.add_user(user, 2)
     assert roominfo.empty() == False
-    roominfo.remove_user(user, None)
+    roominfo.remove_user(user, 1)
+    assert roominfo.empty() == False
+    roominfo.remove_user(user, 2)
     assert roominfo.empty() == True

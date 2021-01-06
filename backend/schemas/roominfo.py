@@ -17,14 +17,17 @@ class RoomInfo(BaseModel):
         return None
 
     def add_user(self, user: User, socket: WebSocket):
-        self.users[user.id] = UserInfo(
-            user=user,
-            socket=socket
-        )
+        if user.id not in self.users:
+            self.users[user.id] = UserInfo(
+                user=user,
+            )
+        self.users[user.id].add_socket(socket)
 
     def remove_user(self, user: User, socket: WebSocket):
         if user.id in self.users:
-            del self.users[user.id]
+            self.users[user.id].remove_socket(socket)
+            if self.users[user.id].empty():
+                del self.users[user.id]
 
     async def send_update(self):
         await self.broadcast_message(
@@ -42,4 +45,4 @@ class RoomInfo(BaseModel):
         print("sending")
         print(msg)
         for user_id in self.users:
-            await self.users[user_id].socket.send_json(msg)
+            await self.users[user_id].send_json(msg)
