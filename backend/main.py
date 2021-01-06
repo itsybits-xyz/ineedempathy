@@ -2,8 +2,7 @@ from typing import List, Dict, Optional
 
 from fastapi.staticfiles import StaticFiles
 from fastapi import (
-    Depends,
-    FastAPI,
+    Depends, FastAPI,
     HTTPException,
     WebSocket,
     WebSocketDisconnect,
@@ -15,11 +14,10 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card
-from .schemas import Room, RoomCreate
-from .schemas import User, UserInfo
+from .schemas import User, Room, RoomCreate
 from .schemas import StoryCreate, Story
 from .schemas import GuessCreate, Guess
-from .middleware import EmpathyEventMiddleware, EmpathyMansion
+from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
 app = FastAPI()
@@ -36,7 +34,7 @@ if settings.BACKEND_CORS_ORIGINS:
         expose_headers=["*"],
     )
 
-app.add_middleware(EmpathyEventMiddleware)
+app.add_middleware(ConnectionManagerMiddleware)
 
 
 @app.get("/rooms", response_model=List[Room])
@@ -99,23 +97,23 @@ def root() -> Dict:
 @app.websocket("/rooms/{room_name}/users/{user_name}.ws")
 async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
     scope = websocket.scope
-    print("Connecting new user...")
-    empathy_mansion: Optional[EmpathyMansion] = scope.get("empathy_mansion")
-    if empathy_mansion is None:
-        raise RuntimeError("Global `empathy_mansion` instance unavailable!")
+    print(f"Connecting new socket {id(websocket)}...")
+    connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
+    if connection_manager is None:
+        raise RuntimeError("Global `connection_manager` instance unavailable!")
     room = crud.get_room_by_name(db, room_name)
     if room is None:
         raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     user = crud.get_user_by_name(db, user_name)
     if user is None or user.room_id != room.id:
         raise RuntimeError(f"User instance  '{user_name}' unavailable!")
-    await websocket.accept()
-    empathy_mansion.add_user(room, UserInfo(user=user, socket=websocket))
-    await empathy_mansion.send_update(room)
     try:
+        await websocket.accept()
+        connection_manager.add_user(room, user, websocket)
+        await connection_manager.send_update(room)
         while True:
             await websocket.receive_json()
-            await empathy_mansion.send_update(room)
+            await connection_manager.send_update(room)
     except WebSocketDisconnect:
-        empathy_mansion.remove_user(room, user)
-        await empathy_mansion.send_update(room)
+        connection_manager.remove_user(room, user, websocket)
+        await connection_manager.send_update(room)

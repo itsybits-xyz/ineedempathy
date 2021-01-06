@@ -129,27 +129,136 @@ def test_create_card():
     assert json['blankUrl'] == '/static/angry_blank.jpg'
 
 
+def socket_url(room, user):
+    return f"/rooms/{room['name']}/users/{user['name']}.ws"
+
+
+def test_invalid_websocket_connect():
+    try:
+        client = TestClient(app)
+        room = {"name" : "fake-room"}
+        user = {"name" : "fake-user"}
+        client.websocket_connect(socket_url(room, user))
+        assert False
+    except RuntimeError:
+        assert True
+
+
 def test_websocket_connect():
     client = TestClient(app)
     room = create_room("singleplayer")
     user = create_user(room)
-    with client.websocket_connect(f"/rooms/{room['name']}/users/{user['name']}.ws") as websocket:
+    with client.websocket_connect(socket_url(room, user)) as websocket:
         data = websocket.receive_json()
         assert data == {
-            "type": "USER_JOIN",
-            "data": {
-                "user_id": user['id'],
-                "user_name": user['name'],
-            },
+            "status": 0,
+            "waitingOn": [user.get("id")],
+            "currentUsers": [
+                {
+                    "id": user.get("id"),
+                    "name": user.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
         }
-        websocket.send_json({
-            "type": "ROOM_JOIN",
-            "data": {
-                "room_id": 10,
-                "room_name": "princess.tower",
-                "user_id": 15,
-                "user_name": "princess.wiggles",
-            },
-        })
-        data = websocket.receive_json()
-        assert data == {"error": "read only server"}
+
+
+def test_websocket_with_multiple_connections():
+    assert True
+    return
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user_1 = create_user(room)
+    user_2 = create_user(room)
+    # connect user_1
+    with client.websocket_connect(socket_url(room, user_1)) as websocket_1:
+        data_1 = websocket_1.receive_json()
+        assert data_1 == {
+            "status": 0,
+            "waitingOn": [user_1.get("id")],
+            "currentUsers": [
+                {
+                    "id": user_1.get("id"),
+                    "name": user_1.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
+        }
+        # connect user_2 - first client
+        with client.websocket_connect(socket_url(room, user_2)) as websocket_2:
+            data_1 = websocket_1.receive_json()
+            data_2 = websocket_2.receive_json()
+            assert data_1 == data_2
+            assert data_2 == {
+                "status": 0,
+                "waitingOn": [user_1.get("id"), user_2.get("id")],
+                "currentUsers": [
+                    {
+                        "id": user_1.get("id"),
+                        "name": user_1.get("name"),
+                        "room_id": room.get("id")
+                    }, {
+                        "id": user_2.get("id"),
+                        "name": user_2.get("name"),
+                        "room_id": room.get("id")
+                    }
+                ],
+            }
+            # connect user_2 - second client
+            with client.websocket_connect(socket_url(room, user_2)) as websocket_3:
+                data_1 = websocket_1.receive_json()
+                data_2 = websocket_2.receive_json()
+                data_3 = websocket_3.receive_json()
+                assert data_1 == data_2
+                assert data_2 == data_3
+                assert data_3 == {
+                    "status": 0,
+                    "waitingOn": [user_1.get("id"), user_2.get("id")],
+                    "currentUsers": [
+                        {
+                            "id": user_1.get("id"),
+                            "name": user_1.get("name"),
+                            "room_id": room.get("id")
+                        }, {
+                            "id": user_2.get("id"),
+                            "name": user_2.get("name"),
+                            "room_id": room.get("id")
+                        }
+                    ],
+                }
+                # disconnect user_2 - first client
+                websocket_3.close()
+            data_1 = websocket_1.receive_json()
+            data_2 = websocket_2.receive_json()
+            assert data_1 == data_2
+            assert data_2 == {
+                "status": 0,
+                "waitingOn": [user_1.get("id"), user_2.get("id")],
+                "currentUsers": [
+                    {
+                        "id": user_1.get("id"),
+                        "name": user_1.get("name"),
+                        "room_id": room.get("id")
+                    }, {
+                        "id": user_2.get("id"),
+                        "name": user_2.get("name"),
+                        "room_id": room.get("id")
+                    }
+                ],
+            }
+            # disconnect user_2 - first client
+            websocket_2.close()
+        # client_1 gets update
+        data_1 = websocket_1.receive_json()
+        assert data_1 == {
+            "status": 0,
+            "waitingOn": [user_1.get("id")],
+            "currentUsers": [
+                {
+                    "id": user_1.get("id"),
+                    "name": user_1.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
+        }
+        websocket_1.close()
