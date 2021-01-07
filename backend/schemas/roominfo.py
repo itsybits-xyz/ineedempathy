@@ -2,11 +2,26 @@ from typing import Dict
 from pydantic import BaseModel
 from fastapi import WebSocket
 from . import Room, User, UserInfo
+from enum import Enum
 
+class RoomStatus(str, Enum):
+    WRITING = "WRITING"
+    GUESSING = "GUESSING"
+    END_GAME = "END_GAME"
 
 class RoomInfo(BaseModel):
+    status: RoomStatus = RoomStatus.WRITING
     room: Room
     users: Dict[int, UserInfo]
+
+    def end_game(self):
+        self.status = RoomStatus.END_GAME
+
+    def advance_status(self):
+        if self.status == RoomStatus.WRITING:
+            self.status = RoomStatus.GUESSING
+        elif self.status == RoomStatus.GUESSING:
+            self.status = RoomStatus.WRITING
 
     def empty(self):
         return len(self.users) == 0
@@ -32,7 +47,7 @@ class RoomInfo(BaseModel):
     async def send_update(self):
         await self.broadcast_message(
             {
-                "status": 0,
+                "status": self.status,
                 "waitingOn": [user_id for user_id in self.users.keys()],
                 "currentUsers": self.current_users(),
             }
