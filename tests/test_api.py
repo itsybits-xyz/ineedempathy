@@ -151,7 +151,7 @@ def test_websocket_connect():
     with client.websocket_connect(socket_url(room, user)) as websocket:
         data = websocket.receive_json()
         assert data == {
-            "status": 0,
+            "status": "WRITING",
             "waitingOn": [user.get("id")],
             "currentUsers": [
                 {
@@ -172,7 +172,7 @@ def test_websocket_with_multiple_connections():
     with client.websocket_connect(socket_url(room, user_1)) as websocket_1:
         data_1 = websocket_1.receive_json()
         assert data_1 == {
-            "status": 0,
+            "status": "WRITING",
             "waitingOn": [user_1.get("id")],
             "currentUsers": [
                 {
@@ -188,7 +188,7 @@ def test_websocket_with_multiple_connections():
             data_2 = websocket_2.receive_json()
             assert data_1 == data_2
             assert data_2 == {
-                "status": 0,
+                "status": "WRITING",
                 "waitingOn": [user_1.get("id"), user_2.get("id")],
                 "currentUsers": [
                     {
@@ -210,7 +210,7 @@ def test_websocket_with_multiple_connections():
                 assert data_1 == data_2
                 assert data_2 == data_3
                 assert data_3 == {
-                    "status": 0,
+                    "status": "WRITING",
                     "waitingOn": [user_1.get("id"), user_2.get("id")],
                     "currentUsers": [
                         {
@@ -230,7 +230,7 @@ def test_websocket_with_multiple_connections():
             data_2 = websocket_2.receive_json()
             assert data_1 == data_2
             assert data_2 == {
-                "status": 0,
+                "status": "WRITING",
                 "waitingOn": [user_1.get("id"), user_2.get("id")],
                 "currentUsers": [
                     {
@@ -249,7 +249,7 @@ def test_websocket_with_multiple_connections():
         # client_1 gets update
         data_1 = websocket_1.receive_json()
         assert data_1 == {
-            "status": 0,
+            "status": "WRITING",
             "waitingOn": [user_1.get("id")],
             "currentUsers": [
                 {

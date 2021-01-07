@@ -1,4 +1,4 @@
-from backend.schemas import User, Room, RoomInfo, RoomType
+from backend.schemas import User, Room, RoomInfo, RoomType, RoomStatus
 from datetime import datetime
 
 
@@ -42,3 +42,22 @@ def test_empty():
     assert roominfo.empty() == False
     roominfo.remove_user(user, 2)
     assert roominfo.empty() == True
+
+
+def test_advance_room_state():
+    room = mock_room()
+    user = mock_user()
+    roominfo = RoomInfo(
+        room=room,
+        users={},
+    )
+    for x in range(6):
+        assert roominfo.status == RoomStatus.WRITING
+        roominfo.advance_status()
+        assert roominfo.status == RoomStatus.GUESSING
+        roominfo.advance_status()
+    roominfo.end_game()
+    assert roominfo.status == RoomStatus.END_GAME
+    roominfo.advance_status()
+    assert roominfo.status == RoomStatus.END_GAME
+

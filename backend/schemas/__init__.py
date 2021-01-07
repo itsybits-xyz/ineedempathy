@@ -4,4 +4,4 @@ from .story import Story, StoryCreate, StoryInDB
 from .guess import Guess, GuessCreate, GuessInDB
 from .card import Card, CardCreate, CardInDB
 from .userinfo import UserInfo
-from .roominfo import RoomInfo
+from .roominfo import RoomInfo, RoomStatus
