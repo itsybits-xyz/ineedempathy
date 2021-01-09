@@ -2,12 +2,15 @@ from typing import Dict
 from pydantic import BaseModel
 from fastapi import WebSocket
 from . import Room, User, UserInfo
+from ..utils import after
 from enum import Enum
+
 
 class RoomStatus(str, Enum):
     WRITING = "WRITING"
     GUESSING = "GUESSING"
     END_GAME = "END_GAME"
+
 
 class RoomInfo(BaseModel):
     status: RoomStatus = RoomStatus.WRITING
@@ -31,6 +34,10 @@ class RoomInfo(BaseModel):
             return self.users[user_id]
         return None
 
+    def update_waiting_on(self):
+        return
+
+    @after("update_waiting_on")
     def add_user(self, user: User, socket: WebSocket):
         if user.id not in self.users:
             self.users[user.id] = UserInfo(
@@ -38,6 +45,7 @@ class RoomInfo(BaseModel):
             )
         self.users[user.id].add_socket(socket)
 
+    @after("update_waiting_on")
     def remove_user(self, user: User, socket: WebSocket):
         if user.id in self.users:
             self.users[user.id].remove_socket(socket)
