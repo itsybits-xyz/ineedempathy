@@ -46,9 +46,9 @@ def create_guess(db: Session, room_id: int, story_id: int, obj_in: GuessCreate) 
     return db_obj
 
 
-def create_story(db: Session, room_id: int, obj_in: StoryCreate) -> Story:
+def create_story(db: Session, room: Room, obj_in: StoryCreate) -> Story:
     db_obj = Story(
-        room_id=room_id,
+        room_id=room.id,
         user_id=obj_in.user_id,
         card_id=obj_in.card_id,
         description=obj_in.description,

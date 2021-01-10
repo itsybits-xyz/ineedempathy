@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from backend.main import app
 from backend.deps import get_db
 from backend.database import Base
+import pytest
 
 
 # Setup a testing db
@@ -76,22 +77,57 @@ def test_create_user():
     assert type(user['name']) == str
 
 
-def test_create_story():
-    response = test_client.post(
-        "/rooms/1/story",
-        json={
-            "user_id": 1,
-            "card_id": 10,
-            "description": 'meow'
-        },
-    )
-    assert response.status_code == 201
-    json = response.json()
-    assert len(list(json.keys())) == 5
-    assert json['roomId'] == 1
-    assert json['userId'] == 1
-    assert json['cardId'] == 10
-    assert json['description'] == 'meow'
+def test_create_story_no_users_connected():
+    room = create_room("singleplayer")
+    with pytest.raises(RuntimeError):
+        test_client.post(
+            f"/rooms/{room.get('name')}/story",
+            json={
+                "user_id": 1,
+                "card_id": 10,
+                "description": 'meow'
+            },
+        )
+
+
+def test_create_story_with_users_connected():
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user = create_user(room)
+    with client.websocket_connect(socket_url(room, user)) as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "status": "WRITING",
+            "completed": [],
+            "currentUsers": [
+                {
+                    "id": user.get("id"),
+                    "name": user.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
+        }
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/story",
+            json={
+                "user_id": user.get("id"),
+                "card_id": 1,
+                "description": 'meow'
+            },
+        )
+        assert response.status_code == 201
+        data = websocket.receive_json()
+        assert data == {
+            "status": "GUESSING",
+            "completed": [],
+            "currentUsers": [
+                {
+                    "id": user.get("id"),
+                    "name": user.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
+        }
 
 
 def test_create_guess():
@@ -152,7 +188,7 @@ def test_websocket_connect():
         data = websocket.receive_json()
         assert data == {
             "status": "WRITING",
-            "waitingOn": [user.get("id")],
+            "completed": [],
             "currentUsers": [
                 {
                     "id": user.get("id"),
@@ -173,7 +209,7 @@ def test_websocket_with_multiple_connections():
         data_1 = websocket_1.receive_json()
         assert data_1 == {
             "status": "WRITING",
-            "waitingOn": [user_1.get("id")],
+            "completed": [],
             "currentUsers": [
                 {
                     "id": user_1.get("id"),
@@ -189,7 +225,7 @@ def test_websocket_with_multiple_connections():
             assert data_1 == data_2
             assert data_2 == {
                 "status": "WRITING",
-                "waitingOn": [user_1.get("id"), user_2.get("id")],
+                "completed": [],
                 "currentUsers": [
                     {
                         "id": user_1.get("id"),
@@ -211,7 +247,7 @@ def test_websocket_with_multiple_connections():
                 assert data_2 == data_3
                 assert data_3 == {
                     "status": "WRITING",
-                    "waitingOn": [user_1.get("id"), user_2.get("id")],
+                    "completed": [],
                     "currentUsers": [
                         {
                             "id": user_1.get("id"),
@@ -231,7 +267,7 @@ def test_websocket_with_multiple_connections():
             assert data_1 == data_2
             assert data_2 == {
                 "status": "WRITING",
-                "waitingOn": [user_1.get("id"), user_2.get("id")],
+                "completed": [],
                 "currentUsers": [
                     {
                         "id": user_1.get("id"),
@@ -250,7 +286,7 @@ def test_websocket_with_multiple_connections():
         data_1 = websocket_1.receive_json()
         assert data_1 == {
             "status": "WRITING",
-            "waitingOn": [user_1.get("id")],
+            "completed": [],
             "currentUsers": [
                 {
                     "id": user_1.get("id"),

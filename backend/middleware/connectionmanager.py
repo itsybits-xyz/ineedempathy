@@ -1,5 +1,5 @@
 from typing import List, Dict
-from ..schemas import User, Room, RoomInfo
+from ..schemas import User, Room, RoomInfo, Story
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -36,6 +36,15 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
+    async def add_to_done_list(self, room: Room, story: Story):
+        room_info = self._rooms.get(room.id)
+        if room_info is None:
+            raise RuntimeError(f"Room '{room.name}' does not exist!")
+        if story.user_id not in room_info.users:
+            raise RuntimeError("Please join the room")
+        room_info.add_to_done_list(story.user_id)
+        await room_info.send_update()
+
     def add_user(self, room: Room, user: User, socket: WebSocket):
         if room.id not in self._rooms:
             self._rooms[room.id] = RoomInfo(
@@ -48,12 +57,12 @@ class ConnectionManager:
         )
 
     def remove_user(self, room: Room, user: User, socket: WebSocket):
-        roomInfo = self._rooms.get(room.id)
-        roomInfo.remove_user(user, socket)
-        if roomInfo is None or roomInfo.empty():
+        room_info = self._rooms.get(room.id)
+        room_info.remove_user(user, socket)
+        if room_info is None or room_info.empty():
             del self._rooms[room.id]
 
     async def send_update(self, room: Room):
-        roomInfo = self._rooms.get(room.id)
-        if roomInfo is not None:
-            await roomInfo.send_update()
+        room_info = self._rooms.get(room.id)
+        if room_info is not None:
+            await room_info.send_update()
