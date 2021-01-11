@@ -84,6 +84,9 @@ async def create_guess(
     room = crud.get_room_by_name(db, room_name)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
+    story = crud.get_story_by_id(db, story_id)
+    if story is None:
+        raise HTTPException(status_code=404, detail="Story not found")
     guess = crud.create_guess(db, room.id, story_id, guess)
     await connection_manager.add_to_done_list(room, guess.user_id)
     return guess

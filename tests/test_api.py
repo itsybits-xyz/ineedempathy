@@ -111,22 +111,52 @@ def test_create_story_with_users_connected():
         }
 
 
-def test_create_guess_with_no_users():
-    room = create_room("singleplayer")
-    with pytest.raises(RuntimeError) as e:
-        response = test_client.post(
-            f"/rooms/{room.get('name')}/story/1/guess",
-            json={"user_id": 1, "card_id": 10},
-        )
-    assert f"Room '{room['name']}' does not exist!" in str(e)
-
-
 def test_create_guess_with_no_stories():
-    return
     client = TestClient(app)
     room = create_room("singleplayer")
     user = create_user(room)
     with client.websocket_connect(socket_url(room, user)) as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "status": "WRITING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/story/1/guess",
+            json={"user_id": 1, "card_id": 10},
+        )
+        assert response.status_code == 404
+        json = response.json()
+        assert json["detail"] == "Story not found"
+
+
+def test_create_guess_with_users_and_stories():
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user = create_user(room)
+    with client.websocket_connect(socket_url(room, user)) as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "status": "WRITING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/story",
+            json={"user_id": user.get("id"), "card_id": 1, "description": "meow"},
+        )
+        assert response.status_code == 201
+        data = websocket.receive_json()
+        assert data == {
+            "status": "GUESSING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/story/1/guess",
+            json={"user_id": 1, "card_id": 10},
+        )
         assert response.status_code == 201
         json = response.json()
         assert len(list(json.keys())) == 5

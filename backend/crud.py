@@ -22,11 +22,12 @@ def get_users(db: Session, skip: int = 0, limit: int = 10) -> List[User]:
     return db.query(User).offset(skip).limit(limit).all()
 
 
+def get_story_by_id(db: Session, story_id: int) -> Optional[Story]:
+    return db.query(Story).filter(Story.id == story_id).first()
+
+
 def create_card(db: Session, card: CardCreate) -> Card:
-    db_obj = Card(
-        name=card.name,
-        type=card.type
-    )
+    db_obj = Card(name=card.name, type=card.type)
     db.add(db_obj)
     db.commit()
     db.refresh(db_obj)
@@ -60,10 +61,7 @@ def create_story(db: Session, room: Room, obj_in: StoryCreate) -> Story:
 
 
 def create_user(db: Session, room_id: int) -> User:
-    db_obj = User(
-        room_id=room_id,
-        name=generate_slug(3)
-    )
+    db_obj = User(room_id=room_id, name=generate_slug(3))
     db.add(db_obj)
     db.commit()
     db.refresh(db_obj)
@@ -83,10 +81,7 @@ def get_room(db: Session, room_id: int) -> Room:
 
 
 def create_room(db: Session, room: RoomCreate) -> Room:
-    db_room = Room(
-        type=room.type,
-        name=generate_slug(4)
-    )
+    db_room = Room(type=room.type, name=generate_slug(4))
     db.add(db_room)
     db.commit()
     db.refresh(db_room)
