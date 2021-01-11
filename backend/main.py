@@ -76,7 +76,7 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
 
 @app.post("/rooms/{room_name}/story/{story_id}/guess", status_code=201, response_model=Guess)
 async def create_guess(
-    room_name: str, story_id: int, guess: GuessCreate, request: Request, db: Session = Depends(get_db)
+    room_name: str, story_id: int, guess_create: GuessCreate, request: Request, db: Session = Depends(get_db)
 ) -> models.Guess:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
     if connection_manager is None:
@@ -84,11 +84,14 @@ async def create_guess(
     room = crud.get_room_by_name(db, room_name)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
-    story = crud.get_story_by_id(db, story_id)
+    story = crud.get_story_by_id(db, story_id)  # , room.id)
     if story is None:
         raise HTTPException(status_code=404, detail="Story not found")
-    guess = crud.create_guess(db, room.id, story_id, guess)
-    await connection_manager.add_to_done_list(room, guess.user_id)
+    guess = crud.create_guess(db, room.id, story_id, guess_create)
+    try:
+        await connection_manager.add_to_done_list(room, guess.user_id)
+    except RuntimeError:
+        raise HTTPException(status_code=404)
     return guess
 
 
@@ -103,7 +106,10 @@ async def create_story(
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
     story = crud.create_story(db, room, story_create)
-    await connection_manager.add_to_done_list(room, story_create.user_id)
+    try:
+        await connection_manager.add_to_done_list(room, story_create.user_id)
+    except RuntimeError:
+        raise HTTPException(status_code=404)
     return story
 
 

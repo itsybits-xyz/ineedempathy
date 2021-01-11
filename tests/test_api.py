@@ -3,6 +3,8 @@ from typing import Generator, Dict
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from fastapi import HTTPException
+from starlette.responses import JSONResponse
 
 from backend.main import app
 from backend.deps import get_db
@@ -79,12 +81,11 @@ def test_create_user():
 
 def test_create_story_no_users_connected():
     room = create_room("singleplayer")
-    with pytest.raises(RuntimeError) as e:
-        test_client.post(
-            f"/rooms/{room.get('name')}/story",
-            json={"user_id": 1, "card_id": 10, "description": "meow"},
-        )
-    assert f"Room '{room['name']}' does not exist!" in str(e)
+    response = test_client.post(
+        f"/rooms/{room.get('name')}/story",
+        json={"user_id": 1, "card_id": 10, "description": "meow"},
+    )
+    assert response.status_code == 404
 
 
 def test_create_story_with_users_connected():
@@ -112,19 +113,43 @@ def test_create_story_with_users_connected():
 
 
 def test_create_story_for_non_existent_user():
-    # If we post a story with a user_id but that user doesn't belong to the
-    # room, we should fail.
-    assert False
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user = create_user(room)
+    with client.websocket_connect(socket_url(room, user)) as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "status": "WRITING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
+        story = test_client.post(
+            f"/rooms/{room.get('name')}/story",
+            json={"user_id": user.get("id"), "card_id": 1, "description": "meow"},
+        )
+        assert story.status_code == 201
+        data = websocket.receive_json()
+        assert data == {
+            "status": "GUESSING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
+        BAD_USER_ID = user.get("id") * 999
+        guess = test_client.post(
+            f"/rooms/{room.get('name')}/story/1/guess",
+            json={"user_id": BAD_USER_ID, "card_id": 10},
+        )
+        assert guess.status_code == 404
 
 
 def test_create_guess_with_no_users():
     room = create_room("singleplayer")
-    with pytest.raises(RuntimeError) as e:
-        test_client.post(
-            f"/rooms/{room.get('name')}/story/1/guess",
-            json={"user_id": 1, "card_id": 10},
-        )
-    assert f"Room '{room['name']}' does not exist!" in str(e)
+    response = test_client.post(
+        f"/rooms/{room.get('name')}/story/1/guess",
+        json={"user_id": 1, "card_id": 10},
+    )
+    assert response.status_code == 404
+    assert response.content.decode() == '{"detail":"Story not found"}'
 
 
 def test_create_guess_with_no_stories():
@@ -158,28 +183,28 @@ def test_create_guess_with_users_and_stories():
             "completed": [],
             "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
-        response = test_client.post(
+        story = test_client.post(
             f"/rooms/{room.get('name')}/story",
             json={"user_id": user.get("id"), "card_id": 1, "description": "meow"},
         )
-        assert response.status_code == 201
+        assert story.status_code == 201
         data = websocket.receive_json()
         assert data == {
             "status": "GUESSING",
             "completed": [],
             "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
-        response = test_client.post(
+        guess = test_client.post(
             f"/rooms/{room.get('name')}/story/1/guess",
-            json={"user_id": 1, "card_id": 10},
+            json={"user_id": user.get("id"), "card_id": 10},
         )
-        assert response.status_code == 201
-        json = response.json()
-        assert len(list(json.keys())) == 5
-        assert json["room_id"] == 1
-        assert json["user_id"] == 1
-        assert json["card_id"] == 10
-        assert json["story_id"] == 1
+        assert guess.status_code == 201
+        guess = guess.json()
+        assert len(list(guess.keys())) == 5
+        assert guess["room_id"] == 1
+        assert guess["user_id"] == 1
+        assert guess["card_id"] == 10
+        assert guess["story_id"] == 1
         data = websocket.receive_json()
         assert data == {
             "status": "WRITING",
