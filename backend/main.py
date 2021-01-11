@@ -74,9 +74,19 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
     return room
 
 
-@app.post("/rooms/{room_id}/story/{story_id}/guess", status_code=201, response_model=Guess)
-def create_guess(room_id: int, story_id: int, guess: GuessCreate, db: Session = Depends(get_db)) -> models.Guess:
-    return crud.create_guess(db, room_id, story_id, guess)
+@app.post("/rooms/{room_name}/story/{story_id}/guess", status_code=201, response_model=Guess)
+async def create_guess(
+    room_name: str, story_id: int, guess: GuessCreate, request: Request, db: Session = Depends(get_db)
+) -> models.Guess:
+    connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
+    if connection_manager is None:
+        raise RuntimeError("Global `connection_manager` instance unavailable!")
+    room = crud.get_room_by_name(db, room_name)
+    if room is None:
+        raise HTTPException(status_code=404, detail="Room not found")
+    guess = crud.create_guess(db, room.id, story_id, guess)
+    await connection_manager.add_to_done_list(room, guess.user_id)
+    return guess
 
 
 @app.post("/rooms/{room_name}/story", status_code=201, response_model=Story)

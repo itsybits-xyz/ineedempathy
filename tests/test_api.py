@@ -111,18 +111,29 @@ def test_create_story_with_users_connected():
         }
 
 
-def test_create_guess():
-    response = test_client.post(
-        "/rooms/1/story/1/guess",
-        json={"user_id": 1, "card_id": 10},
-    )
-    assert response.status_code == 201
-    json = response.json()
-    assert len(list(json.keys())) == 5
-    assert json["room_id"] == 1
-    assert json["user_id"] == 1
-    assert json["card_id"] == 10
-    assert json["story_id"] == 1
+def test_create_guess_with_no_users():
+    room = create_room("singleplayer")
+    with pytest.raises(RuntimeError) as e:
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/story/1/guess",
+            json={"user_id": 1, "card_id": 10},
+        )
+    assert f"Room '{room['name']}' does not exist!" in str(e)
+
+
+def test_create_guess_with_no_stories():
+    return
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user = create_user(room)
+    with client.websocket_connect(socket_url(room, user)) as websocket:
+        assert response.status_code == 201
+        json = response.json()
+        assert len(list(json.keys())) == 5
+        assert json["room_id"] == 1
+        assert json["user_id"] == 1
+        assert json["card_id"] == 10
+        assert json["story_id"] == 1
 
 
 def test_create_card():
