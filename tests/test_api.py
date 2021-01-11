@@ -79,7 +79,7 @@ def test_create_user():
 
 def test_create_story_no_users_connected():
     room = create_room("singleplayer")
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError) as e:
         test_client.post(
             f"/rooms/{room.get('name')}/story",
             json={
@@ -88,6 +88,7 @@ def test_create_story_no_users_connected():
                 "description": 'meow'
             },
         )
+    assert str(e) == "Please join the room"
 
 
 def test_create_story_with_users_connected():
