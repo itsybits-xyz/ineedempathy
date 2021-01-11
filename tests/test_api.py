@@ -111,6 +111,22 @@ def test_create_story_with_users_connected():
         }
 
 
+def test_create_story_for_non_existent_user():
+    # If we post a story with a user_id but that user doesn't belong to the
+    # room, we should fail.
+    assert False
+
+
+def test_create_guess_with_no_users():
+    room = create_room("singleplayer")
+    with pytest.raises(RuntimeError) as e:
+        test_client.post(
+            f"/rooms/{room.get('name')}/story/1/guess",
+            json={"user_id": 1, "card_id": 10},
+        )
+    assert f"Room '{room['name']}' does not exist!" in str(e)
+
+
 def test_create_guess_with_no_stories():
     client = TestClient(app)
     room = create_room("singleplayer")
@@ -164,6 +180,12 @@ def test_create_guess_with_users_and_stories():
         assert json["user_id"] == 1
         assert json["card_id"] == 10
         assert json["story_id"] == 1
+        data = websocket.receive_json()
+        assert data == {
+            "status": "WRITING",
+            "completed": [],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+        }
 
 
 def test_create_card():
