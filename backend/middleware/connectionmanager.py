@@ -1,5 +1,5 @@
 from typing import List, Dict
-from ..schemas import User, Room, RoomInfo, Story
+from ..schemas import User, Room, RoomInfo
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -45,15 +45,10 @@ class ConnectionManager:
         room_info.add_to_done_list(user_id)
         await room_info.send_update()
 
-    def add_room(self, room: Room):
-        if room.id in self._rooms:
-            raise RuntimeError(f"Room {room.id} already exists")
-        self._rooms[room.id] = RoomInfo(room=room, users={})
-
     def add_user(self, room: Room, user: User, socket: WebSocket):
         if room.id not in self._rooms:
             self._rooms[room.id] = RoomInfo(room=room, users={})
-        self._rooms[room.id].add_user( user=user, socket=socket)
+        self._rooms[room.id].add_user(user=user, socket=socket)
 
     def remove_user(self, room: Room, user: User, socket: WebSocket):
         room_info = self._rooms.get(room.id)

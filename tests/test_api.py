@@ -38,7 +38,7 @@ def test_root():
     rv = test_client.get("/")
     assert rv.status_code == 200
     assert rv.headers["content-type"] == "application/json"
-    assert rv.json()['msg'] == "Check /docs"
+    assert rv.json()["msg"] == "Check /docs"
 
 
 def create_room(type: str):
@@ -62,19 +62,19 @@ def create_user(room: Dict):
 def test_create_room():
     room = create_room("singleplayer")
     assert len(list(room.keys())) == 4
-    assert type(room['id']) == int
-    assert type(room['name']) == str
-    assert room['type'] == 'singleplayer'
-    assert type(room['createdAt']) == str
+    assert type(room["id"]) == int
+    assert type(room["name"]) == str
+    assert room["type"] == "singleplayer"
+    assert type(room["createdAt"]) == str
 
 
 def test_create_user():
     room = create_room("singleplayer")
     user = create_user(room)
     assert len(list(user.keys())) == 3
-    assert user['roomId'] == room['id']
-    assert type(user['id']) == int
-    assert type(user['name']) == str
+    assert user["roomId"] == room["id"]
+    assert type(user["id"]) == int
+    assert type(user["name"]) == str
 
 
 def test_create_story_no_users_connected():
@@ -82,13 +82,9 @@ def test_create_story_no_users_connected():
     with pytest.raises(RuntimeError) as e:
         test_client.post(
             f"/rooms/{room.get('name')}/story",
-            json={
-                "user_id": 1,
-                "card_id": 10,
-                "description": 'meow'
-            },
+            json={"user_id": 1, "card_id": 10, "description": "meow"},
         )
-    assert str(e) == "Please join the room"
+    assert f"Room '{room['name']}' does not exist!" in str(e)
 
 
 def test_create_story_with_users_connected():
@@ -100,70 +96,48 @@ def test_create_story_with_users_connected():
         assert data == {
             "status": "WRITING",
             "completed": [],
-            "currentUsers": [
-                {
-                    "id": user.get("id"),
-                    "name": user.get("name"),
-                    "room_id": room.get("id")
-                }
-            ],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
         response = test_client.post(
             f"/rooms/{room.get('name')}/story",
-            json={
-                "user_id": user.get("id"),
-                "card_id": 1,
-                "description": 'meow'
-            },
+            json={"user_id": user.get("id"), "card_id": 1, "description": "meow"},
         )
         assert response.status_code == 201
         data = websocket.receive_json()
         assert data == {
             "status": "GUESSING",
             "completed": [],
-            "currentUsers": [
-                {
-                    "id": user.get("id"),
-                    "name": user.get("name"),
-                    "room_id": room.get("id")
-                }
-            ],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
 
 
 def test_create_guess():
     response = test_client.post(
         "/rooms/1/story/1/guess",
-        json={
-            "user_id": 1,
-            "card_id": 10
-        },
+        json={"user_id": 1, "card_id": 10},
     )
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 5
-    assert json['room_id'] == 1
-    assert json['user_id'] == 1
-    assert json['card_id'] == 10
-    assert json['story_id'] == 1
+    assert json["room_id"] == 1
+    assert json["user_id"] == 1
+    assert json["card_id"] == 10
+    assert json["story_id"] == 1
 
 
 def test_create_card():
     response = test_client.post(
         "/cards",
-        json={
-            "name": 'angry',
-            "type": 'feeling'
-        },
+        json={"name": "angry", "type": "feeling"},
     )
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 5
-    assert json['id'] == 1
-    assert json['name'] == 'angry'
-    assert json['type'] == 'feeling'
-    assert json['textUrl'] == '/static/angry.jpg'
-    assert json['blankUrl'] == '/static/angry_blank.jpg'
+    assert json["id"] == 1
+    assert json["name"] == "angry"
+    assert json["type"] == "feeling"
+    assert json["textUrl"] == "/static/angry.jpg"
+    assert json["blankUrl"] == "/static/angry_blank.jpg"
 
 
 def socket_url(room, user):
@@ -173,8 +147,8 @@ def socket_url(room, user):
 def test_invalid_websocket_connect():
     try:
         client = TestClient(app)
-        room = {"name" : "fake-room"}
-        user = {"name" : "fake-user"}
+        room = {"name": "fake-room"}
+        user = {"name": "fake-user"}
         client.websocket_connect(socket_url(room, user))
         assert False
     except RuntimeError:
@@ -190,13 +164,7 @@ def test_websocket_connect():
         assert data == {
             "status": "WRITING",
             "completed": [],
-            "currentUsers": [
-                {
-                    "id": user.get("id"),
-                    "name": user.get("name"),
-                    "room_id": room.get("id")
-                }
-            ],
+            "currentUsers": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
 
 
@@ -211,13 +179,7 @@ def test_websocket_with_multiple_connections():
         assert data_1 == {
             "status": "WRITING",
             "completed": [],
-            "currentUsers": [
-                {
-                    "id": user_1.get("id"),
-                    "name": user_1.get("name"),
-                    "room_id": room.get("id")
-                }
-            ],
+            "currentUsers": [{"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")}],
         }
         # connect user_2 - first client
         with client.websocket_connect(socket_url(room, user_2)) as websocket_2:
@@ -228,15 +190,8 @@ def test_websocket_with_multiple_connections():
                 "status": "WRITING",
                 "completed": [],
                 "currentUsers": [
-                    {
-                        "id": user_1.get("id"),
-                        "name": user_1.get("name"),
-                        "room_id": room.get("id")
-                    }, {
-                        "id": user_2.get("id"),
-                        "name": user_2.get("name"),
-                        "room_id": room.get("id")
-                    }
+                    {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                    {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
                 ],
             }
             # connect user_2 - second client
@@ -250,15 +205,8 @@ def test_websocket_with_multiple_connections():
                     "status": "WRITING",
                     "completed": [],
                     "currentUsers": [
-                        {
-                            "id": user_1.get("id"),
-                            "name": user_1.get("name"),
-                            "room_id": room.get("id")
-                        }, {
-                            "id": user_2.get("id"),
-                            "name": user_2.get("name"),
-                            "room_id": room.get("id")
-                        }
+                        {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                        {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
                     ],
                 }
                 # disconnect user_2 - first client
@@ -270,15 +218,8 @@ def test_websocket_with_multiple_connections():
                 "status": "WRITING",
                 "completed": [],
                 "currentUsers": [
-                    {
-                        "id": user_1.get("id"),
-                        "name": user_1.get("name"),
-                        "room_id": room.get("id")
-                    }, {
-                        "id": user_2.get("id"),
-                        "name": user_2.get("name"),
-                        "room_id": room.get("id")
-                    }
+                    {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                    {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
                 ],
             }
             # disconnect user_2 - first client
@@ -288,12 +229,6 @@ def test_websocket_with_multiple_connections():
         assert data_1 == {
             "status": "WRITING",
             "completed": [],
-            "currentUsers": [
-                {
-                    "id": user_1.get("id"),
-                    "name": user_1.get("name"),
-                    "room_id": room.get("id")
-                }
-            ],
+            "currentUsers": [{"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")}],
         }
         websocket_1.close()
