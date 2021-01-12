@@ -1,5 +1,5 @@
 from typing import List, Dict
-from ..schemas import User, Room, RoomInfo
+from ..schemas import User, Room, RoomInfo, Story, Guess
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -36,14 +36,19 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    async def add_to_done_list(self, room: Room, user_id: int):
+    def add_story(self, room: Room, story: Story):
         room_info = self._rooms.get(room.id)
         if room_info is None:
             raise RuntimeError(f"Room '{room.name}' does not exist!")
-        if user_id not in room_info.users:
-            raise RuntimeError("Please join the room")
-        room_info.add_to_done_list(user_id)
-        await room_info.send_update()
+        if story.room_id != room.id:
+            raise RuntimeError(f"Story '{story.id}' does not belong to {room.name}!")
+        return room_info.add_story(story)
+
+    def add_guess(self, room: Room, story: Story, guess: Guess):
+        room_info = self._rooms.get(room.id)
+        if room_info is None:
+            raise RuntimeError(f"Room '{room.name}' does not exist!")
+        return room_info.add_guess(story, guess)
 
     def add_user(self, room: Room, user: User, socket: WebSocket):
         if room.id not in self._rooms:

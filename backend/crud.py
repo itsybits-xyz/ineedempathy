@@ -34,10 +34,10 @@ def create_card(db: Session, card: CardCreate) -> Card:
     return db_obj
 
 
-def create_guess(db: Session, room_id: int, story_id: int, obj_in: GuessCreate) -> Guess:
+def create_guess(db: Session, room: Room, story: Story, obj_in: GuessCreate) -> Guess:
     db_obj = Guess(
-        room_id=room_id,
-        story_id=story_id,
+        room_id=room.id,
+        story_id=story.id,
         user_id=obj_in.user_id,
         card_id=obj_in.card_id,
     )

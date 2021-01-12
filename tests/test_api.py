@@ -136,7 +136,7 @@ def test_create_story_for_non_existent_user():
         }
         BAD_USER_ID = user.get("id") * 999
         guess = test_client.post(
-            f"/rooms/{room.get('name')}/story/1/guess",
+            f"/rooms/{room.get('name')}/story/{story.get('id')}/guess",
             json={"user_id": BAD_USER_ID, "card_id": 10},
         )
         assert guess.status_code == 404

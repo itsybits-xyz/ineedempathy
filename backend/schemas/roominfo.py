@@ -1,7 +1,7 @@
 from typing import Dict, List
 from pydantic import BaseModel
 from fastapi import WebSocket
-from . import Room, User, UserInfo
+from . import Story, Guess, Room, User, UserInfo
 from ..utils import after
 from enum import Enum
 
@@ -17,23 +17,35 @@ class RoomInfo(BaseModel):
     room: Room
     users: Dict[int, UserInfo]
     completed: List[int] = []
+    stories: List[Story] = []
+    guesses: List[Guess] = []
 
-    def add_to_done_list(self, user_id: int):
-        self.completed.append(user_id)
-        left_over = set(self.users.keys()) - set(self.completed)
-        if len(left_over) == 0:
-            self.advance_status()
+    async def add_guess(self, story: Story, guess: Guess):
+        self.guesses.append(story)
+        await self.calculate_status()
 
-    def end_game(self):
+    async def add_story(self, story: Story):
+        self.stories.append(story)
+        await self.calculate_status()
+
+    async def calculate_status(self):
+        self.advance_status()
+        await self.send_update()
+
+    def clear_cache(self):
         self.completed.clear()
+        self.stories.clear()
+        self.guesses.clear()
+
+    @after("clear_cache")
+    def end_game(self):
         self.status = RoomStatus.END_GAME
 
+    @after("clear_cache")
     def advance_status(self):
         if self.status == RoomStatus.WRITING:
-            self.completed.clear()
             self.status = RoomStatus.GUESSING
         elif self.status == RoomStatus.GUESSING:
-            self.completed.clear()
             self.status = RoomStatus.WRITING
 
     def empty(self):
