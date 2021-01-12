@@ -22,15 +22,29 @@ class RoomInfo(BaseModel):
 
     async def add_guess(self, story: Story, guess: Guess):
         self.guesses.append(story)
-        await self.calculate_status()
+        self.calculate_status()
+        await self.send_update()
 
     async def add_story(self, story: Story):
         self.stories.append(story)
-        await self.calculate_status()
-
-    async def calculate_status(self):
-        self.advance_status()
+        self.calculate_status()
         await self.send_update()
+
+    def calculate_completed(self):
+        self.completed.clear()
+        for item in (self.stories if self.status == RoomStatus.WRITING else self.guesses):
+            self.completed.append(item.user_id)
+
+    def collected_all(self):
+        if self.status == RoomStatus.WRITING:
+            return len(self.stories) == len(self.completed)
+        elif self.status == RoomStatus.GUESSING:
+            return len(self.guesses) == len(self.completed)
+
+    def calculate_status(self):
+        self.calculate_completed()
+        if self.collected_all():
+            self.advance_status()
 
     def clear_cache(self):
         self.completed.clear()
