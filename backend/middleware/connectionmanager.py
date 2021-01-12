@@ -36,19 +36,19 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    def add_story(self, room: Room, story: Story):
+    async def add_story(self, room: Room, story: Story):
         room_info = self._rooms.get(room.id)
         if room_info is None:
-            raise RuntimeError(f"Room '{room.name}' does not exist!")
+            return
         if story.room_id != room.id:
-            raise RuntimeError(f"Story '{story.id}' does not belong to {room.name}!")
-        return room_info.add_story(story)
+            return
+        await room_info.add_story(story)
 
-    def add_guess(self, room: Room, story: Story, guess: Guess):
+    async def add_guess(self, room: Room, story: Story, guess: Guess):
         room_info = self._rooms.get(room.id)
         if room_info is None:
-            raise RuntimeError(f"Room '{room.name}' does not exist!")
-        return room_info.add_guess(story, guess)
+            return
+        await room_info.add_guess(story, guess)
 
     def add_user(self, room: Room, user: User, socket: WebSocket):
         if room.id not in self._rooms:

@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 
 from fastapi.staticfiles import StaticFiles
 from fastapi import (
+    BackgroundTasks,
     Depends,
     FastAPI,
     HTTPException,
@@ -96,8 +97,12 @@ async def create_guess(
 
 
 @app.post("/rooms/{room_name}/story", status_code=201, response_model=Story)
-async def create_story(
-    room_name: str, story_create: StoryCreate, request: Request, db: Session = Depends(get_db)
+def create_story(
+    room_name: str,
+    story_create: StoryCreate,
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
 ) -> models.Story:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
     if connection_manager is None:
@@ -106,10 +111,7 @@ async def create_story(
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
     story = crud.create_story(db, room, story_create)
-    try:
-        await connection_manager.add_story(room, story)
-    except RuntimeError:
-        raise HTTPException(status_code=404)
+    background_tasks.add_task(connection_manager.add_story, room, story)
     return story
 
 

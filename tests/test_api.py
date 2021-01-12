@@ -85,7 +85,8 @@ def test_create_story_no_users_connected():
         f"/rooms/{room.get('name')}/story",
         json={"user_id": 1, "card_id": 10, "description": "meow"},
     )
-    assert response.status_code == 404
+    # Thank you for your donation
+    assert response.status_code == 201
 
 
 def test_create_story_with_users_connected():
