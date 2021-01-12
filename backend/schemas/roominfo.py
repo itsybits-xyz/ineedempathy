@@ -16,38 +16,39 @@ class RoomInfo(BaseModel):
     status: RoomStatus = RoomStatus.WRITING
     room: Room
     users: Dict[int, UserInfo]
-    completed: List[int] = []
     stories: List[Story] = []
     guesses: List[Guess] = []
 
+    @property
+    def completed(self) -> List[int]:
+        complete: List[int] = []
+        for item in (self.stories if self.status == RoomStatus.WRITING else self.guesses):
+            complete.append(item.user_id)
+        return complete
+
     async def add_guess(self, story: Story, guess: Guess):
         self.guesses.append(story)
-        self.calculate_status()
         await self.send_update()
 
     async def add_story(self, story: Story):
         self.stories.append(story)
-        self.calculate_status()
         await self.send_update()
 
-    def calculate_completed(self):
-        self.completed.clear()
-        for item in (self.stories if self.status == RoomStatus.WRITING else self.guesses):
-            self.completed.append(item.user_id)
-
-    def collected_all(self):
+    def collected_all(self) -> bool:
         if self.status == RoomStatus.WRITING:
-            return len(self.stories) == len(self.completed)
+            has_stories: bool = len(self.stories) > 0
+            stories_complete: bool = len(self.completed) == len(self.stories)
+            return has_stories and stories_complete
         elif self.status == RoomStatus.GUESSING:
-            return len(self.guesses) == len(self.completed)
+            has_guesses: bool = len(self.guesses) > 0
+            guesses_complete: bool = len(self.completed) == len(self.guesses)
+            return has_guesses and guesses_complete
 
     def calculate_status(self):
-        self.calculate_completed()
         if self.collected_all():
             self.advance_status()
 
     def clear_cache(self):
-        self.completed.clear()
         self.stories.clear()
         self.guesses.clear()
 
@@ -84,6 +85,7 @@ class RoomInfo(BaseModel):
                 del self.users[user.id]
 
     async def send_update(self):
+        self.calculate_status()
         await self.broadcast_message(
             {
                 "status": self.status,
