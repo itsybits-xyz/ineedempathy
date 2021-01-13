@@ -1,8 +1,8 @@
-from typing import Dict, List
+from typing import List, Dict
 from pydantic import BaseModel
 from fastapi import WebSocket
-from . import Story, Guess, Room, User, UserInfo
-from ..utils import after
+from backend.schemas import Story, Guess, Room, User, UserInfo
+from backend.utils import after
 from enum import Enum
 
 
@@ -22,31 +22,32 @@ class RoomInfo(BaseModel):
     @property
     def completed(self) -> List[int]:
         complete: List[int] = []
-        for item in (self.stories if self.status == RoomStatus.WRITING else self.guesses):
-            complete.append(item.user_id)
+        if self.status == RoomStatus.WRITING:
+            for story in self.stories:
+                complete.append(story.user_id)
+        elif self.status == RoomStatus.GUESSING:
+            users.filter((user) => {
+                return user.hasGuessFor(self.stories)
+            })
         return complete
 
     async def add_guess(self, story: Story, guess: Guess):
         self.guesses.append(story)
         await self.send_update()
+        return True
 
     async def add_story(self, story: Story):
-        self.stories.append(story)
-        await self.send_update()
+        if story.room_id == self.room.id and story.user_id in self.users:
+            self.stories.append(story)
+            await self.send_update()
+            return True
+        return False
 
     def collected_all(self) -> bool:
-        if self.status == RoomStatus.WRITING:
-            has_stories: bool = len(self.stories) > 0
-            stories_complete: bool = len(self.completed) == len(self.stories)
-            return has_stories and stories_complete
-        elif self.status == RoomStatus.GUESSING:
-            has_guesses: bool = len(self.guesses) > 0
-            guesses_complete: bool = len(self.completed) == len(self.guesses)
-            return has_guesses and guesses_complete
-
-    def calculate_status(self):
-        if self.collected_all():
-            self.advance_status()
+        if len(self.users) <= 1:
+            return False
+        if self.status in [RoomStatus.WRITING, RoomStatus.GUESSING]:
+            return len(self.completed) == len(self.users)
 
     def clear_cache(self):
         self.stories.clear()
@@ -56,12 +57,14 @@ class RoomInfo(BaseModel):
     def end_game(self):
         self.status = RoomStatus.END_GAME
 
-    @after("clear_cache")
     def advance_status(self):
+        if not self.collected_all():
+            return
         if self.status == RoomStatus.WRITING:
             self.status = RoomStatus.GUESSING
         elif self.status == RoomStatus.GUESSING:
             self.status = RoomStatus.WRITING
+            self.clear_cache()
 
     def empty(self):
         return len(self.users) == 0
@@ -85,7 +88,7 @@ class RoomInfo(BaseModel):
                 del self.users[user.id]
 
     async def send_update(self):
-        self.calculate_status()
+        self.advance_status()
         await self.broadcast_message(
             {
                 "status": self.status,

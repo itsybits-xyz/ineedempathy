@@ -7,6 +7,7 @@ from typing import Set, Dict
 class UserInfo(BaseModel):
     user: User
     sockets: Dict[int, WebSocket] = {}
+    guesses: List[Guess] = []
 
     def empty(self):
         return len(self.sockets) == 0

@@ -13,14 +13,14 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import crud, models
-from .config import settings
-from .deps import get_db
-from .schemas import CardCreate, Card
-from .schemas import User, Room, RoomCreate
-from .schemas import StoryCreate, Story
-from .schemas import GuessCreate, Guess
-from .middleware import ConnectionManagerMiddleware, ConnectionManager
+from backend import crud, models
+from backend.config import settings
+from backend.deps import get_db
+from backend.schemas import CardCreate, Card
+from backend.schemas import User, Room, RoomCreate
+from backend.schemas import StoryCreate, Story
+from backend.schemas import GuessCreate, Guess
+from backend.middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
 app = FastAPI()

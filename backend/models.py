@@ -30,7 +30,7 @@ class Room(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
     users = relationship("User", back_populates="room")
-    #guesses = relationship("Guess", back_populates="rooms")
+    stories = relationship("Story", back_populates="room")
 
 
 class User(Base):
@@ -53,6 +53,7 @@ class Story(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     card_id = Column(Integer, ForeignKey("cards.id"))
     description = Column(Text, index=True)
+    room = relationship("Room", back_populates="stories")
 
 
 class Guess(Base):
