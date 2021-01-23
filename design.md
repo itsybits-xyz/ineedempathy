@@ -48,11 +48,11 @@ Client UI should be dumb. Server should do the complex logic.
 Server sends a payload with the following:
 
 {
-    state: Enum["WRITING", "GUESSING", "WAITING"]
+    state: Enum["WRITING", "GUESSING", "WAITING", "NEXT_STEP", "RESULTS"]
     room: room_id
     users: List[user_ids]
     stories: List[story_ids]
-    progress: {user_id: {completed: 4, pending: 3, total: 7}, user_id2: {completed: 5, pending: 2, total: 7}}
+    progress: {user_id: {completed: 4, pending: 3}, user_id2: {completed: 5, pending: 2}}
 }
 
 Client will show the following information to the user: 
@@ -71,4 +71,150 @@ Client will show the following information to the user:
 
 Server will construct the payload as follows:
 
+* Ping the clients periodically to check if they're active.
+* Game state is WAITING.
+* Server sends
+{
+    state: "WAITING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: []
+    progress: {1: {completed: 0, pending: 0}, 2: {completed: 0, pending: 0}, 3: {completed: 0, pending: 0}}
+}
 
+* Client sends next step:
+* Game state is WRITING.
+* Server sends
+{
+    state: "WRITING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: []
+    progress: {1: {completed: 0, pending: 1}, 2: {completed: 0, pending: 1}, 3: {completed: 0, pending: 1}}
+}
+
+* Baylee (user 1) submits a story (Story ID 23 is assigned by the DB).
+* Server sends the following payload to
+
+User 1
+{
+    state: "WAITING",    # WAITING so client does nothing.
+    room: room_id,
+    users: [1, 2, 3]
+    stories: [] 
+    progress: {1: {completed: 1, pending: 0}, 2: {completed: 0, pending: 1}, 3: {completed: 0, pending: 1}}
+}
+
+User 2 & 3
+{
+    state: "WRITING",    # WRITING so client still keeps the text box open.
+    room: room_id,
+    users: [1, 2, 3]
+    stories: []
+    progress: {1: {completed: 1, pending: 0}, 2: {completed: 0, pending: 1}, 3: {completed: 0, pending: 1}}
+}
+
+* Amjith (user 2) submits a story (Story ID 31 is assigned by the DB).
+* Princess (user 3) submits a story (Story ID 33 is assigned by the DB).
+* Server sends the following payload to everyone.
+
+User 1, 2, 3
+{
+    state: "WAITING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: []
+    progress: {1: {completed: 1, pending: 0}, 2: {completed: 1, pending: 0}, 3: {completed: 1, pending: 0}}
+}
+
+* Baylee clicks on next step.
+* Since all the users in the room are done, the server transitions to the next step. 
+* Game state is now GUESSING.
+* Amjith (2) story was selected first for guessing.
+* Server sends the following payload
+
+User 2
+
+{
+    state: "WAITING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: [31]  
+    progress: {1: {completed: 0, pending: 1}, 2: {completed: 0, pending: 0}, 3: {completed: 0, pending: 1}}
+}
+
+User 1 & 3
+
+{
+    state: "GUESSING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: [31]
+    progress: {1: {completed: 0, pending: 1}, 2: {completed: 0, pending: 0}, 3: {completed: 0, pending: 1}}
+}
+
+* Baylee submits a guess.
+* Server sends the following
+
+User 1 & 2
+{
+    state: "WAITING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: [31]  
+    progress: {1: {completed: 1, pending: 0}, 2: {completed: 0, pending: 0}, 3: {completed: 0, pending: 1}}
+}
+User 3
+{
+    state: "GUESSING",
+    room: room_id,
+    users: [1, 2, 3]
+    stories: [31]  
+    progress: {1: {completed: 1, pending: 0}, 2: {completed: 0, pending: 0}, 3: {completed: 0, pending: 1}}
+}
+
+* Princess becomes inactive.
+* Amjith clicks next step.
+* Server sends the following to all users (except Amjith)
+
+User 1 & 3
+{
+    state: NEXT_STEP
+}
+
+* Client displays a CONFIRM button to all users.
+* Baylee presses CONFIRM.
+* Game transitions to next step.
+* Server sends the following:
+
+User 1 & 2
+{
+    state: "RESULTS",
+    room: room_id,
+    users: [1, 2],
+    stories: [31],
+    progress: {1: {results: [45]}, 2: {}}
+}
+
+* Client displays the results for all the users.
+* Amjith clicks next step.
+* Server sends
+
+User 1 & 2
+{
+    state: NEXT_STEP
+}
+
+* Baylee confirms.
+* Now back to guessing.
+* Server sends Princess' story for guessing
+
+{
+    state: "GUESSING",
+    room: room_id,
+    users: [1, 2],
+    stories: [33], 
+    progress: {1: {completed: 0, pending: 1}, 2: {completed: 0, pending: 1}}
+}
+
+* Continues....
