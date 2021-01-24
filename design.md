@@ -98,7 +98,7 @@ Server will construct the payload as follows:
 
 User 1
 {
-    state: "WAITING",    # WAITING so client does nothing.
+    state: "WRITING",    # WAITING so client does nothing.
     room: room_id,
     users: [1, 2, 3]
     stories: [] 
