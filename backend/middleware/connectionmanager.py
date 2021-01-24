@@ -36,13 +36,13 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    async def add_to_done_list(self, room: Room, story: Story):
+    async def add_story(self, room: Room, story: Story):
         room_info = self._rooms.get(room.id)
         if room_info is None:
             raise RuntimeError(f"Room '{room.name}' does not exist!")
         if story.user_id not in room_info.users:
             raise RuntimeError("Please join the room")
-        room_info.add_to_done_list(story.user_id)
+        room_info.add_story(story)
         await room_info.send_update()
 
     def add_user(self, room: Room, user: User, socket: WebSocket):

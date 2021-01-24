@@ -98,8 +98,11 @@ def test_create_story_with_users_connected():
         data = websocket.receive_json()
         assert data == {
             "status": "WRITING",
-            "completed": [],
-            "currentUsers": [
+            "progress": {
+                f"{user.get('id')}": {"completed": 0, "pending": 1}
+            },
+            "stories": [],
+            "users": [
                 {
                     "id": user.get("id"),
                     "name": user.get("name"),
@@ -118,9 +121,31 @@ def test_create_story_with_users_connected():
         assert response.status_code == 201
         data = websocket.receive_json()
         assert data == {
+            "status": "WRITING",
+            "progress": {
+                f"{user.get('id')}": {"completed": 0, "pending": 1}
+            },
+            "stories": [],
+            "users": [
+                {
+                    "id": user.get("id"),
+                    "name": user.get("name"),
+                    "room_id": room.get("id")
+                }
+            ],
+        }
+        response = test_client.post(
+            f"/rooms/{room.get('name')}/user/{user.get('name')}/next",
+        )
+        assert response.status_code == 201
+        data = websocket.receive_json()
+        assert data == {
             "status": "GUESSING",
-            "completed": [],
-            "currentUsers": [
+            "progress": {
+                f"{user.get('id')}": {"completed": 0, "pending": 1}
+            },
+            "stories": [],
+            "users": [
                 {
                     "id": user.get("id"),
                     "name": user.get("name"),
@@ -188,8 +213,11 @@ def test_websocket_connect():
         data = websocket.receive_json()
         assert data == {
             "status": "WRITING",
-            "completed": [],
-            "currentUsers": [
+            "progress": {
+                f"{user.get('id')}": {"completed": 0, "pending": 1},
+            },
+            "stories": [],
+            "users": [
                 {
                     "id": user.get("id"),
                     "name": user.get("name"),
@@ -209,8 +237,11 @@ def test_websocket_with_multiple_connections():
         data_1 = websocket_1.receive_json()
         assert data_1 == {
             "status": "WRITING",
-            "completed": [],
-            "currentUsers": [
+            "progress": {
+                f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+            },
+            "stories": [],
+            "users": [
                 {
                     "id": user_1.get("id"),
                     "name": user_1.get("name"),
@@ -225,8 +256,12 @@ def test_websocket_with_multiple_connections():
             assert data_1 == data_2
             assert data_2 == {
                 "status": "WRITING",
-                "completed": [],
-                "currentUsers": [
+                "progress": {
+                    f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+                    f"{user_2.get('id')}": {"completed": 0, "pending": 1}
+                },
+                "stories": [],
+                "users": [
                     {
                         "id": user_1.get("id"),
                         "name": user_1.get("name"),
@@ -247,8 +282,12 @@ def test_websocket_with_multiple_connections():
                 assert data_2 == data_3
                 assert data_3 == {
                     "status": "WRITING",
-                    "completed": [],
-                    "currentUsers": [
+                    "progress": {
+                        f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+                        f"{user_2.get('id')}": {"completed": 0, "pending": 1}
+                    },
+                    "stories": [],
+                    "users": [
                         {
                             "id": user_1.get("id"),
                             "name": user_1.get("name"),
@@ -267,8 +306,12 @@ def test_websocket_with_multiple_connections():
             assert data_1 == data_2
             assert data_2 == {
                 "status": "WRITING",
-                "completed": [],
-                "currentUsers": [
+                "progress": {
+                    f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+                    f"{user_2.get('id')}": {"completed": 0, "pending": 1}
+                },
+                "stories": [],
+                "users": [
                     {
                         "id": user_1.get("id"),
                         "name": user_1.get("name"),
@@ -286,8 +329,11 @@ def test_websocket_with_multiple_connections():
         data_1 = websocket_1.receive_json()
         assert data_1 == {
             "status": "WRITING",
-            "completed": [],
-            "currentUsers": [
+            "progress": {
+                f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+            },
+            "stories": [],
+            "users": [
                 {
                     "id": user_1.get("id"),
                     "name": user_1.get("name"),
