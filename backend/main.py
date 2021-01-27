@@ -78,20 +78,23 @@ def create_guess(room_id: int, story_id: int, guess: GuessCreate, db: Session = 
     return crud.create_guess(db, room_id, story_id, guess)
 
 
-@app.post("/rooms/{room_name}/user/{user_name}/next", status_code=201)
-async def next_status(room_name: str, request: Request, db: Session = Depends(get_db)):
-    connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
-    if connection_manager is None:
-        raise RuntimeError("Global `connection_manager` instance unavailable!")
-    room = crud.get_room_by_name(db, room_name)
-    if room is None:
-        raise HTTPException(status_code=404, detail="Room not found")
-    await connection_manager.send_update(room)
-    return
+# @app.post("/rooms/{room_name}/user/{user_name}/transition", status_code=201)
+# async def transition_status(room_name: str, request: Request, db: Session = Depends(get_db)):
+#     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
+#     if connection_manager is None:
+#         raise RuntimeError("Global `connection_manager` instance unavailable!")
+#     room = crud.get_room_by_name(db, room_name)
+#     if room is None:
+#         raise HTTPException(status_code=404, detail="Room not found")
+#     await connection_manager.transition(room)
+#     # await connection_manager.send_update(room)
+#     return
 
 
 @app.post("/rooms/{room_name}/story", status_code=201, response_model=Story)
-async def create_story(room_name: str, story_create: StoryCreate, request: Request, db: Session = Depends(get_db)) -> models.Story:
+async def create_story(
+    room_name: str, story_create: StoryCreate, request: Request, db: Session = Depends(get_db)
+) -> models.Story:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
     if connection_manager is None:
         raise RuntimeError("Global `connection_manager` instance unavailable!")

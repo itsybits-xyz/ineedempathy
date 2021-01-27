@@ -8,6 +8,7 @@ from enum import Enum
 class RoomStatus(str, Enum):
     WRITING = "WRITING"
     GUESSING = "GUESSING"
+    RESULTS = "RESULTS"
     END_GAME = "END_GAME"
 
 
@@ -22,8 +23,11 @@ class RoomInfo(BaseModel):
 
     def advance_status(self):
         if self.status == RoomStatus.WRITING:
-            self.status = RoomStatus.GUESSING
+            if len(self.stories) == len(self.users):
+                self.status = RoomStatus.GUESSING
         elif self.status == RoomStatus.GUESSING:
+            self.status = RoomStatus.RESULTS
+        elif self.status == RoomStatus.RESULTS:
             self.status = RoomStatus.WRITING
 
     def empty(self):
@@ -38,6 +42,7 @@ class RoomInfo(BaseModel):
         self.stories.append(story)
         if story.user_id in self.users:
             self.users[story.user_id].story = story
+        self.advance_status()
 
     def add_user(self, user: User, socket: WebSocket):
         if user.id not in self.users:
@@ -53,18 +58,27 @@ class RoomInfo(BaseModel):
                 del self.users[user.id]
 
     def progress(self):
-        return {user_id: user_info.progress() for user_id, user_info in
-                self.users.items()}
+        return {user_id: user_info.progress() for user_id, user_info in self.users.items()}
 
     async def send_update(self):
-        await self.broadcast_message(
-            {
-                "status": self.status,
-                "progress": self.progress(),
-                "users": self.current_users(),
-                "stories": [],
-            }
-        )
+        if self.status == RoomStatus.GUESSING:
+            await self.broadcast_message(
+                {
+                    "status": self.status,
+                    "progress": self.progress(),
+                    "users": self.current_users(),
+                    "stories": [{"user_id": story.user_id, "story_id": story.id} for story in self.stories],
+                }
+            )
+        else:
+            await self.broadcast_message(
+                {
+                    "status": self.status,
+                    "progress": self.progress(),
+                    "users": self.current_users(),
+                    "stories": [],
+                }
+            )
 
     def current_users(self):
         return [userinfo.user.dict() for userinfo in self.users.values()]

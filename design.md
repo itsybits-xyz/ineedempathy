@@ -48,7 +48,7 @@ Client UI should be dumb. Server should do the complex logic.
 Server sends a payload with the following:
 
 {
-    state: Enum["WRITING", "GUESSING", "WAITING", "NEXT_STEP", "RESULTS"]
+    state: Enum["WRITING", "GUESSING", "RESULTS", "WAITING", "TRANSITION"]
     room: room_id
     users: List[user_ids]
     stories: List[story_ids]
