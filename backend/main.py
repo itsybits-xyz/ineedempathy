@@ -102,7 +102,8 @@ async def create_story(
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
     story = crud.create_story(db, room, story_create)
-    await connection_manager.add_story(room, story)
+    schema_story = Story.from_orm(story)
+    await connection_manager.add_story(room, schema_story)
     return story
 
 

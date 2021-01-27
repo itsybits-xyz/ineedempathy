@@ -86,7 +86,7 @@ def test_create_story_no_users_connected():
         )
 
 
-def test_create_story_with_users_connected():
+def test_create_story_with_user_connected():
     client = TestClient(app)
     room = create_room("singleplayer")
     user = create_user(room)
@@ -103,14 +103,95 @@ def test_create_story_with_users_connected():
             json={"user_id": user.get("id"), "card_id": 1, "description": "meow"},
         )
         story_id = response.json()["id"]
+        description = response.json()["description"]
         assert response.status_code == 201
         data = websocket.receive_json()
         assert data == {
             "status": "GUESSING",
             "progress": {f"{user.get('id')}": {"completed": 0, "pending": 1}},
-            "stories": [{"user_id": user.get("id"), "story_id": story_id}],
+            "stories": [{"roomId": room.get('id'), "userId": user.get("id"), "id": story_id, "description": description}],
             "users": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
         }
+
+
+def test_create_story_with_users_connected():
+    client = TestClient(app)
+    room = create_room("singleplayer")
+    user_1 = create_user(room)
+    user_2 = create_user(room)
+    with client.websocket_connect(socket_url(room, user_1)) as websocket_1:
+        data_1 = websocket_1.receive_json()
+        assert data_1 == {
+            "status": "WRITING",
+            "progress": {
+                f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+            },
+            "stories": [],
+            "users": [{"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")}],
+        }
+        with client.websocket_connect(socket_url(room, user_2)) as websocket_2:
+            data_1 = websocket_1.receive_json()
+            data_2 = websocket_2.receive_json()
+            assert data_1 == data_2
+            assert data_2 == {
+                "status": "WRITING",
+                "progress": {
+                    f"{user_1.get('id')}": {"completed": 0, "pending": 1},
+                    f"{user_2.get('id')}": {"completed": 0, "pending": 1},
+                },
+                "stories": [],
+                "users": [
+                    {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                    {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
+                ],
+            }
+            response = test_client.post(
+                f"/rooms/{room.get('name')}/story",
+                json={"user_id": user_1.get("id"), "card_id": 1, "description": "meow"},
+            )
+            story_1_id = response.json()['id']
+            story_1_description = response.json()['description']
+            data_1 = websocket_1.receive_json()
+            data_2 = websocket_2.receive_json()
+            assert data_1 == data_2
+            assert data_2 == {
+                "status": "WRITING",
+                "progress": {
+                    f"{user_1.get('id')}": {"completed": 1, "pending": 0},
+                    f"{user_2.get('id')}": {"completed": 0, "pending": 1},
+                },
+                "stories": [
+                    {"roomId": room.get('id'), "userId": user_1.get("id"), "id": story_1_id, "description": story_1_description},
+                ],
+                "users": [
+                    {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                    {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
+                ],
+            }
+            response = test_client.post(
+                f"/rooms/{room.get('name')}/story",
+                json={"user_id": user_2.get("id"), "card_id": 1, "description": "ruff"},
+            )
+            story_2_id = response.json()['id']
+            story_2_description = response.json()['description']
+            data_1 = websocket_1.receive_json()
+            data_2 = websocket_2.receive_json()
+            assert data_1 == data_2
+            assert data_2 == {
+                "status": "GUESSING",
+                "progress": {
+                    f"{user_1.get('id')}": {"completed": 0, "pending": 0},
+                    f"{user_2.get('id')}": {"completed": 0, "pending": 1},
+                },
+                "stories": [
+                    {"roomId": room.get('id'), "userId": user_1.get("id"), "id": story_1_id, "description": story_1_description},
+                    {"roomId": room.get('id'), "userId": user_2.get("id"), "id": story_2_id, "description": story_2_description},
+                ],
+                "users": [
+                    {"id": user_1.get("id"), "name": user_1.get("name"), "room_id": room.get("id")},
+                    {"id": user_2.get("id"), "name": user_2.get("name"), "room_id": room.get("id")},
+                ],
+            }
 
 
 def test_create_guess():

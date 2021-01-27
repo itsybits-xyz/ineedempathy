@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from fastapi import WebSocket
 from . import User, Story
 from typing import Dict, Optional
+from fastapi.encoders import jsonable_encoder
 
 
 class UserInfo(BaseModel):
@@ -26,7 +27,7 @@ class UserInfo(BaseModel):
 
     async def send_json(self, msg: Dict):
         for socket in self.sockets.values():
-            await socket.send_json(msg)
+            await socket.send_json(jsonable_encoder(msg))
 
     class Config:
         arbitrary_types_allowed = True
