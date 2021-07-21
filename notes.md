@@ -5,7 +5,7 @@ Feelings
  * Happy
  * Sad
  * Angry
- * Scared
+ * Scared (lacks continuity in Starter)
 
 Needs
 
