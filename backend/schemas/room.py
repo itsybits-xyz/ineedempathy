@@ -4,12 +4,6 @@ from datetime import datetime
 from fastapi_camelcase import CamelModel
 
 
-class RoomType(str, Enum):
-    Singleplayer = "singleplayer"
-    Multiplayer = "multiplayer"
-    PublicMultiplayer = "public-multiplayer"
-
-
 # Shared properties
 class RoomBase(CamelModel):
     pass
@@ -22,14 +16,13 @@ class RoomUpdate(RoomBase):
 
 
 class RoomCreate(RoomBase):
-    type: RoomType
+    pass
 
 
 # Properties shared by models stored in DB
 class RoomInDBBase(RoomBase):
     id: int
     name: str
-    type: RoomType
     created_at: datetime
 
     class Config:

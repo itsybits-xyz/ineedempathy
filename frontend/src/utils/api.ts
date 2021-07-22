@@ -8,8 +8,15 @@ async function http<T>(path: string, authenticated: boolean = true, config: Requ
     const token = localStorage.getItem('token');
     headers.append('Authorization', `Bearer ${token}`);
   }
-  const request = new Request(path, {headers, ...config});
-  const response = await fetch(request); if (authenticated && (response.status === 401 || response.status === 403)) {
+  let response: any;
+  try {
+    const request = new Request(path, {headers, ...config});
+    response = await fetch(request);
+  } catch(e) {
+    console.error('e', e);
+    debugger;
+  }
+  if (authenticated && (response.status === 401 || response.status === 403)) {
     localStorage.removeItem('token');
     localStorage.removeItem('permissions');
     return Promise.reject("Unauthorized Access!");
@@ -51,8 +58,7 @@ export const getMessage = async () => {
   const data = await response.json();
   if (data.msg) {
     return data.msg;
-  }
-  return Promise.reject('Failed to get message from backend');
+  } return Promise.reject('Failed to get message from backend');
 };
 
 export const getCards = async () => {
@@ -75,6 +81,6 @@ export const createUser = async (roomName: string) => {
   return post<UserCreate, User>(`${BACKEND_URL}/rooms/${roomName}/user`, {});
 };
 
-export const postRoom = async (payload: RoomCreate) => {
-  return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, payload);
+export const createRoom = async () => {
+  return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, {} as RoomCreate);
 };

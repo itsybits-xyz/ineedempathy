@@ -1,4 +1,4 @@
-from backend.schemas import User, Room, RoomInfo, RoomType
+from backend.schemas import User, Room, RoomInfo
 from datetime import datetime
 
 
@@ -12,7 +12,6 @@ def mock_room(name="princess.mansion"):
     return Room(
         id=room_count,
         name=name,
-        type=RoomType.Singleplayer,
         createdAt=datetime.now(),
     )
 

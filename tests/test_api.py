@@ -41,6 +41,16 @@ def test_root():
     assert rv.json()["msg"] == "Check /docs"
 
 
+def test_create_room():
+    response = test_client.post("/rooms", json={})
+    assert response.status_code == 201
+    json = response.json()
+    assert len(list(json.keys())) == 3
+    assert json["id"] == 1
+    assert len(json["name"]) >= 1
+    assert len(json["createdAt"]) >= 1
+
+
 def test_create_card():
     response = test_client.post(
         "/cards",

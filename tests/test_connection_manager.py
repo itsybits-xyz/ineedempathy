@@ -1,5 +1,5 @@
 from backend.middleware import ConnectionManager
-from backend.schemas import User, Room, RoomType
+from backend.schemas import User, Room
 from datetime import datetime
 
 
@@ -13,7 +13,6 @@ def mock_room(name="princess.mansion"):
     return Room(
         id=room_count,
         name=name,
-        type=RoomType.Singleplayer,
         createdAt=datetime.now(),
     )
 
