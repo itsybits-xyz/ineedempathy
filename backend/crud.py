@@ -10,6 +10,10 @@ def get_user_by_name(db: Session, name: str) -> Optional[User]:
     return db.query(User).filter(User.name == name).first()
 
 
+def get_card(name: str, db: Session) -> Optional[Card]:
+    return db.query(Card).filter(Card.name == name).first()
+
+
 def get_cards(db: Session) -> Optional[Card]:
     return db.query(Card).all()
 

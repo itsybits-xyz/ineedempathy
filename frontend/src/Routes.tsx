@@ -6,8 +6,10 @@ import {
   Home,
   Room,
   RoomProps,
+  CardPageProps,
   About,
   Inventory,
+  CardPage,
 } from './views';
 import { NavBar, SideBar } from './components';
 
@@ -23,6 +25,7 @@ export const Routes: FC = () => {
           <Route exact path="/" component={Home} />
           <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
           <Route path="/about" component={About} />
+          <Route path="/:type(feeling|need)/:name" component={(props: CardPageProps) => <CardPage {...props} /> } />
           <Route path="/:type(feelings|needs)" component={Inventory} />
         </div>
       </div>

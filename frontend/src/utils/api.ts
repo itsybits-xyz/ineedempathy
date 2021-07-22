@@ -59,6 +59,10 @@ export const getCards = async () => {
   return get<Card[]>(`${BACKEND_URL}/cards`);
 };
 
+export const getCard = async (name: string) => {
+  return get<Card>(`${BACKEND_URL}/cards/${name}`);
+};
+
 export const getRooms = async () => {
   return get<Room[]>(`${BACKEND_URL}/rooms`);
 };

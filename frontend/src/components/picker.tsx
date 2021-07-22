@@ -7,6 +7,7 @@ import { Card } from '../schemas';
 
 export interface PickerProps {
   type?: string;
+  name?: string;
 };
 
 const defaultProps: PickerProps = {

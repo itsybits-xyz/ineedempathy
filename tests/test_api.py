@@ -56,19 +56,21 @@ def test_create_card():
     assert json["blankUrl"] == "/static/angry_blank.jpg"
 
 
-def test_create_card():
+def test_get_card():
     response = test_client.post(
         "/cards",
-        json={"name": "angry", "type": "feeling"},
+        json={"name": "compersion", "type": "feeling"},
     )
     assert response.status_code == 201
+    response = test_client.get("/cards/compersion")
+    assert response.status_code == 200
     json = response.json()
     assert len(list(json.keys())) == 5
     assert json["id"] == 1
-    assert json["name"] == "angry"
+    assert json["name"] == "compersion"
     assert json["type"] == "feeling"
-    assert json["textUrl"] == "/static/angry.jpg"
-    assert json["blankUrl"] == "/static/angry_blank.jpg"
+    assert json["textUrl"] == "/static/compersion.jpg"
+    assert json["blankUrl"] == "/static/compersion_blank.jpg"
 
 
 def __socket_url(room, user):

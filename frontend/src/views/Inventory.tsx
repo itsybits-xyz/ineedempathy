@@ -11,7 +11,7 @@ export interface InventoryProps {
 }
 
 export const Inventory: FC<InventoryProps> = (props: InventoryProps) => {
-  const type = props.match.params.type;
+  const type: string = String(props.match.params.type);
   const isFeelings = type === 'feelings';
   return (
     <>

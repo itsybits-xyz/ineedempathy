@@ -54,6 +54,13 @@ def get_cards(
 ) -> List[models.Card]:
     return crud.get_cards(db)
 
+@app.get("/cards/{name}", response_model=Card)
+def get_card_by_name(
+    name: str,
+    db: Session = Depends(get_db),
+) -> List[models.Card]:
+    return crud.get_card(name, db)
+
 
 @app.post("/cards", status_code=201, response_model=Card)
 def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Room:
