@@ -1,8 +1,10 @@
 # Server Todo:
+
 * [ ] Can't creeate guesses, stories without a valid room
 * [ ] Handle multiple websockets for the same user (A user can visit the room from multiple tabs)
 
 # UI Todo:
+
 * [ ] Share Room UI
 * [ ] New User flow
 * [ ] Start Game UI

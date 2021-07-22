@@ -3,7 +3,7 @@ Gameplay:
 JOINS:
 
 * User (Baylee) creates a room and joins in.
-* Baylee is places in waiting room. 
+* Baylee is placed in waiting room. 
 * Baylee sends invite to others.
 * Amjith joins the room, also placed in WAITING room.
 * Princess joins the room, also placed in WAITING room.
