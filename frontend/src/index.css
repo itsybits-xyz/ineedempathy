@@ -12,17 +12,21 @@ code {
     monospace;
 }
 
-div.col img[alt] {
-  border-radius: 15px;
+a.fn-card {
+  display: inline-block;
   margin: 0 15px 15px 15px;
   cursor: pointer;
+}
+
+a.fn-card img {
+  border-radius: 15px;
   transition: border 500ms ease-out;
   transition: transform 500ms ease-out;
   border: 3px solid #ca5add;
   transform: scale(0.9);
 }
 
-div.col img[alt]:hover {
+a.fn-card img:hover {
   transform: scale(1);
   border: 3px solid #9c27b0;
 }

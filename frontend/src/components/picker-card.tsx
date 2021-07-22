@@ -9,7 +9,7 @@ export interface PickerCardProps {
 export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
   const card: Card = props.card;
   return (
-    <a className="nav-link" href={`/${card.type}/${card.name}`}>
+    <a className="fn-card" href={`/${card.type}/${card.name}`}>
       <img alt={card.name} width={200} src={BACKEND_URL + card.textUrl} />
     </a>
   );
