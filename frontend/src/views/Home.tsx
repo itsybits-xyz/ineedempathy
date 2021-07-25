@@ -11,11 +11,27 @@ export const Home: FC = () => {
   const [roomName, setRoomName] = useState<string>();
   const [error, setError] = useState<string>();
 
-  const handleNewRoom = () => {
+  const handleNewRoom = (ev:any, count = 0) => {
+    fetch("http://localhost:8000/rooms", {
+      "body": "{}",
+      "method": "POST",
+    }).then((res) => {
+      console.log('BS:2', res);
+    }, (er) => {
+      console.log('BS:2', er, er.message, er.stack);
+    });
+    return;
+    console.log('BS: Attempting room creation', count);
     return createRoom().then((newRoom) => {
+      console.log('BS: Setting room:', newRoom.name);
       setGotoRoomName(newRoom.name);
-    }).catch((e) => {
-      setError(e);
+    }).catch((er) => {
+      if (count < 10) {
+        console.log('BS: loop');
+        handleNewRoom(ev, count + 1);
+      } else {
+        console.log('BS: fucckckk', er, er.message, er.stack);
+      }
     });
   };
 

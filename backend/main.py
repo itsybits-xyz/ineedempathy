@@ -81,7 +81,9 @@ def get_room(
 
 @app.post("/rooms", status_code=201, response_model=Room)
 def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
-    return crud.create_room(db, room)
+    room = crud.create_room(db, room)
+    print(room.name)
+    return room
 
 
 # @app.websocket("/rooms/{room_name}/users/{user_name}.ws")
