@@ -1,14 +1,15 @@
 from pydantic import BaseModel
 from fastapi import WebSocket
-from . import User, Story
+from . import Card
 from typing import Dict, Optional
 from fastapi.encoders import jsonable_encoder
 
 
 class UserInfo(BaseModel):
-    user: User
+    user_token: str = None
+    name: str = "Princess"
     sockets: Dict[int, WebSocket] = {}
-    story: Optional[Story] = None
+    cards: Optional[Card] = []
 
     def empty(self):
         return len(self.sockets) == 0
@@ -19,10 +20,17 @@ class UserInfo(BaseModel):
     def remove_socket(self, socket: WebSocket):
         del self.sockets[id(socket)]
 
-    def progress(self):
+    def add_card(self, card: Card):
+        self.cards[id(card)] = card
+
+    def remove_card(self, card: Card):
+        del self.card[id(card)]
+
+    def progress(self, speaker):
         return {
-            "completed": 0,
-            "pending": 1,
+            "name": self.name,
+            "speaker": self.user_token == speaker.user_token,
+            "cards": [card.id for card in self.cards.values()],
         }
 
     async def send_json(self, msg: Dict):

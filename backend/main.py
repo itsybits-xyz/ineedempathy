@@ -86,28 +86,41 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
     return room
 
 
-# @app.websocket("/rooms/{room_name}/users/{user_name}.ws")
-# async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
-#    scope = websocket.scope
-#    print(f"Connecting new socket {id(websocket)}...")
-#    connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
-#    if connection_manager is None:
-#        raise RuntimeError("Global `connection_manager` instance unavailable!")
-#    room = crud.get_room_by_name(db, room_name)
-#    if room is None:
-#        raise RuntimeError(f"Room instance '{room_name}' unavailable!")
-#    user = crud.get_user_by_name(db, user_name)
-#    if user is None:
-#        raise RuntimeError(f"User instance '{user_name}' unavailable!")
-#    if user not in room.users:
-#        raise RuntimeError(f"User '{user_name}' does not belong to '{room_name}'!")
-#    try:
-#        await websocket.accept()
-#        connection_manager.add_user(room, user, websocket)
-#        await connection_manager.send_update(room)
-#        while True:
-#            await websocket.receive_json()
-#            await connection_manager.send_update(room)
-#    except WebSocketDisconnect:
-#        connection_manager.remove_user(room, user, websocket)
-#        await connection_manager.send_update(room)
+@app.post("/rooms/{room_name}/users/{user_token}/card/{card_name}", status_code=201, response_model=Card)
+def add_card(room_name: str, user_token: str, card_name: str, websocket: WebSocket, db: Session = Depends(get_db)) -> models.Card:
+    scope = websocket.scope
+    connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
+    card = crud.get_card(card_name, db)
+    room = crud.get_room_by_name(db, room_name)
+    connection_manager.add_card(room, user_token, card)
+
+
+@app.delete("/rooms/{room_name}/users/{user_token}/card/{card_name}", status_code=204)
+def remove_card(room_name: str, user_token: str, card_name: str, websocket: WebSocket, db: Session = Depends(get_db)) -> models.Card:
+    scope = websocket.scope
+    connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
+    card = crud.get_card(card_name, db)
+    room = crud.get_room_by_name(db, room_name)
+    connection_manager.remove_card(room, user_token, card)
+
+
+@app.websocket("/rooms/{room_name}/users/{user_token}.ws")
+async def websocket_endpoint(room_name: str, user_token: str, websocket: WebSocket, db: Session = Depends(get_db)):
+    scope = websocket.scope
+    print(f"Connecting new socket {id(websocket)}...")
+    connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
+    if connection_manager is None:
+        raise RuntimeError("Global `connection_manager` instance unavailable!")
+    room = crud.get_room_by_name(db, room_name)
+    if room is None:
+        raise RuntimeError(f"Room instance '{room_name}' unavailable!")
+    try:
+        await websocket.accept()
+        connection_manager.add_user(room, user_token, websocket)
+        await connection_manager.send_update(room)
+        while True:
+            await websocket.receive_json()
+            await connection_manager.send_update(room)
+    except WebSocketDisconnect:
+        connection_manager.remove_user(room, user_token, websocket)
+        await connection_manager.send_update(room)

@@ -1,5 +1,5 @@
 from typing import List, Dict
-from ..schemas import User, Room, RoomInfo, Story
+from ..schemas import Room, RoomInfo, Card
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -36,31 +36,30 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    async def add_story(self, room: Room, story: Story):
-        room_info = self._rooms.get(room.id)
-        if room_info is None:
-            raise RuntimeError(f"Room '{room.name}' does not exist!")
-        if story.user_id not in room_info.users:
-            raise RuntimeError("Please join the room")
-        room_info.add_story(story)
-        await room_info.send_update()
-
-    def add_user(self, room: Room, user: User, socket: WebSocket):
+    def add_user(self, room: Room, user_token: str, socket: WebSocket):
         if room.id not in self._rooms:
             self._rooms[room.id] = RoomInfo(
                 room=room,
                 users={},
             )
         self._rooms[room.id].add_user(
-            user=user,
+            user_token=user_token,
             socket=socket
         )
 
-    def remove_user(self, room: Room, user: User, socket: WebSocket):
+    def remove_user(self, room: Room, user_token: str, socket: WebSocket):
         room_info = self._rooms.get(room.id)
-        room_info.remove_user(user, socket)
+        room_info.remove_user(user_token, socket)
         if room_info is None or room_info.empty():
             del self._rooms[room.id]
+
+    def add_card(self, room: Room, user_token: str, card: Card, socket: WebSocket):
+        room_info = self._rooms.get(room.id)
+        room_info.add_card(user_token, card, socket)
+
+    def remove_card(self, room: Room, user_token: str, card: Card, socket: WebSocket):
+        room_info = self._rooms.get(room.id)
+        room_info.remove_card(user_token, card, socket)
 
     async def send_update(self, room: Room):
         room_info = self._rooms.get(room.id)
