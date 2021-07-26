@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { MdExtension, MdWbCloudy, MdDashboard, MdTerrain, MdLayers } from 'react-icons/md';
+import { MdExtension, MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 
 export const SideBar: FC = () => {
   return (
@@ -35,7 +35,7 @@ export const SideBar: FC = () => {
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/feelings">
-                <MdWbCloudy size={24}/>
+                <MdFavorite size={24}/>
                 <p>
                   Feelings
                 </p>
@@ -43,7 +43,7 @@ export const SideBar: FC = () => {
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/needs">
-                <MdTerrain size={24}/>
+                <MdWbSunny size={24}/>
                 <p>
                   Needs
                 </p>
