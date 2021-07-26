@@ -12,6 +12,7 @@ class Card(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     type = Column(Enum("need", "feeling", name="type"), nullable=False, index=True)
+    level = Column(Integer, nullable=False, index=True)
 
     @hybrid_property
     def text_url(self):

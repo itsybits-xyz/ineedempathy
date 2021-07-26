@@ -17,7 +17,8 @@ def get_cards(db: Session) -> Optional[Card]:
 def create_card(db: Session, card: CardCreate) -> Card:
     db_obj = Card(
         name=card.name,
-        type=card.type
+        type=card.type,
+        level=1
     )
     db.add(db_obj)
     db.commit()
