@@ -9,25 +9,25 @@ class Base(BaseSettings):
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     TOKEN_EXPIRE_HOURS: int = 48
     PROJECT_NAME: str = "I Need Empathy"
-    SERVER_HOST: str = "empathy.local:8000"
-    FRONTEND_HOST: str = "empathy.local:3000"
+    SERVER_HOST: str = "localhost:8000"
+    FRONTEND_HOST: str = "localhost:3000"
 
 
 class Local(Base):
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://empathy.local:3000']
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://localhost:3000']
     EMAILS_ENABLED = False
-    FRONTEND_HOST: str = "empathy.local:3000"
+    FRONTEND_HOST: str = "localhost:3000"
 
 
 class Staging(Base):
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://empathy.local:3000']
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://localhost:3000']
     EMAILS_ENABLED = False
     SERVER_HOST = "staging.app.ineedempathy.com"
     FRONTEND_HOST: str = "staging.ineedempathy.com"
 
 
 class Prod(Base):
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://empathy.local:3000']
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://localhost:3000']
     EMAILS_ENABLED = False
     SERVER_HOST = "app.ineedempathy.com"
     FRONTEND_HOST: str = "ineedempathy.com"
