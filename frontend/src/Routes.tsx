@@ -11,7 +11,7 @@ import {
   Inventory,
   CardPage,
 } from './views';
-import { NavBar, SideBar } from './components';
+import { SideBar } from './components';
 
 export const Routes: FC = () => {
   const history = useHistory();

@@ -36,15 +36,6 @@ export function put<T, U>(
   return http<U>(path, authenticated, init);
 }
 
-export const getMessage = async () => {
-  const response = await fetch(BACKEND_URL);
-  const data = await response.json();
-  if (data.msg) {
-    return data.msg;
-  }
-  return Promise.reject('Failed to get message from backend');
-};
-
 export const getCards = () => {
   return get<Card[]>(`${BACKEND_URL}/cards`);
 };
