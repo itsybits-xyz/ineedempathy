@@ -13,6 +13,7 @@ export const Home: FC = () => {
   const [error, setError] = useState<string>();
 
   const handleNewRoom = (ev:any, count = 0) => {
+    ev.preventDefault();
     return createRoom().then((newRoom) => {
       setGotoRoomName(newRoom.name);
     }).catch((er) => {
@@ -34,7 +35,7 @@ export const Home: FC = () => {
   }
 
   return gotoRoomName ? (
-    <Redirect to={`${BACKEND_URL}/room/${gotoRoomName}33`} />
+    <Redirect to={`/room/${gotoRoomName}`} />
   ) : (
     <>
       <div className="content">
