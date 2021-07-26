@@ -2,55 +2,38 @@ import { BACKEND_URL } from '../config';
 import { Card, Room, User, UserCreate, RoomCreate } from '../schemas';
 import {PromiseFn} from 'react-async';
 
-async function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
-  const headers = new Headers(); headers.append('Content-Type', 'application/json');
-  if (authenticated) {
-    const token = localStorage.getItem('token');
-    headers.append('Authorization', `Bearer ${token}`);
-  }
-  let response: any;
-  try {
-    const request = new Request(path, {headers, ...config});
-    response = await fetch(request);
-  } catch(e) {
-    console.error('e', e);
-    debugger;
-  }
-  if (authenticated && (response.status === 401 || response.status === 403)) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('permissions');
-    return Promise.reject("Unauthorized Access!");
-  }
-  if (!response.ok) {
-    const resp_json = await response.json().catch(() => (response.statusText));
-    throw new Error(resp_json.detail ?? resp_json);
-  }
-  return await response.json();
+function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  const request = new Request(path, {headers, ...config});
+  return fetch(request).then((response) => {
+    return response.json();
+  });
 }
 
-export async function get<T>(path: string, authenticated: boolean = true, config?: RequestInit): Promise<T> {
+export function get<T>(path: string, authenticated: boolean = true, config?: RequestInit): Promise<T> {
   const init = { method: 'get', ...config };
-  return await http<T>(path, authenticated, init);
+  return http<T>(path, authenticated, init);
 }
 
-export async function post<T, U>(
+export function post<T, U>(
   path: string,
   body: T,
   authenticated: boolean = true,
   config?: RequestInit
 ): Promise<U> {
   const init = { method: 'post', body: JSON.stringify(body), ...config };
-  return await http<U>(path, authenticated, init);
+  return http<U>(path, authenticated, init);
 }
 
-export async function put<T, U>(
+export function put<T, U>(
   path: string,
   body: T,
   authenticated: boolean = true,
   config?: RequestInit
 ): Promise<U> {
   const init = { method: 'put', body: JSON.stringify(body), ...config };
-  return await http<U>(path, authenticated, init);
+  return http<U>(path, authenticated, init);
 }
 
 export const getMessage = async () => {
@@ -58,29 +41,30 @@ export const getMessage = async () => {
   const data = await response.json();
   if (data.msg) {
     return data.msg;
-  } return Promise.reject('Failed to get message from backend');
+  }
+  return Promise.reject('Failed to get message from backend');
 };
 
-export const getCards = async () => {
+export const getCards = () => {
   return get<Card[]>(`${BACKEND_URL}/cards`);
 };
 
-export const getCard = async (name: string) => {
+export const getCard = (name: string) => {
   return get<Card>(`${BACKEND_URL}/cards/${name}`);
 };
 
-export const getRooms = async () => {
+export const getRooms = () => {
   return get<Room[]>(`${BACKEND_URL}/rooms`);
 };
 
-export const getRoom: PromiseFn<Room> = async ({roomId}) => {
+export const getRoom: PromiseFn<Room> = ({roomId}) => {
   return get<Room>(`${BACKEND_URL}/rooms/${roomId}`);
 };
 
-export const createUser = async (roomName: string) => {
+export const createUser = (roomName: string) => {
   return post<UserCreate, User>(`${BACKEND_URL}/rooms/${roomName}/user`, {});
 };
 
-export const createRoom = async () => {
+export const createRoom = () => {
   return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, {} as RoomCreate);
 };

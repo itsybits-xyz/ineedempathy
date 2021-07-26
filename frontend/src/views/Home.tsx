@@ -5,6 +5,7 @@ import { RoomCreate } from "../schemas";
 import { useForm } from "react-hook-form";
 import { Redirect } from "react-router-dom";
 import { Hidden } from "../components";
+import { BACKEND_URL } from '../config';
 
 export const Home: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
@@ -12,26 +13,10 @@ export const Home: FC = () => {
   const [error, setError] = useState<string>();
 
   const handleNewRoom = (ev:any, count = 0) => {
-    fetch("http://localhost:8000/rooms", {
-      "body": "{}",
-      "method": "POST",
-    }).then((res) => {
-      console.log('BS:2', res);
-    }, (er) => {
-      console.log('BS:2', er, er.message, er.stack);
-    });
-    return;
-    console.log('BS: Attempting room creation', count);
     return createRoom().then((newRoom) => {
-      console.log('BS: Setting room:', newRoom.name);
       setGotoRoomName(newRoom.name);
     }).catch((er) => {
-      if (count < 10) {
-        console.log('BS: loop');
-        handleNewRoom(ev, count + 1);
-      } else {
-        console.log('BS: fucckckk', er, er.message, er.stack);
-      }
+      setError(er);
     });
   };
 
@@ -48,8 +33,8 @@ export const Home: FC = () => {
     );
   }
 
-  return gotoRoomName && false ? (
-    <div>to={`/room/${gotoRoomName}`};</div>
+  return gotoRoomName ? (
+    <Redirect to={`${BACKEND_URL}/room/${gotoRoomName}33`} />
   ) : (
     <>
       <div className="content">
