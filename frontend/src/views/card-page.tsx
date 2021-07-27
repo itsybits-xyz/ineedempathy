@@ -15,10 +15,24 @@ export interface CardPageProps {
   }
 };
 
+function getTypeString(card:Card, commentType:string) {
+  const cardName:string = card.name;
+  switch(commentType) {
+    case 'NEED_MET':
+      return `My need for ${cardName} was met when..`;
+    case 'NEED_NOT_MET':
+      return `My need for ${cardName} was not met when..`;
+    case 'DEFINE':
+      return `I define ${cardName} as..`;
+    case 'THINK':
+      return `My thoughts on ${cardName} are..`;
+  }
+}
+
 export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
   const { name } = props.match.params;
   const { data: cardData, error: cardError, isPending: loadingCards } = useAsync(getCards);
-  const [ type, setType ] = useState<string>('THINK');
+  const [ type, setType ] = useState<string>('DEFINE');
   const [ data, setData ] = useState<string>('');
   const [ commentData, setCommentData ] = useState<Comment[]>([]);
   const [ commentError, setCommentError ] = useState();
@@ -84,22 +98,34 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
         <img alt={card.name} width={200} src={BACKEND_URL + card.textUrl} />
       </div>
       <div>
-        { JSON.stringify(commentData) }
+        { commentData.map((comment: Comment) => {
+          return (
+            <div className={'cardComment ' + comment.type}>
+              <p>{getTypeString(card, comment.type)}</p>
+              <p>{comment.data}</p>
+            </div>
+          );
+        }) }
       </div>
       <div>
         { createdComment ? (
           <p>Thank you for your <strong>contribution</strong>.</p>
         ) : (
-          <>
-            <select value={type} onChange={(e) => { setType(e.target.value) }}>
-              <option value="NEED_MET">NEED_MET</option>
-              <option value="NEED_NOT_MET">NEED_NOT_MET</option>
-              <option value="DEFINE">DEFINE</option>
-              <option value="THINK">THINK</option>
-            </select>
+          <div className={'createComment ' + type}>
+            <h3>Add a Comment</h3>
+            <label>
+              <select value={type} onChange={(e) => { setType(e.target.value) }}>
+                <option value="NEED_MET">{getTypeString(card, 'NEED_MET')}</option>
+                <option value="NEED_NOT_MET">{getTypeString(card, 'NEED_NOT_MET')}</option>
+                <option value="DEFINE">{getTypeString(card, 'DEFINE')}</option>
+                <option value="THINK">{getTypeString(card, 'THINK')}</option>
+              </select>
+            </label>
             <textarea value={data} onChange={(e) => { setData(e.target.value) }} />
-            <button onClick={handleCreateComment}>Add</button>
-          </>
+            <label>
+              <button onClick={handleCreateComment}>Add</button>
+            </label>
+          </div>
       )}
       </div>
     </>

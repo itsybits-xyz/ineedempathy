@@ -26,12 +26,48 @@ a.fn-card {
 a.fn-card img {
   border-radius: 15px;
   transition: border 500ms ease-out;
-  transition: transform 500ms ease-out;
-  border: 3px solid #ca5add;
+  transition: transform 500ms ease-out; border: 3px solid #ca5add;
   transform: scale(0.9);
 }
 
 a.fn-card img:hover {
   transform: scale(1);
   border: 3px solid #9c27b0;
+}
+
+.cardComment {
+  border-radius: 4px;
+  width: 30%;
+  padding: 2% 10%;
+  margin: 2% 10%;
+}
+
+.cardComment.NEED_MET, .createComment.NEED_MET {
+  border: 3px solid blue;
+}
+
+.cardComment.NEED_NOT_MET, .createComment.NEED_NOT_MET {
+  border: 3px solid red;
+}
+
+.cardComment.THINK, .createComment.THINK {
+  border: 3px solid green;
+}
+
+.cardComment.DEFINE, .createComment.DEFINE {
+  border: 3px solid purple;
+}
+
+.createComment {
+  border-radius: 4px;
+  width: 80%;
+  padding: 2% 10%;
+  margin: 2% 10%;
+}
+.createComment textarea {
+  width: 50%;
+  height: 125px !important;
+}
+.createComment label {
+  display: block;
 }
