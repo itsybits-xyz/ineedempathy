@@ -5,14 +5,13 @@ import { RoomCreate } from "../schemas";
 import { useForm } from "react-hook-form";
 import { Redirect } from "react-router-dom";
 import { Hidden } from "../components";
-import { BACKEND_URL } from '../config';
 
 export const Home: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
   const [roomName, setRoomName] = useState<string>();
   const [error, setError] = useState<string>();
 
-  const handleNewRoom = (ev:any, count = 0) => {
+  const handleNewRoom = (ev:any) => {
     ev.preventDefault();
     return createRoom().then((newRoom) => {
       setGotoRoomName(newRoom.name);

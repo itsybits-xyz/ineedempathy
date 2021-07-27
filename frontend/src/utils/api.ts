@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '../config';
-import { Card, Room, User, UserCreate, RoomCreate } from '../schemas';
+import { Card, Comment, CommentCreate, Room, RoomCreate } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
@@ -52,10 +52,14 @@ export const getRoom: PromiseFn<Room> = ({roomId}) => {
   return get<Room>(`${BACKEND_URL}/rooms/${roomId}`);
 };
 
-export const createUser = (roomName: string) => {
-  return post<UserCreate, User>(`${BACKEND_URL}/rooms/${roomName}/user`, {});
-};
-
 export const createRoom = () => {
   return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, {} as RoomCreate);
+};
+
+export const getComments = (name: string) => {
+  return get<Comment[]>(`${BACKEND_URL}/cards/${name}/comments`);
+};
+
+export const createComment = (comment: CommentCreate) => {
+  return post<CommentCreate, Comment>(`${BACKEND_URL}/cards/${comment.card_id}/comments`, comment);
 };
