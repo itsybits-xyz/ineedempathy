@@ -15,7 +15,7 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
     <div>
       { comments.map((comment: Comment, idx: number) => {
         return (
-          <div key={idx} className={'cardComment ' + comment.type}>
+          <div key={idx} className={'cardComment ' + comment.type} role="comment">
             <p>{commentTypeToString(card, comment.type)}</p>
             <p>{comment.data}</p>
           </div>

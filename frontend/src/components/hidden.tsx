@@ -15,7 +15,7 @@ export const Hidden: FC<HiddenProps> = (props: HiddenProps) => {
   const [hidden, setHidden] = useState<boolean>(true);
   return (
     <>
-      <div className="hidden">
+      <div role="alert" className="hidden">
         { hidden ? (
           <button onClick={() => setHidden(false) }>Show</button>
         ) : (

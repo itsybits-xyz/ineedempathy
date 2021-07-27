@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Card, Comment, CommentCreate } from '../schemas';
+import { Card, Comment } from '../schemas';
 import { useForm } from "react-hook-form";
 import { Hidden } from '../components';
 import { commentTypeToString, getComments, createComment } from '../utils';
@@ -24,12 +24,12 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
   return (
     <div>
       { hasCommented ? (
-        <p>Thank you for your <strong>contribution</strong>.</p>
+        <p role="alert">Thank you for your <strong>contribution</strong>.</p>
       ) : (
         <form className={'createComment'} onSubmit={localOnSubmit}>
           <h3>Add a Comment</h3>
           <label>
-            <select {...registerField("type")}>
+            <select {...registerField("type")} role="listbox">
               <option value="NEED_MET">{commentTypeToString(card, 'NEED_MET')}</option>
               <option value="NEED_NOT_MET">{commentTypeToString(card, 'NEED_NOT_MET')}</option>
               <option value="DEFINE">{commentTypeToString(card, 'DEFINE')}</option>
@@ -37,13 +37,13 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
             </select>
           </label>
           <label>
-            <textarea {...registerField("data")} />
+            <textarea role="textbox" {...registerField("data")} />
           </label>
           <label>
             {submitted ? (
               <p>Submitting...</p>
             ) : (
-              <input type="submit" value="Add" />
+              <input role="button" type="submit" value="Add" />
             )}
           </label>
         </form>
