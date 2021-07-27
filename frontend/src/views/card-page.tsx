@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { BACKEND_URL } from '../config';
-import { isEmptyValue, getCard } from '../utils';
+import { getCard } from '../utils';
 import { Hidden } from '../components';
 import { CardHeader } from './card-header';
 import { CardComments } from './card-comments';
@@ -28,7 +28,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
     });
   }, [name]);
 
-  if (!isEmptyValue(error)) {
+  if (error) {
     return (
       <>
         <p>An unexpected error occured.</p>

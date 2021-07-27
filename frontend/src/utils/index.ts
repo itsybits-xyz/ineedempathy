@@ -2,13 +2,7 @@ import { Card } from '../schemas';
 
 export * from './api';
 
-export const isEmptyValue = (val:any) => {
-  if (!val) { return true; }
-  if (Object.keys(val).length === 0) { return true; }
-  return false
-};
-
-export function getTypeString(card:Card, commentType:string) {
+export function commentTypeToString(card:Card, commentType:string) {
   const cardName:string = card.name;
   switch(commentType) {
     case 'NEED_MET':

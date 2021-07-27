@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Card, Comment } from '../schemas';
-import { getTypeString } from '../utils';
+import { commentTypeToString } from '../utils';
 
 export interface CardCommentsListProps {
   card: Card,
@@ -13,10 +13,10 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
 
   return (
     <div>
-      { comments.map((comment: Comment) => {
+      { comments.map((comment: Comment, idx: number) => {
         return (
-          <div className={'cardComment ' + comment.type}>
-            <p>{getTypeString(card, comment.type)}</p>
+          <div key={idx} className={'cardComment ' + comment.type}>
+            <p>{commentTypeToString(card, comment.type)}</p>
             <p>{comment.data}</p>
           </div>
         );
