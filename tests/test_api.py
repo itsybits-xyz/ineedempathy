@@ -82,6 +82,38 @@ def test_get_card():
     assert json["blankUrl"] == "/static/compersion_blank.jpg"
 
 
+def test_create_and_get_comment():
+    card_resp = test_client.post(
+        "/cards",
+        json={"name": "compersion", "type": "feeling"},
+    )
+    assert card_resp.status_code == 201
+    card_json = card_resp.json()
+    print(card_json)
+    post_response = test_client.post(
+        "/cards/compersion/comments",
+        json={
+            "cardId": card_json["id"],
+            "type": "NEED_MET",
+            "data": "princess.wiggles"
+        }
+    )
+    assert post_response.status_code == 201
+    comment_response = test_client.get(
+        "/cards/compersion/comments",
+    )
+    assert comment_response.status_code == 200
+    json = comment_response.json()
+    assert len(json) == 1
+    comment = json[0]
+    assert len(list(comment.keys())) == 5
+    assert comment["id"]
+    assert comment["cardId"] == card_json["id"]
+    assert comment["type"] == "NEED_MET"
+    assert comment["data"] == "princess.wiggles"
+    assert comment["createdAt"]
+
+
 def __socket_url(room, user):
     return f"/rooms/{room['name']}/users/{user['name']}.ws"
 

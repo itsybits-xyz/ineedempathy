@@ -4,19 +4,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import (
     Depends,
     FastAPI,
-    HTTPException,
-    Request,
     WebSocket,
     WebSocketDisconnect,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-
 from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card
-from .schemas import Room, RoomCreate
+from .schemas import Room, RoomCreate, Comment, CommentCreate
 from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
@@ -63,12 +60,29 @@ def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Room:
     return crud.create_card(db, card)
 
 
+@app.get("/cards/{card_name}/comments", response_model=List[Comment])
+def get_comments(
+    card_name: str,
+    db: Session = Depends(get_db),
+) -> List[models.Card]:
+    return crud.get_comments(db, card_name)
+
+
+@app.post("/cards/{card_name}/comments", status_code=201, response_model=Comment)
+def create_comment(
+    card_name: str,
+    comment: CommentCreate,
+    db: Session = Depends(get_db)
+) -> models.Room:
+    return crud.create_comment(db, card_name, comment)
+
+
 @app.get("/cards/{name}", response_model=Card)
 def get_card_by_name(
     name: str,
     db: Session = Depends(get_db),
 ) -> List[models.Card]:
-    return crud.get_card(name, db)
+    return crud.get_card(db, name)
 
 
 @app.get("/rooms/{room_id}", response_model=Room)
@@ -82,7 +96,6 @@ def get_room(
 @app.post("/rooms", status_code=201, response_model=Room)
 def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
     room = crud.create_room(db, room)
-    print(room.name)
     return room
 
 
@@ -90,7 +103,7 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)) -> models.Room:
 def add_card(room_name: str, user_token: str, card_name: str, websocket: WebSocket, db: Session = Depends(get_db)) -> models.Card:
     scope = websocket.scope
     connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
-    card = crud.get_card(card_name, db)
+    card = crud.get_card(db, card_name)
     room = crud.get_room_by_name(db, room_name)
     connection_manager.add_card(room, user_token, card)
 
@@ -99,7 +112,7 @@ def add_card(room_name: str, user_token: str, card_name: str, websocket: WebSock
 def remove_card(room_name: str, user_token: str, card_name: str, websocket: WebSocket, db: Session = Depends(get_db)) -> models.Card:
     scope = websocket.scope
     connection_manager: Optional[ConnectionManager] = scope.get("connection_manager")
-    card = crud.get_card(card_name, db)
+    card = crud.get_card(db, card_name)
     room = crud.get_room_by_name(db, room_name)
     connection_manager.remove_card(room, user_token, card)
 
