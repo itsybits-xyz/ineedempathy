@@ -23,7 +23,7 @@ test('renders card comments', () => {
   render(<CardComments card={card} />);
   const article = screen.getByRole('article');
   expect(article).toBeTruthy();
-  expect(screen.getByRole('button')).toBeTruthy();
+  expect(screen.getByText('Add')).toBeTruthy();
 });
 
 test('renders onSubmit error', () => {
@@ -46,10 +46,10 @@ test('renders onSubmit error', () => {
   render(<CardComments card={card} />);
 
   // Action
-  fireEvent.click(screen.getByRole('button'));
+  fireEvent.click(screen.getByText('Add'));
 
   // Assertion
   const article = screen.getByRole('article');
   expect(article).toBeTruthy();
-  expect(() => screen.getByRole('button') ).toThrow();
+  expect(() => screen.getByText('Add') ).toThrow();
 });

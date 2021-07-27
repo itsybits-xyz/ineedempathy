@@ -7,13 +7,13 @@
 
 ## Card Page
 
-* [ ] Frontend tests?
 * [ ] Captcha
-* [ ] Sorting/Filtering comments
 * [ ] Add definition, alt text attributes, and level to cards
 
 # Done:
 
+* [x] Frontend tests?
+* [x] Sorting/Filtering comments
 * [X] Handle multiple websockets for the same user (A user can visit the room from multiple tabs)
 * [X] Create room UI
 * [X] Ensure that room names will be unique.

@@ -71,3 +71,7 @@ a.fn-card img:hover {
 .createComment label {
   display: block;
 }
+
+#filters button.enabled {
+  border: 3px solid purple;
+}
