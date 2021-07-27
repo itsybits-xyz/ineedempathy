@@ -32,7 +32,7 @@ export const CardComments: FC<CardCommentsProps> = (props: CardCommentsProps) =>
   });
 
   return (
-    <>
+    <div role="article">
       <CardCommentsList card={card} comments={comments} />
       { error ? (
         <>
@@ -46,6 +46,6 @@ export const CardComments: FC<CardCommentsProps> = (props: CardCommentsProps) =>
           registerField={(name: any) => register(name)}
           onSubmit={onSubmit} />
       )}
-    </>
+    </div>
   );
 };
