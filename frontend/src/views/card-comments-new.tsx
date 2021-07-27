@@ -1,7 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Card, Comment } from '../schemas';
 import { useForm } from "react-hook-form";
-import { Hidden } from '../components';
 import { commentTypeToString, getComments, createComment } from '../utils';
 import { CardCommentsList } from './card-comments-list';
 

@@ -26,10 +26,7 @@ export const Home: FC = () => {
 
   if (error) {
     return (
-      <>
-        <p>An unexpected error occured.</p>
-        <Hidden error={error} />
-      </>
+      <Hidden error={error} />
     );
   }
 

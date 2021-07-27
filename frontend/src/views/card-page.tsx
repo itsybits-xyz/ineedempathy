@@ -30,10 +30,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
 
   if (error) {
     return (
-      <>
-        <p>An unexpected error occured.</p>
-        <Hidden error={error} />
-      </>
+      <Hidden error={error} />
     );
   }
 

@@ -35,10 +35,7 @@ export const CardComments: FC<CardCommentsProps> = (props: CardCommentsProps) =>
     <div role="article">
       <CardCommentsList card={card} comments={comments} />
       { error ? (
-        <>
-          <p>An unexpected error occured.</p>
-          <Hidden error={error} />
-        </>
+        <Hidden error={error} />
       ) : (
         <CardCommentsNew
           card={card}

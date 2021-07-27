@@ -20,20 +20,15 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
 
   if (error) {
     return (
-      <>
-        <p>An unexpected error occured.</p>
-        <Hidden error={error} />
-      </>
+      <Hidden error={error} />
     );
   }
 
   if (isPending || !data) {
     return (
-      <>
-        <div className="content">
-          Loading...
-        </div>
-      </>
+      <div className="content">
+        Loading...
+      </div>
     );
   }
 

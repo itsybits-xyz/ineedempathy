@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import { MdWarning } from 'react-icons/md';
 
 export interface HiddenProps {
   error?: any;
@@ -16,19 +17,23 @@ export const Hidden: FC<HiddenProps> = (props: HiddenProps) => {
   return (
     <>
       <div role="alert" className="hidden">
+        <h3>
+          <MdWarning size={36}/>
+          <p>An unexpected error occured.</p>
+        </h3>
         { hidden ? (
           <button onClick={() => setHidden(false) }>Show</button>
         ) : (
           <>
             <button onClick={() => setHidden(true) }>Hide</button>
             { props.error && (
-              <>
-                <p>Message: {props.error.message}</p>
-                <Hidden>
-                  <h3>Stack</h3>
-                  <p>{props.error.stack}</p>
-                </Hidden>
-              </>
+              <div>
+                <h4>Error Details</h4>
+                <strong>Message</strong>
+                <p>{props.error.message}</p>
+                <strong>Stack</strong>
+                <p>{props.error.stack}</p>
+              </div>
             ) }
             { props.children && (
               <p>
