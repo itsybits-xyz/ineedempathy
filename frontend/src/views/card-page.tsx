@@ -3,7 +3,7 @@ import { BACKEND_URL } from '../config';
 import { getCard } from '../utils';
 import { Hidden } from '../components';
 import { CardHeader } from './card-header';
-import { CardComments } from './card-page';
+import { CardComments } from './card-comments';
 import { Card } from '../schemas';
 
 export interface CardPageProps {
