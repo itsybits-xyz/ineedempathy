@@ -3,7 +3,7 @@ import { BACKEND_URL } from '../config';
 import { getCard } from '../utils';
 import { Hidden } from '../components';
 import { CardHeader } from './card-header';
-import { CardComments } from './card-comments';
+import { CardComments } from './card-page';
 import { Card } from '../schemas';
 
 export interface CardPageProps {
@@ -43,6 +43,6 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
       <CardComments card={card} />
     </>
   ) : (
-    <p>Loading...</p>
+    <p role="alert">Loading...</p>
   );
 };
