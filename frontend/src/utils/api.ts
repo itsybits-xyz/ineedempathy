@@ -56,8 +56,8 @@ export const createRoom = () => {
   return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, {} as RoomCreate);
 };
 
-export const getComments = (name: string) => {
-  return get<Comment[]>(`${BACKEND_URL}/cards/${name}/comments`);
+export const getComments = (card: Card) => {
+  return get<Comment[]>(`${BACKEND_URL}/cards/${card.name}/comments`);
 };
 
 export const createComment = (card: Card, comment: CommentCreate) => {
