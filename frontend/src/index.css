@@ -42,19 +42,19 @@ a.fn-card img:hover {
   margin: 2% 10%;
 }
 
-.cardComment.NEED_MET, .createComment.NEED_MET {
+.cardComment.NEED_MET {
   border: 3px solid blue;
 }
 
-.cardComment.NEED_NOT_MET, .createComment.NEED_NOT_MET {
+.cardComment.NEED_NOT_MET {
   border: 3px solid red;
 }
 
-.cardComment.THINK, .createComment.THINK {
+.cardComment.THINK {
   border: 3px solid green;
 }
 
-.cardComment.DEFINE, .createComment.DEFINE {
+.cardComment.DEFINE {
   border: 3px solid purple;
 }
 

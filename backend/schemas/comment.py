@@ -6,7 +6,7 @@ from fastapi_camelcase import CamelModel
 
 class CommentType(str, Enum):
     NEED_MET = "NEED_MET"
-    NEET_NOT_MET = "NEET_NOT_MET"
+    NEED_NOT_MET = "NEED_NOT_MET"
     DEFINE = "DEFINE"
     THINK = "THINK"
 

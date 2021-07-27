@@ -3,7 +3,7 @@ export interface CommentBase {
 }
 
 export interface CommentCreate {
-  card_id: number;
+  cardId: number;
   type: string;
   data: string;
 }
@@ -11,7 +11,7 @@ export interface CommentCreate {
 // Room object from backend.
 export interface Comment extends CommentBase {
   id: number;
-  card_id: number;
+  cardId: number;
   type: string;
   data: string;
   createdAt: Date;

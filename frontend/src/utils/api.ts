@@ -60,6 +60,7 @@ export const getComments = (name: string) => {
   return get<Comment[]>(`${BACKEND_URL}/cards/${name}/comments`);
 };
 
-export const createComment = (comment: CommentCreate) => {
-  return post<CommentCreate, Comment>(`${BACKEND_URL}/cards/${comment.card_id}/comments`, comment);
+export const createComment = (card: Card, comment: CommentCreate) => {
+  comment.cardId = card.id;
+  return post<CommentCreate, Comment>(`${BACKEND_URL}/cards/${card.name}/comments`, comment);
 };

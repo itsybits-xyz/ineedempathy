@@ -5,6 +5,7 @@ import { getCards, getComments, createComment } from '../utils/api';
 import { useAsync } from 'react-async';
 import { Hidden } from '../components';
 import { Card, Comment, CommentCreate } from '../schemas';
+import { useForm } from "react-hook-form";
 
 export interface CardPageProps {
   match: {
@@ -32,21 +33,24 @@ function getTypeString(card:Card, commentType:string) {
 export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
   const { name } = props.match.params;
   const { data: cardData, error: cardError, isPending: loadingCards } = useAsync(getCards);
-  const [ type, setType ] = useState<string>('DEFINE');
-  const [ data, setData ] = useState<string>('');
   const [ commentData, setCommentData ] = useState<Comment[]>([]);
-  const [ commentError, setCommentError ] = useState();
-  const [ createdComment, setCreatedComment ] = useState<boolean>(false);
+  const [ hasCommented, setHasCommented ] = useState<boolean>(false);
+  const { register, handleSubmit, formState: { errors: commentError } } = useForm();
 
   useEffect(() => {
     getComments(name).then((data) => {
       setCommentData(data);
-    }).catch((er) => {
-      setCommentError(er);
-    });
-  });
+    })
+  }, [name, hasCommented]);
 
-  if (cardError || commentError) {
+
+  const isEmptyValue = (val:any) => {
+    if (!val) { return true; }
+    if (Object.keys(val).length === 0) { return true; }
+    return false
+  };
+
+  if (!isEmptyValue(cardError) || !isEmptyValue(commentError)) {
     return (
       <>
         <p>An unexpected error occured.</p>
@@ -81,14 +85,9 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
     );
   }
 
-  const handleCreateComment = (ev: any) => {
-    const comment: CommentCreate = {
-      card_id: card.id,
-      type: type,
-      data: data,
-    }
-    createComment(comment).then(() => {
-      setCreatedComment(true);
+  const onSubmit = (comment: CommentCreate) => {
+    createComment(card, comment).then(() => {
+      setHasCommented(true);
     });
   };
 
@@ -108,24 +107,26 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
         }) }
       </div>
       <div>
-        { createdComment ? (
+        { hasCommented ? (
           <p>Thank you for your <strong>contribution</strong>.</p>
         ) : (
-          <div className={'createComment ' + type}>
+          <form className={'createComment'} onSubmit={handleSubmit(onSubmit)}>
             <h3>Add a Comment</h3>
             <label>
-              <select value={type} onChange={(e) => { setType(e.target.value) }}>
+              <select {...register("type")}>
                 <option value="NEED_MET">{getTypeString(card, 'NEED_MET')}</option>
                 <option value="NEED_NOT_MET">{getTypeString(card, 'NEED_NOT_MET')}</option>
                 <option value="DEFINE">{getTypeString(card, 'DEFINE')}</option>
                 <option value="THINK">{getTypeString(card, 'THINK')}</option>
               </select>
             </label>
-            <textarea value={data} onChange={(e) => { setData(e.target.value) }} />
             <label>
-              <button onClick={handleCreateComment}>Add</button>
+              <input type="text" {...register("data", {})} />
             </label>
-          </div>
+            <label>
+              <input type="submit" value="Add" />
+            </label>
+          </form>
       )}
       </div>
     </>
