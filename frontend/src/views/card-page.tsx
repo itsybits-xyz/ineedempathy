@@ -121,7 +121,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
               </select>
             </label>
             <label>
-              <input type="text" {...register("data", {})} />
+              <textarea {...register("data", {})} />
             </label>
             <label>
               <input type="submit" value="Add" />
