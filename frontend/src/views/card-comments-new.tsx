@@ -1,34 +1,44 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Card, Comment } from '../schemas';
+import { CommentCreate, Card, Comment } from '../schemas';
 import { useForm } from "react-hook-form";
 import { commentTypeToString, getComments, createComment } from '../utils';
 import { CardCommentsList } from './card-comments-list';
+import { Hidden } from '../components';
 
 export interface CardCommentsNewProps {
   card: Card,
   hasCommented: boolean,
-  registerField: (name: string) => any,
-  onSubmit: (ev: any) => any,
+  onSubmit: () => any,
 };
 
 export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNewProps) => {
-  const { card, hasCommented, registerField, onSubmit } = props;
+  const { card, hasCommented, onSubmit } = props;
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const { register, handleSubmit } = useForm();
+  const [ error, setError ] = useState(false);
 
-  const localOnSubmit = (ev: any) => {
-    setSubmitted(true);
-    return onSubmit(ev);
+  const localSubmit = (comment: CommentCreate) => {
+    createComment(card, comment).then(() => {
+      setSubmitted(true);
+      return onSubmit();
+    }).catch((er) => {
+      setError(er);
+    });
   };
+
+  if (error) {
+    return <Hidden error={error} />
+  }
 
   return (
     <div>
       { hasCommented ? (
         <p role="alert">Thank you for your <strong>contribution</strong>.</p>
       ) : (
-        <form className={'createComment'} onSubmit={localOnSubmit}>
+        <form className={'createComment'} onSubmit={handleSubmit(localSubmit)}>
           <h3>Add a Comment</h3>
           <label>
-            <select {...registerField("type")} role="listbox">
+            <select {...register("type")} role="listbox">
               <option value="NEED_MET">{commentTypeToString(card, 'NEED_MET')}</option>
               <option value="NEED_NOT_MET">{commentTypeToString(card, 'NEED_NOT_MET')}</option>
               <option value="DEFINE">{commentTypeToString(card, 'DEFINE')}</option>
@@ -36,7 +46,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
             </select>
           </label>
           <label>
-            <textarea role="textbox" {...registerField("data")} />
+          <textarea role="textbox" {...register("data")} />
           </label>
           <label>
             {submitted ? (
