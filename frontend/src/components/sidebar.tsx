@@ -1,7 +1,13 @@
 import React, { FC } from 'react';
+import { NavLink } from 'react-router-dom';
 import { MdExtension, MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 
 export const SideBar: FC = () => {
+  const isActiveFor = (navLinkMatch) => {
+    return (match, location) => {
+      return location?.pathname?.match(navLinkMatch);
+    };
+  };
   return (
     <>
       <div
@@ -17,45 +23,45 @@ export const SideBar: FC = () => {
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
-            <li className="nav-item active">
-              <a className="nav-link" href="/">
+            <li className="nav-item">
+              <NavLink to="/" exact={true} className="nav-link" activeClassName="active">
                 <MdDashboard size={24}/>
                 <p>
-                  Play
+                  Start
                 </p>
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
-                <MdExtension size={24}/>
-                <p>
-                  How to Play
-                </p>
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/feelings">
+              <NavLink
+                to="/feelings"
+                className="nav-link"
+                isActive={isActiveFor(/^\/feeling.*$/)}
+                activeClassName="active">
                 <MdFavorite size={24}/>
                 <p>
                   Feelings
                 </p>
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/needs">
+              <NavLink
+                to="/needs"
+                className="nav-link"
+                isActive={isActiveFor(/^\/need.*$/)}
+                activeClassName="active">
                 <MdWbSunny size={24}/>
                 <p>
                   Needs
                 </p>
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/about">
+              <NavLink to="/about" className="nav-link" activeClassName="active">
                 <MdLayers size={24}/>
                 <p>
                   About
                 </p>
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>

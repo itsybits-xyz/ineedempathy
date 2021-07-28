@@ -36,6 +36,7 @@
 @mixin sidebar-active-color($font-color){
     .nav{
       .nav-item{
+            & > a.active:not([data-toggle="collapse"]),
             &.active > a:not([data-toggle="collapse"]){
                 color: $font-color;
                 opacity: 1;
@@ -51,7 +52,8 @@
 
 @mixin set-background-color-button($color){
 
-    li.active > a{
+    li.active > a,
+    li > a.active {
         background-color: $color;
         @include shadow-big-color($color);
     }

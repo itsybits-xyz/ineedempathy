@@ -15,12 +15,13 @@ import { SideBar } from './components';
 
 export const Routes: FC = () => {
   const history = useHistory();
+  const currentPath = history?.location?.pathname || '';
 
   return (
     <BrowserRouter>
       <Switch></Switch>
       <div className="wrapper">
-        <SideBar />
+        <SideBar currentPath={currentPath} />
         <div className="main-panel">
           <Route exact path="/" component={Home} />
           <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
