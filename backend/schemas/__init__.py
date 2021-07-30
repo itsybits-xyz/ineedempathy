@@ -3,4 +3,4 @@ from .user import User, UserInDB, UserUpdate
 from .card import Card, CardCreate, CardInDB
 from .comment import Comment, CommentCreate, CommentInDB
 from .userinfo import UserInfo
-from .roominfo import RoomInfo
+from .roominfo import RoomInfo, RoomInfoBase

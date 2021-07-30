@@ -5,9 +5,6 @@ export interface RoomBase {
 export interface RoomCreate {
 }
 
-// Room object from backend.
 export interface Room extends RoomBase {
-  id: number;
   name: string;
-  createdAt: Date;
 }

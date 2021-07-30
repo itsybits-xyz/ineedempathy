@@ -1,5 +1,5 @@
 from typing import List, Dict
-from ..schemas import Room, RoomInfo, Card
+from ..schemas import RoomInfo, Card
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -20,7 +20,7 @@ class ConnectionManager:
 
     def __init__(self):
         print("Creating new empty room")
-        self._rooms: Dict[int, RoomInfo] = {}
+        self._rooms: Dict[str, RoomInfo] = {}
 
     def __len__(self) -> int:
         """Get the number of users in the room."""
@@ -36,32 +36,41 @@ class ConnectionManager:
         """Return a list of IDs for connected users."""
         return list(self._rooms)
 
-    def add_user(self, room: Room, user_token: str, socket: WebSocket):
-        if room.id not in self._rooms:
-            self._rooms[room.id] = RoomInfo(
+    def get_room(self, name: str):
+        return self._rooms.get(name)
+
+    def create_room(self, name: str):
+        room_info = RoomInfo(name=name)
+        self._rooms[name] = room_info
+        return room_info
+
+    def add_user(self, room: RoomInfo, name: str, socket: WebSocket):
+        if room.name not in self._rooms:
+            # TODO
+            self._rooms[room.name] = RoomInfo(
                 room=room,
                 users={},
             )
-        self._rooms[room.id].add_user(
-            user_token=user_token,
+        self._rooms[room.name].add_user(
+            name=name,
             socket=socket
         )
 
-    def remove_user(self, room: Room, user_token: str, socket: WebSocket):
-        room_info = self._rooms.get(room.id)
-        room_info.remove_user(user_token, socket)
+    def remove_user(self, room: RoomInfo, name: str, socket: WebSocket):
+        room_info = self._rooms.get(room.name)
+        room_info.remove_user(name, socket)
         if room_info is None or room_info.empty():
-            del self._rooms[room.id]
+            del self._rooms[room.name]
 
-    def add_card(self, room: Room, user_token: str, card: Card, socket: WebSocket):
-        room_info = self._rooms.get(room.id)
-        room_info.add_card(user_token, card, socket)
+    def add_card(self, room: RoomInfo, name: str, card: Card, socket: WebSocket):
+        room_info = self._rooms.get(room.name)
+        room_info.add_card(name, card, socket)
 
-    def remove_card(self, room: Room, user_token: str, card: Card, socket: WebSocket):
-        room_info = self._rooms.get(room.id)
-        room_info.remove_card(user_token, card, socket)
+    def remove_card(self, room: RoomInfo, name: str, card: Card, socket: WebSocket):
+        room_info = self._rooms.get(room.name)
+        room_info.remove_card(name, card, socket)
 
-    async def send_update(self, room: Room):
-        room_info = self._rooms.get(room.id)
+    async def send_update(self, room: RoomInfo):
+        room_info = self._rooms.get(room.name)
         if room_info is not None:
             await room_info.send_update()
