@@ -10,6 +10,14 @@
 * [ ] Captcha
 * [ ] Add definition, alt text attributes, and level to cards
 
+## Empathy Room
+
+* [ ] Render user list
+* [ ] Render card list
+* [ ] Push cards to my card list
+* [ ] View card list updates from users
+* [ ] Switch speakers
+
 # Done:
 
 * [x] Frontend tests?
