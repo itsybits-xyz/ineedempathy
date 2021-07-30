@@ -1,6 +1,6 @@
 #!/bin/bash
 
-starting_size=$(curl -so /dev/null localhost:8000/cards -w '%{size_download}')
+starting_size=$(curl -so /dev/null 127.0.0.1:8000/cards -w '%{size_download}')
 echo "_____________________________"
 echo "♠️  Starting Card Size: ${starting_size}"
 echo "*****************************"
@@ -14,7 +14,7 @@ echo "💎 Starting Feelings!"
 echo "*********************"
 for p in $(cat script/data/feelings.txt)
 do
-    curl -X POST "http://localhost:8000/cards" -H  "accept: application/json" -H "Content-Type: application/json" -d "{\"name\":\"$p\",\"type\":\"feeling\"}"
+    curl -X POST "http://127.0.0.1:8000/cards" -H  "accept: application/json" -H "Content-Type: application/json" -d "{\"name\":\"$p\",\"type\":\"feeling\"}"
 done
 
 echo "__________________"
@@ -22,7 +22,7 @@ echo "🏔 Starting Needs!"
 echo "******************"
 for p in $(cat script/data/needs.txt)
 do
-    curl -X POST "http://localhost:8000/cards" -H  "accept: application/json" -H "Content-Type: application/json" -d "{\"name\":\"$p\",\"type\":\"need\"}"
+    curl -X POST "http://127.0.0.1:8000/cards" -H  "accept: application/json" -H "Content-Type: application/json" -d "{\"name\":\"$p\",\"type\":\"need\"}"
 done
 
 echo "____________________________"

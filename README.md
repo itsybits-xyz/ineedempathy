@@ -4,6 +4,13 @@ An app to train a _needs consciousness_.
 
 # Backend Development
 
+## Mac Setup
+
+```
+brew install python3
+pip3 install virtualenv virtualenvwrapper poetry
+```
+
 ## Run Server
 
 ```

@@ -5,6 +5,8 @@ import { Hidden } from '../components';
 import { CardHeader } from './card-header';
 import { CardComments } from './card-comments';
 import { Card } from '../schemas';
+import { useHistory, Link } from 'react-router-dom';
+import { Button, Row } from 'react-bootstrap';
 
 export interface CardPageProps {
   match: {
@@ -16,7 +18,8 @@ export interface CardPageProps {
 };
 
 export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
-  const { name } = props.match.params;
+  const history = useHistory();
+  const { name, type } = props.match.params;
   const [ error, setError ] = useState();
   const [ card, setCard ] = useState<Card>({} as Card);
 
@@ -36,6 +39,11 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
 
   return card.name ? (
     <>
+      <Row className="justify-content-sm-center">
+        <Link to={type === 'feeling' ? '/feelings' : '/needs'}>
+          <Button>Go Back</Button>
+        </Link>
+      </Row>
       <CardHeader card={card} />
       <CardComments card={card} />
     </>

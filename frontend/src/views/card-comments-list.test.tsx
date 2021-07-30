@@ -33,7 +33,7 @@ test('accepts default filters', () => {
   ]
   render(<CardCommentsList card={card} comments={comments} />);
   return screen.findAllByRole('comment').then((renderedComments) => {
-    expect(renderedComments).toHaveLength(3)
+    expect(renderedComments).toHaveLength(4)
   });
 });
 
@@ -51,29 +51,24 @@ test('accepts default filters', () => {
   ]
   render(<CardCommentsList card={card} comments={comments} />);
   return screen.findAllByRole('comment').then((renderedComments) => {
-    expect(renderedComments).toHaveLength(3);
+    expect(renderedComments).toHaveLength(4);
   }).then(() => {
-    fireEvent.click(screen.getByText('THINK'));
-    return screen.findAllByRole('comment').then((renderedComments) => {
-      expect(renderedComments).toHaveLength(4);
-    });
-  }).then(() => {
-    fireEvent.click(screen.getByText('THINK'));
+    fireEvent.click(screen.getByText('Thoughts'));
     return screen.findAllByRole('comment').then((renderedComments) => {
       expect(renderedComments).toHaveLength(3);
     });
   }).then(() => {
-    fireEvent.click(screen.getByText('DEFINE'));
+    fireEvent.click(screen.getByText('Definitions'));
     return screen.findAllByRole('comment').then((renderedComments) => {
       expect(renderedComments).toHaveLength(2);
     });
   }).then(() => {
-    fireEvent.click(screen.getByText('NEED_NOT_MET'));
+    fireEvent.click(screen.getByText('Unmet Needs'));
     return screen.findAllByRole('comment').then((renderedComments) => {
       expect(renderedComments).toHaveLength(1);
     });
   }).then(() => {
-    fireEvent.click(screen.getByText('NEED_MET'));
+    fireEvent.click(screen.getByText('Met Needs'));
     return screen.findAllByRole('comment').then(() => {
       // Raise exception, there should be no comments
       expect(false).toBeTruthy();

@@ -1,16 +1,27 @@
 import React, { FC } from 'react';
 import { BACKEND_URL } from '../config';
-import { Card } from '../schemas';
+import { Card as CardSchema } from '../schemas';
+import { Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 export interface PickerCardProps {
-  card: Card;
+  card: CardSchema;
 };
 
 export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
-  const card: Card = props.card;
+  const card: CardSchema = props.card;
   return (
-    <a className="fn-card" href={`/${card.type}/${card.name}`}>
-      <img alt={card.name} width={200} src={BACKEND_URL + card.textUrl} />
-    </a>
+    <Link to={`/${card.type}/${card.name}`}>
+      <Card style={{ width: '10rem' }}>
+        <Card.Img
+          alt={card.name}
+          variant="top"
+          onError={(er: any) => setError(er)}
+          src={ BACKEND_URL + card.textUrl } />
+        <Card.Body>
+          <Card.Title>{card.name}</Card.Title>
+        </Card.Body>
+      </Card>
+    </Link>
   );
 };

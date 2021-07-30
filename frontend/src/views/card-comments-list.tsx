@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Card, Comment } from '../schemas';
 import { commentTypeToString } from '../utils';
+import { Badge, Card as CardEl, Container, Row, Col, Button, ButtonGroup, ListGroup } from 'react-bootstrap';
 
 export interface CardCommentsListProps {
   card: Card,
@@ -10,46 +11,70 @@ export interface CardCommentsListProps {
 
 export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsListProps) => {
   const { card, comments } = props;
-  const [ filters, setFilters ] = useState({
-    NEED_NOT_MET: true,
-    NEED_MET: true,
-    DEFINE: true,
-    THINK: false,
-  });
+  const [ filters, setFilters ] = useState([
+    { key: 'NEED_MET', name: 'Met Needs', active: true, variant: 'primary' },
+    { key: 'NEED_NOT_MET', name: 'Unmet Needs', active: true, variant: 'danger' },
+    { key: 'DEFINE', name: 'Definitions', active: true, variant: 'info' },
+    { key: 'THINK', name: 'Thoughts', active: true, variant: 'secondary' },
+  ]);
 
-  const renderButton = (name) => {
-    const className = filters[name] ? 'enabled' : 'disabled'
-    const onClick = () => {
-      setFilters({
-        ...filters,
-        [name]: !filters[name],
-      });
-    };
-    return (
-      <button className={className} onClick={onClick}>{name}</button>
-    );
-  };
+  if (comments.length === 0) {
+    return null;
+  }
 
   return (
-    <div>
-      <div id="filters">
-        { renderButton('NEED_MET') }
-        { renderButton('NEED_NOT_MET') }
-        { renderButton('DEFINE') }
-        { renderButton('THINK') }
-      </div>
-      <div>
-        { comments.filter((comment: Comment) => {
-          return filters[comment.type];
-        }).map((comment: Comment, idx: number) => {
+    <Container fluid>
+      <Row className="justify-content-sm-center">
+        <ButtonGroup>
+          { filters.map((filter, idx) => (
+              <Button
+                onClick={() => {
+                  const newFilters = [...filters];
+                  newFilters[idx] = Object.assign({}, filter, {
+                    active: !filter.active,
+                  });
+                  setFilters(newFilters);
+                  document.activeElement?.blur();
+                }}
+                key={idx}
+                value={filter.key}
+                variant={filter.variant}
+                size="md"
+                type="checkbox"
+                active={filter.active}
+                checked={filter.active}>
+                {filter.name}
+              </Button>
+          )) }
+        </ButtonGroup>
+      </Row>
+      <Row className="justify-content-sm-center">
+        { comments.map((comment: Comment, idx: number) => {
+          const filter = filters.find((filter) => {
+            return filter.key === comment.type
+          });
+          if (!filter || !filter.active) {
+            return null;
+          }
           return (
-            <div key={idx} className={'cardComment ' + comment.type} role="comment">
-              <p>{commentTypeToString(card, comment.type)}</p>
-              <p>{comment.data}</p>
-            </div>
+            <CardEl
+              role="comment"
+              key={idx}
+              style={{ width: '35rem' }}>
+              <CardEl.Body>
+                <CardEl.Title>
+                  <Badge pill variant={filter.variant}>
+                    &nbsp;
+                  </Badge>
+                  {' '}
+                  {commentTypeToString(card, comment.type)}
+                </CardEl.Title>
+                <CardEl.Text>{comment.data}</CardEl.Text>
+              </CardEl.Body>
+            </CardEl>
           );
         }) }
-      </div>
-    </div>
+      </Row>
+    </Container>
   );
 };

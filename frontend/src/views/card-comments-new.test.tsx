@@ -36,7 +36,7 @@ describe('happy paths', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'princess.wiggles' }
       });
-      fireEvent.click(screen.getByText('Add'));
+      fireEvent.click(screen.getByText('Add Comment'));
     });
     expect(() => screen.getByText('Add')).toThrow();
     expect(called).toBeTruthy(); });
@@ -82,9 +82,9 @@ describe('error cases', () => {
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'princess.wiggles' }
       });
-      fireEvent.click(screen.getByText('Add'));
+      fireEvent.click(screen.getByText('Add Comment'));
     });
     expect(called).toBeFalsy();
-    expect(screen.getByText('Add')).toBeTruthy();
+    expect(screen.getByText('Add Comment')).toBeTruthy();
   });
 });
