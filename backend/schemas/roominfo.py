@@ -1,7 +1,7 @@
 from typing import Dict
 from pydantic import BaseModel
 from fastapi import WebSocket
-from . import UserInfo, Card
+from . import UserInfo
 from ..utils import after
 
 
@@ -65,7 +65,5 @@ class RoomInfo(RoomInfoBase):
         return [userinfo.progress(speaker) for userinfo in self.users.values()]
 
     async def broadcast_message(self, msg: Dict):
-        print("sending")
-        print(msg)
         for user_id in self.users:
             await self.users[user_id].send_json(msg)

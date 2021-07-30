@@ -18,8 +18,10 @@ def mock_room(name="princess.mansion"):
 
 def test_empty():
     room = mock_room()
+    room_token = 'princess.wiggles'
     user_token = 'princess.wiggles'
     roominfo = RoomInfo(
+        name=room_token,
         room=room,
         users={},
     )

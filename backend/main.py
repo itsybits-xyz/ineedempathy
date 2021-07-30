@@ -15,7 +15,7 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card, RoomInfoBase
-from .schemas import Room, RoomCreate, Comment, CommentCreate
+from .schemas import RoomCreate, Comment, CommentCreate
 from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
@@ -81,29 +81,11 @@ def get_card_by_name(
 @app.post("/rooms", status_code=201, response_model=RoomInfoBase)
 def create_room(room: RoomCreate, request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
-    print('http_endpoint')
-    print(id(connection_manager))
     available = None
     while available is None:
         name = generate_slug(4)
         available = not connection_manager.get_room(name)
     return connection_manager.create_room(name)
-
-
-@app.post("/rooms/{room_name}/users/{name}/card/{card_name}", status_code=201, response_model=Card)
-def add_card(room_name: str, name: str, card_name: str, request: Request, db: Session = Depends(get_db)) -> models.Card:
-    connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
-    card = crud.get_card(db, card_name)
-    room = crud.get_room_by_name(db, room_name)
-    connection_manager.add_card(room, name, card)
-
-
-@app.delete("/rooms/{room_name}/users/{name}/card/{card_name}", status_code=204)
-def remove_card(room_name: str, name: str, card_name: str, request: Request, db: Session = Depends(get_db)) -> models.Card:
-    connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
-    card = crud.get_card(db, card_name)
-    room = crud.get_room_by_name(db, room_name)
-    connection_manager.remove_card(room, name, card)
 
 
 @app.websocket("/rooms/{room_name}/users/{user_name}.ws")
@@ -113,8 +95,6 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
     if connection_manager is None:
         raise RuntimeError("Global `connection_manager` instance unavailable!")
     room = connection_manager.get_room(room_name)
-    print('websokcet endpoint')
-    print(id(connection_manager))
     if room is None:
         raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     try:

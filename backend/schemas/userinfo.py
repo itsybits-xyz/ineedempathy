@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 
 
 class UserInfo(BaseModel):
-    name: str = "Princess"
+    name: str
     sockets: Dict[int, WebSocket] = {}
     cards: List[int] = []
 

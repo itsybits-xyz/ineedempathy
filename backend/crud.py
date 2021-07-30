@@ -1,8 +1,8 @@
-from typing import Optional, List
+from typing import Optional
 from sqlalchemy.orm import Session
 
-from .models import Card, Room, Comment
-from .schemas import CardCreate, RoomCreate, CommentCreate
+from .models import Card, Comment
+from .schemas import CardCreate, CommentCreate
 
 
 def get_card(db: Session, card_name: str) -> Optional[Card]:

@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from backend.main import app
 from backend.deps import get_db
 from backend.database import Base
+from backend.middleware import ConnectionManager
 import pytest
 
 
@@ -14,6 +15,7 @@ import pytest
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def override_get_db() -> Generator:
     try:
@@ -44,10 +46,8 @@ def test_create_room():
     response = test_client.post("/rooms", json={})
     assert response.status_code == 201
     json = response.json()
-    assert len(list(json.keys())) == 3
-    assert json["id"] == 1
+    assert len(list(json.keys())) == 1
     assert len(json["name"]) >= 1
-    assert len(json["createdAt"]) >= 1
 
 
 def test_create_card():
@@ -114,11 +114,11 @@ def test_create_and_get_comment():
     assert comment["createdAt"]
 
 
-def __socket_url(room, user):
-    return f"/rooms/{room['name']}/users/{user['name']}.ws"
+def socket_url(room_token, user_token):
+    return f"/rooms/{room_token}/users/{user_token}.ws"
 
 
-def __test_invalid_websocket_connect():
+def test_invalid_websocket_connect():
     try:
         client = TestClient(app)
         room = {"name": "fake-room"}
@@ -129,17 +129,60 @@ def __test_invalid_websocket_connect():
         assert True
 
 
-def __test_websocket_connect():
+def test_websocket_add_cards():
+    user_token = 'user.princess.wiggles'
+    room = test_client.post("/rooms", json={}).json()
     client = TestClient(app)
-    room = create_room("singleplayer")
-    user = create_user(room)
-    with client.websocket_connect(socket_url(room, user)) as websocket:
+    with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+        websocket.receive_json()  # join "status" not asserted
+        websocket.send_text('1')
         data = websocket.receive_json()
         assert data == {
-            "status": "WRITING",
-            "progress": {
-                f"{user.get('id')}": {"completed": 0, "pending": 1},
-            },
-            "stories": [],
-            "users": [{"id": user.get("id"), "name": user.get("name"), "room_id": room.get("id")}],
+            "users": [
+                {"name": user_token, "speaker": False, "cards": [1]}
+            ],
+        }
+        websocket.send_text('4')
+        data = websocket.receive_json()
+        assert data == {
+            "users": [
+                {"name": user_token, "speaker": False, "cards": [1, 4]}
+            ],
+        }
+        websocket.send_text('4')
+        data = websocket.receive_json()
+        assert data == {
+            "users": [
+                {"name": user_token, "speaker": False, "cards": [1]}
+            ],
+        }
+
+
+def test_websocket_connect():
+    user_token = 'user.princess.wiggles'
+    user_token_2 = 'user.princess.wiggles.2'
+    room = test_client.post("/rooms", json={}).json()
+    client = TestClient(app)
+    with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+        data = websocket.receive_json()
+        assert data == {
+            "users": [
+                {"name": user_token, "speaker": False, "cards": []}
+            ],
+        }
+        with client.websocket_connect(socket_url(room["name"], user_token_2)) as websocket_2:
+            data = websocket_2.receive_json()
+            assert data == {
+                "users": [
+                    {"name": user_token, "speaker": False, "cards": []},
+                    {"name": user_token_2, "speaker": False, "cards": []},
+                ],
+            }
+            data_2 = websocket.receive_json()
+            assert data == data_2
+        data = websocket.receive_json()
+        assert data == {
+            "users": [
+                {"name": user_token, "speaker": False, "cards": []}
+            ],
         }
