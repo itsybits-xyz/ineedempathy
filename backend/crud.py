@@ -32,9 +32,11 @@ def create_comment(db: Session, card_name: str, comment: CommentCreate) -> Optio
 
 def create_card(db: Session, card: CardCreate) -> Card:
     db_obj = Card(
+        display_name=card.display_name,
         name=card.name,
         type=card.type,
-        level=1
+        level=card.level,
+        definition=card.definition
     )
     db.add(db_obj)
     db.commit()
