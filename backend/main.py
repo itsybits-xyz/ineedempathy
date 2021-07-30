@@ -106,8 +106,8 @@ def remove_card(room_name: str, name: str, card_name: str, request: Request, db:
     connection_manager.remove_card(room, name, card)
 
 
-@app.websocket("/rooms/{room_name}/users/{name}.ws")
-async def websocket_endpoint(room_name: str, name: str, websocket: WebSocket, db: Session = Depends(get_db)):
+@app.websocket("/rooms/{room_name}/users/{user_name}.ws")
+async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
     print(f"Connecting new socket {id(websocket)}...")
     connection_manager: Optional[ConnectionManager] = websocket.scope.get("connection_manager")
     if connection_manager is None:
@@ -119,11 +119,12 @@ async def websocket_endpoint(room_name: str, name: str, websocket: WebSocket, db
         raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     try:
         await websocket.accept()
-        connection_manager.add_user(room, name, websocket)
+        connection_manager.add_user(room, user_name, websocket)
         await connection_manager.send_update(room)
         while True:
-            await websocket.receive_json()
+            card_id = await websocket.receive_json()
+            connection_manager.toggle_card(room, user_name, card_id)
             await connection_manager.send_update(room)
     except WebSocketDisconnect:
-        connection_manager.remove_user(room, name, websocket)
+        connection_manager.remove_user(room, user_name, websocket)
         await connection_manager.send_update(room)

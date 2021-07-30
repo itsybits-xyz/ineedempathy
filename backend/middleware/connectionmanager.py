@@ -1,5 +1,5 @@
-from typing import List, Dict
-from ..schemas import RoomInfo, Card
+from typing import List, Dict, Optional
+from ..schemas import RoomInfo
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
 
@@ -46,11 +46,7 @@ class ConnectionManager:
 
     def add_user(self, room: RoomInfo, name: str, socket: WebSocket):
         if room.name not in self._rooms:
-            # TODO
-            self._rooms[room.name] = RoomInfo(
-                room=room,
-                users={},
-            )
+            raise Exception('room_does_not_exist_meowww')
         self._rooms[room.name].add_user(
             name=name,
             socket=socket
@@ -62,13 +58,11 @@ class ConnectionManager:
         if room_info is None or room_info.empty():
             del self._rooms[room.name]
 
-    def add_card(self, room: RoomInfo, name: str, card: Card, socket: WebSocket):
+    def toggle_card(self, room: RoomInfo, name: str, card_id: Optional[int]):
+        if card_id is None:
+            return
         room_info = self._rooms.get(room.name)
-        room_info.add_card(name, card, socket)
-
-    def remove_card(self, room: RoomInfo, name: str, card: Card, socket: WebSocket):
-        room_info = self._rooms.get(room.name)
-        room_info.remove_card(name, card, socket)
+        room_info.toggle_card(name, card_id)
 
     async def send_update(self, room: RoomInfo):
         room_info = self._rooms.get(room.name)

@@ -12,8 +12,8 @@
 
 ## Empathy Room
 
-* [ ] Render user list
-* [ ] Render card list
+* [x] Render user list
+* [x] Render card list
 * [ ] Push cards to my card list
 * [ ] View card list updates from users
 * [ ] Switch speakers

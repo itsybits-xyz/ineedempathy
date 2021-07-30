@@ -16,7 +16,6 @@ const defaultProps: PickerProps = {
 
 export const Picker: FC<PickerProps> = (props: PickerProps) => {
   const { data, error, isPending } = useAsync(getCards);
-  const [page, setPage] = useState<number>(0);
 
   if (error) {
     return (
@@ -33,7 +32,6 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   }
 
   const filterType = props.type === 'needs' ? 'need' : 'feeling';
-  const perPage = 8; // Cards displayed below
   const cards = data.filter((card: Card) => {
     return card.type === filterType;
   });

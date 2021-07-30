@@ -3,6 +3,8 @@ import { Button, Container, Row } from 'react-bootstrap';
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BoardGame } from "./BoardGame";
 import { BACKEND_URL } from "../config";
+import { useAsync } from 'react-async';
+import { getCards } from '../utils/api';
 
 export interface RoomProps {
   match: {
@@ -14,6 +16,7 @@ export interface RoomProps {
 
 export const Room: FC<RoomProps> = (props: RoomProps) => {
   const roomname = props?.match?.params?.name;
+  const { data, error, isPending } = useAsync(getCards);
   const [username, setUsername] = useState<string>(localStorage.getItem(roomname) || "");
   const [ready, _setReady] = useState<boolean>(false);
 
@@ -38,5 +41,5 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
     );
   }
 
-  return <BoardGame roomname={roomname} username={username} />
+  return <BoardGame cards={data} roomname={roomname} username={username} />
 };

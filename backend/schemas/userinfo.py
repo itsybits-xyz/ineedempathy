@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from fastapi import WebSocket
-from . import Card
 from typing import List, Dict
 from fastapi.encoders import jsonable_encoder
 
@@ -19,11 +18,11 @@ class UserInfo(BaseModel):
     def remove_socket(self, socket: WebSocket):
         del self.sockets[id(socket)]
 
-    def add_card(self, card: Card):
-        self.cards.append(card.id)
-
-    def remove_card(self, card: Card):
-        self.cards.remove(card.id)
+    def toggle_card(self, card_id: int):
+        if card_id in self.cards:
+            self.cards.remove(card_id)
+        else:
+            self.cards.append(card_id)
 
     def progress(self, speaker):
         return {
