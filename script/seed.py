@@ -284,30 +284,34 @@ add_feeling(
     'meow',
 )
 
-# Need Level 1
+# Needs Level 1
 add_need(
     'Connection',
     'connection',
     1,
-    'meow',
+    'A feeling of understanding and ease of communication between two or more people.',
+    'https://en.wiktionary.org/wiki/connection',
 )
 add_need(
     'Harmony',
     'harmony',
     1,
-    'meow',
+    'a consistent, orderly, or pleasing arrangement of parts; congruity.',
+    'https://www.dictionary.com/browse/harmony',
 )
 add_need(
     'Reassurance',
     'reassurance',
     1,
-    'meow',
+    'The action of removing someone\'s doubts or fears.',
+    'https://www.lexico.com/en/definition/reassurance',
 )
 add_need(
     'Support',
     'support',
     1,
-    'meow',
+    'To verify; to make good; to substantiate; to establish; to sustain.',
+    'https://en.wiktionary.org/wiki/support',
 )
 
 # Needs level 2
@@ -315,31 +319,36 @@ add_need(
     'Appreciation',
     'appreciation',
     2,
-    'meow',
+    'Recognition and enjoyment of the good qualities of someone or something.',
+    'https://www.lexico.com/en/definition/appreciation',
 )
 add_need(
     'Autonomy',
     'autonomy',
     2,
-    'meow',
+    'The capacity to make an informed, uncoerced decision.',
+    'https://en.wiktionary.org/wiki/autonomy',
 )
 add_need(
     'Celebration',
     'celebration',
     2,
-    'meow',
+    'The act, process of showing appreciation, gratitude and/or remembrance, notably as a social event.',
+    'https://en.wiktionary.org/wiki/celebration',
 )
 add_need(
     'Honesty',
     'honesty',
     2,
-    'meow',
+    'fairness and straightforwardness of conduct',
+    'https://www.merriam-webster.com/dictionary/honesty',
 )
 add_need(
     'Privacy/Space',
     'privacy_space',
     2,
-    'meow',
+    'the quality or state of being apart from company or observation',
+    'https://www.merriam-webster.com/dictionary/privacy',
 )
 
 # Needs level 3
