@@ -5,7 +5,7 @@ from backend.deps import get_db
 db = next(get_db())
 
 
-def add_card(display_name, name, type, level, definition, definition_source='about:blank'):
+def add_card(display_name, name, type, level, definition, definition_source):
     return crud.create_card(
         db=db,
         card=CardCreate(
@@ -19,13 +19,16 @@ def add_card(display_name, name, type, level, definition, definition_source='abo
     )
 
 
-def add_feeling(display_name, name, level, definition):
-    return add_card(display_name, name, 'feeling', level, definition)
+def add_feeling(display_name, name, level, definition, definition_source='about:blank'):
+    return add_card(display_name, name, 'feeling', level, definition, definition_source)
 
 
-def add_need(display_name, name, level, definition):
-    return add_card(display_name, name, 'need', level, definition)
+def add_need(display_name, name, level, definition, definition_source='about:blank'):
+    return add_card(display_name, name, 'need', level, definition, definition_source)
 
+
+# Sqlite version of `truncate table cards`
+db.execute('DELETE FROM cards')
 
 # Feeling level 1
 add_feeling(
