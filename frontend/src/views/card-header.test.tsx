@@ -5,6 +5,7 @@ import { CardHeader } from './card-header';
 
 test('renders card header', () => {
   const card: Card = {
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
     textUrl: 'about:blank',
@@ -17,6 +18,7 @@ test('renders card header', () => {
 
 test('renders error header', () => {
   const card: Card = {
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
     textUrl: 'foo.png',

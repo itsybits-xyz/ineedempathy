@@ -10,7 +10,7 @@ export interface CardHeaderProps {
 
 export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
   const { card } = props;
-  const [ error, setError ] = useState();
+  const [ error, setError ] = useState(false);
 
   return error ? (
     <div role="alert">
