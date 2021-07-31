@@ -10,7 +10,7 @@ export interface CardHeaderProps {
 
 export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
   const { card } = props;
-  const [ error, setError ] = useState();
+  const [ error, setError ] = useState(false);
 
   return error ? (
     <div role="alert">
@@ -22,14 +22,14 @@ export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
       <Row className="justify-content-md-center">
         <Card style={{ width: '35rem' }}>
           <Card.Img
-            alt={card.name}
+            alt={card.displayName}
             variant="top"
             onError={(er: any) => setError(er)}
             src={ BACKEND_URL + card.textUrl } />
           <Card.Body>
-            <Card.Title>{card.name}</Card.Title>
+            <Card.Title>{card.displayName}</Card.Title>
             <Card.Text>
-              <dfn>{card.name}</dfn> is the ability to understand and share the feelings (and needs) of another.
+              {card.definition}
             </Card.Text>
           </Card.Body>
         </Card>

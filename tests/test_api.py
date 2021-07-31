@@ -4,9 +4,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from backend.main import app
+from backend.main import app, crud
 from backend.deps import get_db
 from backend.database import Base
+from backend.schemas import CardCreate
 
 
 # Setup a testing db
@@ -41,64 +42,63 @@ def test_root():
 
 
 def test_create_room():
-    response = test_client.post("/rooms", json={})
+    response = test_client.post("/rooms")
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 1
     assert len(json["name"]) >= 1
 
 
-def test_create_card():
-    response = test_client.post(
-        "/cards",
-        json={"name": "angry", "type": "feeling"},
-    )
-    assert response.status_code == 201
-    json = response.json()
-    assert len(list(json.keys())) == 5
-    assert json["id"] == 1
-    assert json["name"] == "angry"
-    assert json["type"] == "feeling"
-    assert json["textUrl"] == "/static/angry.jpg"
-    assert json["blankUrl"] == "/static/angry_blank.jpg"
-
-
 def test_get_card():
-    response = test_client.post(
-        "/cards",
-        json={"name": "compersion", "type": "feeling"},
+    db = TestingSessionLocal()
+    crud.create_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion",
+            name="compersion",
+            type="feeling",
+            level=1,
+            definition="<3",
+            definition_source="<3.com",
+        )
     )
-    assert response.status_code == 201
     response = test_client.get("/cards/compersion")
     assert response.status_code == 200
     json = response.json()
-    assert len(list(json.keys())) == 5
+    assert len(list(json.keys())) == 9
     assert json["id"] == 1
+    assert json["displayName"] == "Compersion"
     assert json["name"] == "compersion"
     assert json["type"] == "feeling"
+    assert json["level"] == 1
     assert json["textUrl"] == "/static/compersion.jpg"
     assert json["blankUrl"] == "/static/compersion_blank.jpg"
 
 
 def test_create_and_get_comment():
-    card_resp = test_client.post(
-        "/cards",
-        json={"name": "compersion", "type": "feeling"},
+    db = TestingSessionLocal()
+    card = crud.create_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion",
+            name="compersion",
+            type="feeling",
+            level=1,
+            definition="<3",
+            definition_source="<3.com",
+        )
     )
-    assert card_resp.status_code == 201
-    card_json = card_resp.json()
-    print(card_json)
     post_response = test_client.post(
-        "/cards/compersion/comments",
+        f"/cards/{card.name}/comments",
         json={
-            "cardId": card_json["id"],
+            "cardId": card.id,
             "type": "NEED_MET",
             "data": "princess.wiggles"
         }
     )
     assert post_response.status_code == 201
     comment_response = test_client.get(
-        "/cards/compersion/comments",
+        f"/cards/{card.name}/comments",
     )
     assert comment_response.status_code == 200
     json = comment_response.json()
@@ -106,7 +106,6 @@ def test_create_and_get_comment():
     comment = json[0]
     assert len(list(comment.keys())) == 5
     assert comment["id"]
-    assert comment["cardId"] == card_json["id"]
     assert comment["type"] == "NEED_MET"
     assert comment["data"] == "princess.wiggles"
     assert comment["createdAt"]

@@ -15,7 +15,7 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card, RoomInfoBase
-from .schemas import RoomCreate, Comment, CommentCreate
+from .schemas import Comment, CommentCreate
 from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
@@ -48,9 +48,12 @@ def get_cards(
     return crud.get_cards(db)
 
 
-@app.post("/cards", status_code=201, response_model=Card)
-def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Room:
-    return crud.create_card(db, card)
+@app.get("/cards/{name}", response_model=Card)
+def get_card_by_name(
+    name: str,
+    db: Session = Depends(get_db),
+) -> models.Card:
+    return crud.get_card(db, name)
 
 
 @app.get("/cards/{card_name}/comments", response_model=List[Comment])
@@ -70,16 +73,8 @@ def create_comment(
     return crud.create_comment(db, card_name, comment)
 
 
-@app.get("/cards/{name}", response_model=Card)
-def get_card_by_name(
-    name: str,
-    db: Session = Depends(get_db),
-) -> List[models.Card]:
-    return crud.get_card(db, name)
-
-
 @app.post("/rooms", status_code=201, response_model=RoomInfoBase)
-def create_room(room: RoomCreate, request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
+def create_room(request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
     available = None
     while available is None:

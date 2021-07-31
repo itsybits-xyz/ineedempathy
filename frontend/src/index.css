@@ -25,6 +25,10 @@ code {
 .fn-cards .card:hover {
   box-shadow: 0 0 3pt 2pt cornflowerblue;
 }
+.card .card-title,
+.fn-cards .card-title {
+  text-align: center;
+}
 
 .cardComment {
 }

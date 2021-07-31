@@ -9,8 +9,12 @@ class CardType(str, Enum):
 
 # Shared properties
 class CardBase(CamelModel):
+    display_name: str
     name: str
     type: CardType
+    level: int
+    definition: str
+    definition_source: str
 
 
 # Properties to receive on item creation

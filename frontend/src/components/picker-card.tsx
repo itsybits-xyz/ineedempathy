@@ -16,10 +16,9 @@ export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
         <Card.Img
           alt={card.name}
           variant="top"
-          onError={(er: any) => setError(er)}
           src={ BACKEND_URL + card.textUrl } />
         <Card.Body>
-          <Card.Title>{card.name}</Card.Title>
+          <Card.Title>{card.displayName}</Card.Title>
         </Card.Body>
       </Card>
     </Link>

@@ -49,7 +49,9 @@ alembic downgrade -1  # This can also take a sha version.
 
 ### Seed Data
 
-./script/seed.sh
+```
+python3 script/seed.py
+```
 
 # Frontend Development
 
