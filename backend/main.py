@@ -48,10 +48,12 @@ def get_cards(
     return crud.get_cards(db)
 
 
-# TODO maybe remove this for safety, tests break
-@app.post("/cards", status_code=201, response_model=Card)
-def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Card:
-    return crud.create_card(db, card)
+@app.get("/cards/{name}", response_model=Card)
+def get_card_by_name(
+    name: str,
+    db: Session = Depends(get_db),
+) -> List[models.Card]:
+    return crud.get_card(db, name)
 
 
 @app.get("/cards/{card_name}/comments", response_model=List[Comment])
@@ -69,14 +71,6 @@ def create_comment(
     db: Session = Depends(get_db)
 ) -> models.Comment:
     return crud.create_comment(db, card_name, comment)
-
-
-@app.get("/cards/{name}", response_model=Card)
-def get_card_by_name(
-    name: str,
-    db: Session = Depends(get_db),
-) -> List[models.Card]:
-    return crud.get_card(db, name)
 
 
 @app.post("/rooms", status_code=201, response_model=RoomInfoBase)
