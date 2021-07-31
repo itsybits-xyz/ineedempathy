@@ -52,7 +52,7 @@ def get_cards(
 def get_card_by_name(
     name: str,
     db: Session = Depends(get_db),
-) -> List[models.Card]:
+) -> models.Card:
     return crud.get_card(db, name)
 
 
