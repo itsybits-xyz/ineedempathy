@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Card, Comment } from '../schemas';
+import { ClickSound } from '../components';
 import { commentTypeToString } from '../utils';
 import { Badge, Card as CardEl, Container, Row, Button, ButtonGroup } from 'react-bootstrap';
 
@@ -26,24 +27,25 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
       <Row className="justify-content-sm-center">
         <ButtonGroup>
           { filters.map((filter, idx) => (
-              <Button
-                onClick={() => {
-                  const newFilters = [...filters];
-                  newFilters[idx] = Object.assign({}, filter, {
-                    active: !filter.active,
-                  });
-                  setFilters(newFilters);
-                  document.activeElement?.blur();
-                }}
-                key={idx}
-                value={filter.key}
-                variant={filter.variant}
-                size="md"
-                type="checkbox"
-                active={filter.active}
-                checked={filter.active}>
-                {filter.name}
-              </Button>
+              <ClickSound key={idx}>
+                <Button
+                  onClick={() => {
+                    const newFilters = [...filters];
+                    newFilters[idx] = Object.assign({}, filter, {
+                      active: !filter.active,
+                    });
+                    setFilters(newFilters);
+                    document.activeElement?.blur();
+                  }}
+                  value={filter.key}
+                  variant={filter.variant}
+                  size="md"
+                  type="checkbox"
+                  active={filter.active}
+                  checked={filter.active}>
+                  {filter.name}
+                </Button>
+              </ClickSound>
           )) }
         </ButtonGroup>
       </Row>

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
+import { ClickSound } from '.';
 
 export const SideBar: FC = () => {
   const isActiveFor = (navLinkMatch:RegExp) => {
@@ -24,44 +25,52 @@ export const SideBar: FC = () => {
         <div className="sidebar-wrapper">
           <ul className="nav">
             <li className="nav-item">
-              <NavLink to="/" exact={true} className="nav-link" activeClassName="active">
-                <MdDashboard size={24}/>
-                <p>
-                  Start
-                </p>
-              </NavLink>
+              <ClickSound>
+                <NavLink to="/" exact={true} className="nav-link" activeClassName="active">
+                  <MdDashboard size={24}/>
+                  <p>
+                    Start
+                  </p>
+                </NavLink>
+              </ClickSound>
             </li>
             <li className="nav-item">
-              <NavLink
-                to="/feelings"
-                className="nav-link"
-                isActive={isActiveFor(/^\/feeling.*$/)}
-                activeClassName="active">
-                <MdFavorite size={24}/>
-                <p>
-                  Feelings
-                </p>
-              </NavLink>
+              <ClickSound>
+                <NavLink
+                  to="/feelings"
+                  className="nav-link"
+                  isActive={isActiveFor(/^\/feeling.*$/)}
+                  activeClassName="active">
+                  <MdFavorite size={24}/>
+                  <p>
+                    Feelings
+                  </p>
+                </NavLink>
+              </ClickSound>
             </li>
             <li className="nav-item">
-              <NavLink
-                to="/needs"
-                className="nav-link"
-                isActive={isActiveFor(/^\/need.*$/)}
-                activeClassName="active">
-                <MdWbSunny size={24}/>
-                <p>
-                  Needs
-                </p>
-              </NavLink>
+              <ClickSound>
+                <NavLink
+                  to="/needs"
+                  className="nav-link"
+                  isActive={isActiveFor(/^\/need.*$/)}
+                  activeClassName="active">
+                  <MdWbSunny size={24}/>
+                  <p>
+                    Needs
+                  </p>
+                </NavLink>
+              </ClickSound>
             </li>
             <li className="nav-item">
-              <NavLink to="/about" className="nav-link" activeClassName="active">
-                <MdLayers size={24}/>
-                <p>
-                  About
-                </p>
-              </NavLink>
+              <ClickSound>
+                <NavLink to="/about" className="nav-link" activeClassName="active">
+                  <MdLayers size={24}/>
+                  <p>
+                    About
+                  </p>
+                </NavLink>
+              </ClickSound>
             </li>
           </ul>
         </div>

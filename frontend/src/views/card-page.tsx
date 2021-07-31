@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import { getCard } from '../utils';
-import { Hidden } from '../components';
+import { ClickSound, Hidden } from '../components';
 import { CardHeader } from './card-header';
 import { CardComments } from './card-comments';
 import { Card } from '../schemas';
@@ -38,9 +38,11 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
   return card.name ? (
     <>
       <Row className="justify-content-sm-center">
-        <Link to={type === 'feeling' ? '/feelings' : '/needs'}>
-          <Button>Go Back</Button>
-        </Link>
+        <ClickSound>
+          <Link to={type === 'feeling' ? '/feelings' : '/needs'}>
+            <Button>Go Back</Button>
+          </Link>
+        </ClickSound>
       </Row>
       <CardHeader card={card} />
       <CardComments card={card} />

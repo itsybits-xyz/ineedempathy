@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { CommentCreate, Card } from '../schemas';
 import { useForm } from "react-hook-form";
 import { commentTypeToString, createComment } from '../utils';
-import { Hidden } from '../components';
+import { ClickSound, Hidden } from '../components';
 import { Button, Card as CardEl } from 'react-bootstrap';
 
 export interface CardCommentsNewProps {
@@ -39,12 +39,14 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
         ) : (
           <form className={'createComment'} onSubmit={handleSubmit(localSubmit)}>
             <label>
-              <select {...register("type")} data-testid="listbox">
-                <option value="NEED_MET">{commentTypeToString(card, 'NEED_MET')}</option>
-                <option value="NEED_NOT_MET">{commentTypeToString(card, 'NEED_NOT_MET')}</option>
-                <option value="DEFINE">{commentTypeToString(card, 'DEFINE')}</option>
-                <option value="THINK">{commentTypeToString(card, 'THINK')}</option>
-              </select>
+              <ClickSound>
+                <select {...register("type")} data-testid="listbox">
+                  <option value="NEED_MET">{commentTypeToString(card, 'NEED_MET')}</option>
+                  <option value="NEED_NOT_MET">{commentTypeToString(card, 'NEED_NOT_MET')}</option>
+                  <option value="DEFINE">{commentTypeToString(card, 'DEFINE')}</option>
+                  <option value="THINK">{commentTypeToString(card, 'THINK')}</option>
+                </select>
+              </ClickSound>
             </label>
             <label>
               <textarea {...register("data")} />
@@ -53,7 +55,9 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
               {submitted ? (
                 <p>Submitting...</p>
               ) : (
-                <Button type="submit">Add Comment</Button>
+                <ClickSound>
+                  <Button type="submit">Add Comment</Button>
+                </ClickSound>
               )}
             </label>
           </form>
