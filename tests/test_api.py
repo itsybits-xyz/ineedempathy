@@ -1,4 +1,4 @@
-from typing import Generator, Dict
+from typing import Generator
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -7,8 +7,6 @@ from sqlalchemy.orm import sessionmaker
 from backend.main import app
 from backend.deps import get_db
 from backend.database import Base
-from backend.middleware import ConnectionManager
-import pytest
 
 
 # Setup a testing db
@@ -139,21 +137,21 @@ def test_websocket_add_cards():
         data = websocket.receive_json()
         assert data == {
             "users": [
-                {"name": user_token, "speaker": False, "cards": [1]}
+                {"name": user_token, "speaker": True, "cards": [1]}
             ],
         }
         websocket.send_text('4')
         data = websocket.receive_json()
         assert data == {
             "users": [
-                {"name": user_token, "speaker": False, "cards": [1, 4]}
+                {"name": user_token, "speaker": True, "cards": [1, 4]}
             ],
         }
         websocket.send_text('4')
         data = websocket.receive_json()
         assert data == {
             "users": [
-                {"name": user_token, "speaker": False, "cards": [1]}
+                {"name": user_token, "speaker": True, "cards": [1]}
             ],
         }
 
@@ -167,14 +165,14 @@ def test_websocket_connect():
         data = websocket.receive_json()
         assert data == {
             "users": [
-                {"name": user_token, "speaker": False, "cards": []}
+                {"name": user_token, "speaker": True, "cards": []}
             ],
         }
         with client.websocket_connect(socket_url(room["name"], user_token_2)) as websocket_2:
             data = websocket_2.receive_json()
             assert data == {
                 "users": [
-                    {"name": user_token, "speaker": False, "cards": []},
+                    {"name": user_token, "speaker": True, "cards": []},
                     {"name": user_token_2, "speaker": False, "cards": []},
                 ],
             }
@@ -183,6 +181,6 @@ def test_websocket_connect():
         data = websocket.receive_json()
         assert data == {
             "users": [
-                {"name": user_token, "speaker": False, "cards": []}
+                {"name": user_token, "speaker": True, "cards": []}
             ],
         }

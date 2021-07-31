@@ -1,35 +1,56 @@
-from backend.schemas import Room, RoomInfo
-from datetime import datetime
+from backend.schemas import RoomInfo
 
 
-room_count = 0
-user_count = 0
-
-
-def mock_room(name="princess.mansion"):
-    global room_count
-    room_count += 1
-    return Room(
-        id=room_count,
-        name=name,
-        createdAt=datetime.now(),
-    )
-
-
-def test_empty():
-    room = mock_room()
-    room_token = 'princess.wiggles'
-    user_token = 'princess.wiggles'
+def test_upsert_speaker_to_first_player():
+    socket = 1
+    room_token = 'princess.wiggles.room'
+    user_token = 'princess.wiggles.user'
     roominfo = RoomInfo(
         name=room_token,
-        room=room,
+        users={},
+    )
+    assert len(roominfo.get_speaker().name) == 0
+    roominfo.add_user(user_token, socket)
+    assert roominfo.get_speaker().name == user_token
+
+
+def test_upsert_speaker_to_second_player_if_first_resigns():
+    socket = 1
+    room_token = 'princess.wiggles.room'
+    user_token_1 = 'princess.wiggles.user.1'
+    user_token_2 = 'princess.wiggles.user.2'
+    roominfo = RoomInfo(
+        name=room_token,
+        users={},
+    )
+
+    # first user joins
+    roominfo.add_user(user_token_1, socket)
+    assert roominfo.get_speaker().name == user_token_1
+
+    # second user joins
+    roominfo.add_user(user_token_2, socket)
+    assert roominfo.get_speaker().name == user_token_1
+
+    # speaker leaves
+    roominfo.remove_user(user_token_1, socket)
+    assert roominfo.get_speaker().name == user_token_2
+
+
+def test_user_with_multiple_sockets():
+    socket_1 = 1
+    socket_2 = 2
+    room_token = 'princess.wiggles.room'
+    user_token = 'princess.wiggles.user'
+    roominfo = RoomInfo(
+        name=room_token,
         users={},
     )
     assert roominfo.empty() == True
-    roominfo.add_user(user_token, 1)
-    roominfo.add_user(user_token, 2)
+    roominfo.add_user(user_token, socket_1)
+    roominfo.add_user(user_token, socket_2)
     assert roominfo.empty() == False
-    roominfo.remove_user(user_token, 1)
+    roominfo.remove_user(user_token, socket_1)
     assert roominfo.empty() == False
-    roominfo.remove_user(user_token, 2)
+    roominfo.remove_user(user_token, socket_2)
     assert roominfo.empty() == True

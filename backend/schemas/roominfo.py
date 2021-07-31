@@ -48,10 +48,12 @@ class RoomInfo(RoomInfoBase):
                 del self.users[name]
 
     def upsert_speaker(self):
-        if self.get_speaker().name not in self.users:
-            self.set_speaker(None)
-        if self.get_speaker().name is None and len(self.users) > 1:
-            self.set_speaker(self.users.values().first())
+        no_speaker = self.get_speaker().name not in self.users
+        has_players = len(self.users) >= 1
+        if no_speaker and has_players:
+            return self.set_speaker(list(self.users.values())[0])
+        elif not has_players:
+            return self.set_speaker(None)
 
     async def send_update(self):
         await self.broadcast_message(
