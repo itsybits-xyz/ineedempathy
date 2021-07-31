@@ -20,6 +20,12 @@ export const About: FC = () => {
           <h2>Credits</h2>
           <ul>
             <li>
+              Website and Gameplay is Open Sourced{' '}
+              <a href="https://github.com/amjith/ineedempathy">
+                on Github
+              </a>
+            </li>
+            <li>
               Card Designs by&nbsp;
               <a href="https://www.instagram.com/susdraws/">
                 Susana Castro
@@ -34,7 +40,7 @@ export const About: FC = () => {
             <li>
               Material Dashboard Theme by&nbsp;
               <a href="https://www.creative-tim.com/product/material-dashboard">
-                  Creative Tim
+                Creative Tim
               </a>
             </li>
           </ul>
@@ -48,23 +54,23 @@ export const About: FC = () => {
               </a>
             </li>
             <li>
-              <a href="https://shop.oogaboogastore.com/products/meenadchi-decolonizing-non-violent-communication">
-                meenadchi: Decolonizing Non-Violent Communication
+              <a href="https://www.wiseheartpdx.org/mindful-compassionate-dialogue">
+                Mindful Compassionate Dialogue
+              </a>
+            </li>
+            <li>
+              <a href="https://baynvc.org/basics-of-nonviolent-communication/">
+                BayNVC - Basics of Nonviolent Communication
+              </a>
+            </li>
+            <li>
+              <a href="https://www.traumainformednvc.com/">
+                Trauma-Informed NVC
               </a>
             </li>
             <li>
               <a href="https://www.collectivelyfree.org/nonviolent-communication-privileged/">
                 Nonviolent Communication is for the privileged by Raffi Marhaba
-              </a>
-            </li>
-            <li>
-              <a href="https://www.reddit.com/r/NVC/">
-                Reddit NVC
-              </a>
-            </li>
-            <li>
-              <a href="https://www.cnvc.org/">
-                Center for NVC
               </a>
             </li>
           </ul>
