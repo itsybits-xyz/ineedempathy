@@ -15,7 +15,7 @@ from . import crud, models
 from .config import settings
 from .deps import get_db
 from .schemas import CardCreate, Card, RoomInfoBase
-from .schemas import RoomCreate, Comment, CommentCreate
+from .schemas import Comment, CommentCreate
 from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
 
@@ -79,7 +79,7 @@ def get_card_by_name(
 
 
 @app.post("/rooms", status_code=201, response_model=RoomInfoBase)
-def create_room(room: RoomCreate, request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
+def create_room(request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
     available = None
     while available is None:

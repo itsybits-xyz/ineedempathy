@@ -53,7 +53,7 @@ export const getRoom: PromiseFn<Room> = ({roomId}) => {
 };
 
 export const createRoom = () => {
-  return post<RoomCreate, Room>(`${BACKEND_URL}/rooms`, {} as RoomCreate);
+  return post<null, Room>(`${BACKEND_URL}/rooms`);
 };
 
 export const getComments = (card: Card) => {
