@@ -8,7 +8,7 @@ export const Home: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
   const [roomName, setRoomName] = useState<string>();
   const [error, setError] = useState<string>();
-  const { playToggle, playMatch, playNudge } = PlaySound();
+  const { playToggle, playMatch, playNudge, volume } = PlaySound();
 
   const handleNewRoom = (ev:any) => {
     ev.preventDefault();
@@ -54,6 +54,11 @@ export const Home: FC = () => {
             <Button onClick={() => playMatch() }>Match Sound</Button>
             <Button onClick={() => playToggle() }>Toggle Card</Button>
             <Button onClick={() => playNudge() }>Nudge Person</Button>
+          </Row>
+          <Row>
+            { volume.value() }
+            <Button onClick={() => volume.up() }>Up</Button>
+            <Button onClick={() => volume.down() }>Down</Button>
           </Row>
         </Container>
       </div>
