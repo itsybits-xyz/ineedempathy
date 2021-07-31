@@ -19,8 +19,10 @@ depends_on = None
 def upgrade():
     op.add_column('cards', sa.Column('display_name', sa.String()))
     op.add_column('cards', sa.Column('definition', sa.String()))
+    op.add_column('cards', sa.Column('definition_source', sa.String()))
 
 
 def downgrade():
     op.drop_column('cards', 'display_name')
     op.drop_column('cards', 'definition')
+    op.drop_column('cards', 'definition_source')

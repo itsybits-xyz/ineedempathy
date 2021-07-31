@@ -59,12 +59,13 @@ def test_get_card():
             type="feeling",
             level=1,
             definition="<3",
+            definition_source="<3.com",
         )
     )
     response = test_client.get("/cards/compersion")
     assert response.status_code == 200
     json = response.json()
-    assert len(list(json.keys())) == 8
+    assert len(list(json.keys())) == 9
     assert json["id"] == 1
     assert json["displayName"] == "Compersion"
     assert json["name"] == "compersion"
@@ -84,6 +85,7 @@ def test_create_and_get_comment():
             type="feeling",
             level=1,
             definition="<3",
+            definition_source="<3.com",
         )
     )
     post_response = test_client.post(

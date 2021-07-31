@@ -36,7 +36,8 @@ def create_card(db: Session, card: CardCreate) -> Card:
         name=card.name,
         type=card.type,
         level=card.level,
-        definition=card.definition
+        definition=card.definition,
+        definition_source=card.definition_source
     )
     db.add(db_obj)
     db.commit()

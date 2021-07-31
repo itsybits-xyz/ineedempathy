@@ -13,7 +13,8 @@ def add_card(display_name, name, type, level, definition):
             name=name,
             type=type,
             level=level,
-            definition=definition
+            definition=definition,
+            definition_source='about:blank'
         )
     )
 
@@ -27,14 +28,14 @@ def add_need(display_name, name, level, definition):
 
 
 # Feeling Data
-add_feeling('Angry', 'angry', 1, 'meow')
-add_feeling('Happy', 'happy', 1, 'meow')
-add_feeling('Sad', 'sad', 1, 'meow')
-add_feeling('Scared', 'scared', 1, 'meow')
+add_feeling('Angry', 'angry', 1, 'Feeling or showing strong annoyance, displeasure, or hostility; full of anger.')
+add_feeling('Happy', 'happy', 1, 'Having a sense of confidence in or satisfaction with (a person, arrangement, or situation)')
+add_feeling('Sad', 'sad', 1, 'Feeling or showing sorrow; unhappy.')
+add_feeling('Scared', 'scared', 1, 'Fearful; frightened.')
 
-add_feeling('Confused', 'confused', 2, 'meow')
-add_feeling('Embarrassed', 'embarrassed', 2, 'meow')
-add_feeling('Jealous', 'jealous', 2, 'meow')
+add_feeling('Confused', 'confused', 2, 'unable to think clearly; bewildered.')
+add_feeling('Embarrassed', 'embarrassed', 2, 'Feeling or showing embarrassment.')
+add_feeling('Jealous', 'jealous', 2, 'Feeling or showing envy of someone or their achievements and advantages.')
 add_feeling('Lonely', 'lonely', 2, 'meow')
 add_feeling('Tired', 'tired', 2, 'meow')
 

@@ -14,6 +14,7 @@ class CardBase(CamelModel):
     type: CardType
     level: int
     definition: str
+    definition_source: str
 
 
 # Properties to receive on item creation
