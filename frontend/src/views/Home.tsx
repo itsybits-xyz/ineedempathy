@@ -8,8 +8,8 @@ import { Hidden } from "../components";
 import useSound from 'use-sound';
 
 import nudgePersonSound from '../sound/rising-pops.mp3';
-import toggleCardSound from '../sound/pop-up-off.mp3';
-import matchSound from '../sound/fanfare.mp3';
+import toggleCardSound from '../sound/toggle-card.mp3';
+import matchSound from '../sound/match.wav';
 
 export const Home: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
