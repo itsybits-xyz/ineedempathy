@@ -109,7 +109,6 @@ def test_create_and_get_comment():
     )
     assert card_resp.status_code == 201
     card_json = card_resp.json()
-    print(card_json)
     post_response = test_client.post(
         "/cards/compersion/comments",
         json={

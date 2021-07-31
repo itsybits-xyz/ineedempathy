@@ -48,6 +48,7 @@ def get_cards(
     return crud.get_cards(db)
 
 
+# TODO maybe remove this for safety, tests break
 @app.post("/cards", status_code=201, response_model=Card)
 def create_card(card: CardCreate, db: Session = Depends(get_db)) -> models.Card:
     return crud.create_card(db, card)
