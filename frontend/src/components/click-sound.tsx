@@ -1,16 +1,14 @@
 import { FC } from 'react';
-import useSound from 'use-sound';
-
-import toggleCardSound from '../sound/toggle-card.mp3';
+import { PlaySound } from '.';
 
 export interface ClickSoundProps {
   children?: any;
 }
 
 export const ClickSound: FC<ClickSoundProps> = (props: ClickSoundProps) => {
-  const [playSound] = useSound(toggleCardSound);
+  const { playToggle } = PlaySound();
   return (
-    <span onClick={() => playSound() }>
+    <span onClick={() => playToggle() }>
         {props.children}
     </span>
   );

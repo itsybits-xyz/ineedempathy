@@ -2,20 +2,13 @@ import React, { FC, useState } from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { createRoom } from "../utils/api";
 import { Redirect } from "react-router-dom";
-import { Hidden } from "../components";
-import useSound from 'use-sound';
-
-import nudgePersonSound from '../sound/rising-pops.mp3';
-import toggleCardSound from '../sound/toggle-card.mp3';
-import matchSound from '../sound/match.wav';
+import { PlaySound, Hidden } from "../components";
 
 export const Home: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
   const [roomName, setRoomName] = useState<string>();
   const [error, setError] = useState<string>();
-  const [playMatchSound] = useSound(matchSound);
-  const [playToggleCardSound] = useSound(toggleCardSound);
-  const [playNudgePersonSound] = useSound(nudgePersonSound);
+  const { playToggle, playMatch, playNudge } = PlaySound();
 
   const handleNewRoom = (ev:any) => {
     ev.preventDefault();
@@ -58,9 +51,9 @@ export const Home: FC = () => {
         </Container>
         <Container>
           <Row>
-            <Button onClick={() => playMatchSound() }>Match Sound</Button>
-            <Button onClick={() => playToggleCardSound() }>Toggle Card</Button>
-            <Button onClick={() => playNudgePersonSound() }>Nudge Person</Button>
+            <Button onClick={() => playMatch() }>Match Sound</Button>
+            <Button onClick={() => playToggle() }>Toggle Card</Button>
+            <Button onClick={() => playNudge() }>Nudge Person</Button>
           </Row>
         </Container>
       </div>

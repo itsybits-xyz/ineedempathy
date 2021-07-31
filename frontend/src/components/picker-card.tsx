@@ -12,8 +12,8 @@ export interface PickerCardProps {
 export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
   const card: CardSchema = props.card;
   return (
-    <ClickSound>
-      <Link to={`/${card.type}/${card.name}`}>
+    <Link to={`/${card.type}/${card.name}`}>
+      <ClickSound>
         <Card style={{ width: '10rem' }}>
           <Card.Img
             alt={card.name}
@@ -23,7 +23,7 @@ export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
             <Card.Title>{card.displayName}</Card.Title>
           </Card.Body>
         </Card>
-      </Link>
-    </ClickSound>
+      </ClickSound>
+    </Link>
   );
 };
