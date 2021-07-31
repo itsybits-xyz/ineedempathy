@@ -52,48 +52,60 @@ def test_create_card():
     response = test_client.post(
         "/cards",
         json={
-            "displayName": "Angry",
-            "name": "angry",
+            "displayName": "Compersion",
+            "name": "compersion",
             "type": "feeling",
             "level": 1,
-            "definition": "Rawr!",
+            "definition": "<3",
         },
     )
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 8
     assert json["id"] == 1
-    assert json["displayName"] == "Angry"
-    assert json["name"] == "angry"
+    assert json["displayName"] == "Compersion"
+    assert json["name"] == "compersion"
     assert json["type"] == "feeling"
     assert json["level"] == 1
-    assert json["textUrl"] == "/static/angry.jpg"
-    assert json["blankUrl"] == "/static/angry_blank.jpg"
+    assert json["textUrl"] == "/static/compersion.jpg"
+    assert json["blankUrl"] == "/static/compersion_blank.jpg"
 
 
 def test_get_card():
-    return
     response = test_client.post(
         "/cards",
-        json={"name": "compersion", "type": "feeling"},
+        json={
+            "displayName": "Compersion",
+            "name": "compersion",
+            "type": "feeling",
+            "level": 1,
+            "definition": "<3",
+        },
     )
     assert response.status_code == 201
     response = test_client.get("/cards/compersion")
     assert response.status_code == 200
     json = response.json()
-    assert len(list(json.keys())) == 5
+    assert len(list(json.keys())) == 8
     assert json["id"] == 1
+    assert json["displayName"] == "Compersion"
     assert json["name"] == "compersion"
     assert json["type"] == "feeling"
+    assert json["level"] == 1
     assert json["textUrl"] == "/static/compersion.jpg"
     assert json["blankUrl"] == "/static/compersion_blank.jpg"
 
 
 def test_create_and_get_comment():
-    return
     card_resp = test_client.post(
         "/cards",
-        json={"name": "compersion", "type": "feeling"},
+        json={
+            "displayName": "Compersion",
+            "name": "compersion",
+            "type": "feeling",
+            "level": 1,
+            "definition": "<3",
+        },
     )
     assert card_resp.status_code == 201
     card_json = card_resp.json()
