@@ -7,7 +7,7 @@
 ## Card Page
 
 * [ ] Captcha
-* [ ] Add definition, alt text attributes, and level to cards
+* [ ] Finish definition seeds
 
 ## Empathy Room
 
