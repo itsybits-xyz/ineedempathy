@@ -3,7 +3,7 @@ import { Card } from '../schemas';
 export * from './api';
 
 export function commentTypeToString(card:Card, commentType:string) {
-  const cardName:string = card.name;
+  const cardName:string = card.displayName;
   switch(commentType) {
     case 'NEED_MET':
       switch (card.type) {
