@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { MdExtension, MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
+import { MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 
 export const SideBar: FC = () => {
-  const isActiveFor = (navLinkMatch) => {
-    return (match, location) => {
+  const isActiveFor = (navLinkMatch:RegExp) => {
+    return (match:any, location:any) => {
       return location?.pathname?.match(navLinkMatch);
     };
   };

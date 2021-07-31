@@ -1,8 +1,7 @@
-import React, { FC, useState, useEffect } from 'react';
-import { CommentCreate, Card, Comment } from '../schemas';
+import React, { FC, useState } from 'react';
+import { CommentCreate, Card } from '../schemas';
 import { useForm } from "react-hook-form";
-import { commentTypeToString, getComments, createComment } from '../utils';
-import { CardCommentsList } from './card-comments-list';
+import { commentTypeToString, createComment } from '../utils';
 import { Hidden } from '../components';
 import { Button, Card as CardEl } from 'react-bootstrap';
 
@@ -40,7 +39,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
         ) : (
           <form className={'createComment'} onSubmit={handleSubmit(localSubmit)}>
             <label>
-              <select {...register("type")} role="listbox">
+              <select {...register("type")} data-testid="listbox">
                 <option value="NEED_MET">{commentTypeToString(card, 'NEED_MET')}</option>
                 <option value="NEED_NOT_MET">{commentTypeToString(card, 'NEED_NOT_MET')}</option>
                 <option value="DEFINE">{commentTypeToString(card, 'DEFINE')}</option>
@@ -48,7 +47,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
               </select>
             </label>
             <label>
-              <textarea role="textbox" {...register("data")} />
+              <textarea {...register("data")} />
             </label>
             <label>
               {submitted ? (

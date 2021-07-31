@@ -1,7 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Card, Comment, CommentCreate } from '../schemas';
-import { Hidden } from '../components';
-import { getComments, createComment } from '../utils';
+import { Card, Comment } from '../schemas';
+import { getComments } from '../utils';
 import { CardCommentsList } from './card-comments-list';
 import { CardCommentsNew } from './card-comments-new';
 import { Container, Row } from 'react-bootstrap';

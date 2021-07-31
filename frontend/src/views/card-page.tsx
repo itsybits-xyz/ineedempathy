@@ -1,11 +1,10 @@
 import React, { FC, useState, useEffect } from 'react';
-import { BACKEND_URL } from '../config';
 import { getCard } from '../utils';
 import { Hidden } from '../components';
 import { CardHeader } from './card-header';
 import { CardComments } from './card-comments';
 import { Card } from '../schemas';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Row } from 'react-bootstrap';
 
 export interface CardPageProps {
@@ -18,7 +17,6 @@ export interface CardPageProps {
 };
 
 export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
-  const history = useHistory();
   const { name, type } = props.match.params;
   const [ error, setError ] = useState();
   const [ card, setCard ] = useState<Card>({} as Card);

@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '../config';
-import { Card, Comment, CommentCreate, Room, RoomCreate } from '../schemas';
+import { Card, Comment, CommentCreate, Room } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {

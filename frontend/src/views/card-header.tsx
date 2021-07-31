@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { BACKEND_URL } from '../config';
 import { Card as CardSchema } from '../schemas';
 import { MdWarning } from 'react-icons/md';
-import { Card, Container, Col, Row } from 'react-bootstrap';
+import { Card, Container, Row } from 'react-bootstrap';
 
 export interface CardHeaderProps {
   card: CardSchema,

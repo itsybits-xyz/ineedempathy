@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { BACKEND_URL } from '../config';
 import { Card as CardSchema } from '../schemas';
 import { Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Hidden } from '.';
 
 export interface GameCardProps {
   card: CardSchema;
@@ -11,6 +11,10 @@ export interface GameCardProps {
 
 export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
   const { card, handleClick } = props;
+  const [ error, setError ] = useState(false);
+  if (error) {
+    return <Hidden error={error} />
+  }
   return (
     <Card onClick={handleClick} style={{ width: '10rem' }}>
       <Card.Img

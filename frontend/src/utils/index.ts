@@ -11,6 +11,8 @@ export function commentTypeToString(card:Card, commentType:string) {
           return `When I felt ${cardName} the needs that were met were..`;
         case 'need':
           return `My need for ${cardName} was met when..`;
+        default:
+          return '';
       }
     case 'NEED_NOT_MET':
       switch (card.type) {
@@ -18,10 +20,14 @@ export function commentTypeToString(card:Card, commentType:string) {
           return `When I felt ${cardName} the needs that were not met were..`;
         case 'need':
           return `My need for ${cardName} was not met when..`;
+        default:
+          return '';
       }
     case 'DEFINE':
       return `I define ${cardName} as..`;
     case 'THINK':
       return `My thoughts on ${cardName} are..`;
+    default:
+      return '';
   }
 }

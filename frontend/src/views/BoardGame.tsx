@@ -1,8 +1,9 @@
-import React, { FC, useState, useEffect, useCallback } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Col, Container, Row } from 'react-bootstrap';
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BACKEND_URL } from "../config";
 import { GameCard } from "../components";
+import { Card } from "../schemas";
 
 export interface BoardGameProps {
   cards: Card[];
@@ -17,9 +18,7 @@ interface Player {
 }
 
 interface Message {
-  status: number,
-  waitingOn: number[],
-  currentUsers: Player[],
+  users: Player[],
 }
 
 export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
@@ -27,7 +26,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const socketUrl = `${BACKEND_URL.replace("http", "ws")}/rooms/${roomname}/users/${username}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
-  const pingEndpoint = () => { console.info('ping');sendMessage('{}'); };
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -46,9 +44,9 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
-  const toggleCard = (card) => {
+  const toggleCard = (card: Card) => {
     return () => {
-      sendMessage(card.id)
+      sendMessage(String(card.id))
     }
   };
 
@@ -58,7 +56,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
         <Container fluid>
           <Row>
             <div>
-              <h2>User List {username}</h2>
+              <h2>User List {connectionStatus}</h2>
               <ul>
                 { currentUsers.map((user: Player) => {
                   return (

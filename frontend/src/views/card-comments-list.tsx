@@ -1,12 +1,11 @@
 import React, { FC, useState } from 'react';
 import { Card, Comment } from '../schemas';
 import { commentTypeToString } from '../utils';
-import { Badge, Card as CardEl, Container, Row, Col, Button, ButtonGroup, ListGroup } from 'react-bootstrap';
+import { Badge, Card as CardEl, Container, Row, Button, ButtonGroup } from 'react-bootstrap';
 
 export interface CardCommentsListProps {
   card: Card,
   comments: Comment[],
-  defaultFilters: Object,
 };
 
 export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsListProps) => {

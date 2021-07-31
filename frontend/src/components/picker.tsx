@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
 import { getCards } from '../utils/api';
 import { useAsync } from 'react-async';
