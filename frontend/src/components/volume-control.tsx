@@ -16,6 +16,7 @@ export const VolumeControl: FC = () => {
         </Row>
       )}
       <Row
+        title="Adjust Volume"
         onClick={() => {
           setShowOptions(!showOptions);
         }}
