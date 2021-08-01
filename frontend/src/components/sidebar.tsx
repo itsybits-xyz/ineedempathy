@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
+import { VolumeControl } from "../components";
 import { ClickSound } from '.';
 
 export const SideBar: FC = () => {
@@ -73,6 +74,7 @@ export const SideBar: FC = () => {
               </ClickSound>
             </li>
           </ul>
+          <VolumeControl />
         </div>
       </div>
     </>

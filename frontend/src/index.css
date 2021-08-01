@@ -65,3 +65,13 @@ code {
 .hidden[role=alert] h3 {
   text-align: center;
 }
+
+.sidebar-wrapper {
+  position: relative;
+}
+.sidebar-wrapper #volume-control {
+  position: fixed;
+  bottom: 0;
+  width: 260px;
+  left: 0;
+}

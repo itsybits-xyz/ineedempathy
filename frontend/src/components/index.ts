@@ -5,3 +5,4 @@ export * from './game-card';
 export * from './hidden';
 export * from './play-sound';
 export * from './click-sound';
+export * from './volume-control';

@@ -68,7 +68,7 @@ export function PlaySound() {
 };
 
 export const VolumeEl: FC<VolumeElProps> = (props: VolumeElProps) => {
-  const { value, set, up, down } = props;
+  const { value, set, up, down, onChange } = props;
   return (
     <>
       <MdVolumeDown onClick={down} />
@@ -78,6 +78,7 @@ export const VolumeEl: FC<VolumeElProps> = (props: VolumeElProps) => {
         max={MAX_VOLUME}
         onChange={(ev) => {
           set(parseInt(ev.target.value));
+          onChange();
         }}
         value={value()} />
       <MdVolumeUp onClick={up} />
@@ -86,6 +87,7 @@ export const VolumeEl: FC<VolumeElProps> = (props: VolumeElProps) => {
 };
 
 export interface VolumeElProps {
+  onChange: () => void;
   value: () => number;
   set: () => void;
   up: () => void;
