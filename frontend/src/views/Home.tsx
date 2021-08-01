@@ -56,9 +56,7 @@ export const Home: FC = () => {
             <Button onClick={() => playNudge() }>Nudge Person</Button>
           </Row>
           <Row>
-            { volume.value() }
-            <Button onClick={() => volume.up() }>Up</Button>
-            <Button onClick={() => volume.down() }>Down</Button>
+            <PlaySound.VolumeEl {...volume} />
           </Row>
         </Container>
       </div>
