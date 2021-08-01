@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Dict
 from fastapi_camelcase import CamelModel
 
 
@@ -25,7 +26,6 @@ class CardCreate(CardBase):
 # Properties to receive on item update
 class CardUpdate(CardBase):
     id: int
-    pass
 
 
 # Properties shared by models stored in DB
@@ -38,9 +38,10 @@ class CardInDBBase(CardBase):
 
 # Properties to return to client
 class Card(CardInDBBase):
-    blank_url: str
-    text_url: str
-    pass
+    image: Dict
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 # Properties properties stored in DB

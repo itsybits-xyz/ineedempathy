@@ -25,7 +25,7 @@ export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
             alt={card.displayName}
             variant="top"
             onError={(er: any) => setError(er)}
-            src={ BACKEND_URL + card.textUrl } />
+            src={ BACKEND_URL + card.image.lg } />
           <Card.Body>
             <Card.Title>{card.displayName}</Card.Title>
             <Card.Text>

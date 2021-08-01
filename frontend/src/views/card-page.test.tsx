@@ -27,10 +27,17 @@ test('renders card page', () => {
       getCard: (name: string) => {
         return Promise.resolve({
           id: 1,
+          displayName: 'Compersion',
           name: 'compersion',
           type: 'feeling',
-          blankUrl: '/compersion_blank.jpg',
-          textUrl: '/compersion.jpg',
+          level: 1,
+          definition: 'meow',
+          definitionSource: 'meow',
+          image: {
+            og: 'about:blank',
+            lg: 'about:blank',
+            md: 'about:blank',
+          },
         });
       },
     };

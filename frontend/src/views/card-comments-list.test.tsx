@@ -5,9 +5,18 @@ import { CardCommentsList } from './card-comments-list';
 
 test('renders comments list', () => {
   const card: Card = {
+    id: 1,
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'about:blank',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'about:blank',
+      lg: 'about:blank',
+      md: 'about:blank',
+    },
   }
   const comments: Comment[] = [
     { cardId: 1, type: 'NEED_MET', data: 'princess.wiggles' },
@@ -21,15 +30,24 @@ test('renders comments list', () => {
 
 test('accepts default filters', () => {
   const card: Card = {
+    id: 1,
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'about:blank',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'about:blank',
+      lg: 'about:blank',
+      md: 'about:blank',
+    },
   }
   const comments: Comment[] = [
-    { cardId: 1, type: 'NEED_MET', data: 'princess.wiggles' },
-    { cardId: 1, type: 'NEED_NOT_MET', data: 'princess.wiggles' },
-    { cardId: 1, type: 'DEFINE', data: 'princess.wiggles' },
-    { cardId: 1, type: 'THINK', data: 'princess.wiggles' },
+    { id: 1, cardId: 1, type: 'NEED_MET', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 2, cardId: 1, type: 'NEED_NOT_MET', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 3, cardId: 1, type: 'DEFINE', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 4, cardId: 1, type: 'THINK', data: 'princess.wiggles', createdAt: new Date() },
   ]
   render(<CardCommentsList card={card} comments={comments} />);
   return screen.findAllByRole('comment').then((renderedComments) => {
@@ -37,17 +55,26 @@ test('accepts default filters', () => {
   });
 });
 
-test('accepts default filters', () => {
+test('toggle all the filters', () => {
   const card: Card = {
+    id: 1,
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'about:blank',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'about:blank',
+      lg: 'about:blank',
+      md: 'about:blank',
+    },
   }
   const comments: Comment[] = [
-    { cardId: 1, type: 'NEED_MET', data: 'princess.wiggles' },
-    { cardId: 1, type: 'NEED_NOT_MET', data: 'princess.wiggles' },
-    { cardId: 1, type: 'DEFINE', data: 'princess.wiggles' },
-    { cardId: 1, type: 'THINK', data: 'princess.wiggles' },
+    { id: 1, cardId: 1, type: 'NEED_MET', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 2, cardId: 1, type: 'NEED_NOT_MET', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 3, cardId: 1, type: 'DEFINE', data: 'princess.wiggles', createdAt: new Date() },
+    { id: 4, cardId: 1, type: 'THINK', data: 'princess.wiggles', createdAt: new Date() },
   ]
   render(<CardCommentsList card={card} comments={comments} />);
   return screen.findAllByRole('comment').then((renderedComments) => {

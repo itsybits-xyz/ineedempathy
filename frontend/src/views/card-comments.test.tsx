@@ -13,9 +13,18 @@ test('renders card comments', () => {
     };
   });
   const card: Card = {
+    id: 1,
+    displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'about:blank',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'about:blank',
+      lg: 'about:blank',
+      md: 'about:blank',
+    },
   }
   render(<CardComments card={card} />);
   const title = screen.getByText('No Comments');

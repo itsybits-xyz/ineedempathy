@@ -1,4 +1,10 @@
 // Common Room attributes
+export interface CardBaseImage {
+  og: string;
+  md: string;
+  lg: string;
+}
+
 export interface CardBase {
   displayName: string;
   name: string;
@@ -6,8 +12,7 @@ export interface CardBase {
   level: number;
   definition: string;
   definitionSource: string;
-  blankUrl: string;
-  textUrl: string;
+  image: CardBaseImage;
 }
 
 // Room object from backend.

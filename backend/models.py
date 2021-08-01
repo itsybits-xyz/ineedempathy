@@ -18,12 +18,16 @@ class Card(Base):
     definition_source = Column(String, nullable=False)
 
     @hybrid_property
-    def text_url(self):
-        return '/static/' + self.name + '.jpg'
+    def image(self):
+        return {
+            'og': '/static/og/' + self.name + '.jpg',
+            'lg': '/static/lg/' + self.name + '.jpg',
+            'md': '/static/md/' + self.name + '.jpg',
+        }
 
-    @hybrid_property
-    def blank_url(self):
-        return '/static/' + self.name + '_blank.jpg'
+    #@hybrid_property
+    #def image_lg(self):
+        #return '/static/lg/' + self.name + '.jpg'
 
 
 class Comment(Base):

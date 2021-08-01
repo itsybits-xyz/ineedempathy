@@ -37,7 +37,7 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
           alt={card.name}
           variant="top"
           onError={(er: any) => setError(er)}
-          src={ BACKEND_URL + card.textUrl } />
+          src={ BACKEND_URL + card.image.md } />
         <div className="ikon">
           <MdInfoOutline size={36} />
         </div>

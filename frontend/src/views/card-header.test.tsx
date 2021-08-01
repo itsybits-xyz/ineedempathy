@@ -5,10 +5,18 @@ import { CardHeader } from './card-header';
 
 test('renders card header', () => {
   const card: Card = {
+    id: 1,
     displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'about:blank',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'about:blank',
+      lg: 'about:blank',
+      md: 'about:blank',
+    },
   }
   render(<CardHeader card={card} />);
   const img = screen.getByRole('img');
@@ -18,10 +26,18 @@ test('renders card header', () => {
 
 test('renders error header', () => {
   const card: Card = {
+    id: 1,
     displayName: 'Compersion',
     name: 'compersion',
     type: 'feeling',
-    textUrl: 'foo.png',
+    level: 1,
+    definition: 'meow',
+    definitionSource: 'meow',
+    image: {
+      og: 'foo.png',
+      lg: 'foo.png',
+      md: 'foo.png',
+    },
   }
   render(<CardHeader card={card} />);
   const img = screen.getByRole('img');

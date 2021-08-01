@@ -21,9 +21,18 @@ describe('happy paths', () => {
     let called = false;
     const props: CardCommentsNewProps = {
       card<Card>: {
+        id: 1,
+        displayName: 'Compersion',
         name: 'compersion',
         type: 'feeling',
-        textUrl: 'about:blank',
+        level: 1,
+        definition: 'meow',
+        definitionSource: 'meow',
+        image: {
+          og: 'about:blank',
+          lg: 'about:blank',
+          md: 'about:blank',
+        },
       },
       hasCommented: false,
       onSubmit: () => {
@@ -69,9 +78,18 @@ describe('error cases', () => {
     let called = false;
     const props: CardCommentsNewProps = {
       card<Card>: {
+        id: 1,
+        displayName: 'Compersion',
         name: 'compersion',
         type: 'feeling',
-        textUrl: 'about:blank',
+        level: 1,
+        definition: 'meow',
+        definitionSource: 'meow',
+        image: {
+          og: 'about:blank',
+          lg: 'about:blank',
+          md: 'about:blank',
+        },
       },
       hasCommented: false,
       onSubmit: () => { called = true },

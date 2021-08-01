@@ -65,14 +65,17 @@ def test_get_card():
     response = test_client.get("/cards/compersion")
     assert response.status_code == 200
     json = response.json()
-    assert len(list(json.keys())) == 9
+    assert len(list(json.keys())) == 8
     assert json["id"] == 1
     assert json["displayName"] == "Compersion"
     assert json["name"] == "compersion"
     assert json["type"] == "feeling"
     assert json["level"] == 1
-    assert json["textUrl"] == "/static/compersion.jpg"
-    assert json["blankUrl"] == "/static/compersion_blank.jpg"
+    assert json["image"] == {
+        "og": "/static/og/compersion.jpg",
+        "md": "/static/md/compersion.jpg",
+        "lg": "/static/lg/compersion.jpg",
+    }
 
 
 def test_create_and_get_comment():

@@ -18,7 +18,7 @@ export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
           <Card.Img
             alt={card.name}
             variant="top"
-            src={ BACKEND_URL + card.textUrl } />
+            src={ BACKEND_URL + card.image.md } />
           <Card.Body>
             <Card.Title>{card.displayName}</Card.Title>
           </Card.Body>

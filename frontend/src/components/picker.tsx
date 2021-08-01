@@ -42,7 +42,7 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
         <Row>
           { cards.map((card) => {
             return (
-              <Col>
+              <Col key={card.id}>
                 <PickerCard card={ card } />
               </Col>
             );
