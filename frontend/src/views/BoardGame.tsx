@@ -62,7 +62,16 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                   return (
                     <li key={`user-${user.name}`}>
                       {user.name}
-                      {user.cards.join(',')}
+                      {cards
+                          .filter((card) => user.cards.includes(card.id))
+                          .map((card) => { 
+                            return (
+                              <Col>
+                                <GameCard card={card}/>
+                              </Col>
+                            )}
+                          )
+                      }
                     </li>
                   );
                 }) }

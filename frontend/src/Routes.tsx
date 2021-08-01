@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { useHistory } from 'react-router';
 
 import {
   Home,
