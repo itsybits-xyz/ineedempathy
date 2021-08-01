@@ -18,6 +18,7 @@ export const VolumeControl: FC = () => {
       <Row
         title="Adjust Volume"
         onClick={() => {
+          playToggle();
           setShowOptions(!showOptions);
         }}
         className="ikon justify-content-sm-center">

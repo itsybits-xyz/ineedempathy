@@ -19,10 +19,14 @@ def add_card(display_name, name, type, level, definition, definition_source):
     )
 
 
+# TODO - once we have all definitions, let's remove default value for
+# definition_source
 def add_feeling(display_name, name, level, definition, definition_source='about:blank'):
     return add_card(display_name, name, 'feeling', level, definition, definition_source)
 
 
+# TODO - once we have all definitions, let's remove default value for
+# definition_source
 def add_need(display_name, name, level, definition, definition_source='about:blank'):
     return add_card(display_name, name, 'need', level, definition, definition_source)
 
