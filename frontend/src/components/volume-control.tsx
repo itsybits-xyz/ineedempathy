@@ -15,12 +15,12 @@ export const VolumeControl: FC = () => {
             onChange={playToggle} />
         </Row>
       )}
-      <Row className="justify-content-sm-center">
-        <MdVolumeUp
-          onClick={() => {
-            setShowOptions(!showOptions);
-          }}
-          size={24} />
+      <Row
+        onClick={() => {
+          setShowOptions(!showOptions);
+        }}
+        className="ikon justify-content-sm-center">
+        <MdVolumeUp size={24} />
       </Row>
     </Container>
   );

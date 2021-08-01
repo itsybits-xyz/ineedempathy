@@ -75,3 +75,7 @@ code {
   width: 260px;
   left: 0;
 }
+.sidebar-wrapper #volume-control .ikon {
+  padding: 10px;
+  cursor: pointer;
+}

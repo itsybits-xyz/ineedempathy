@@ -71,7 +71,7 @@ export const VolumeEl: FC<VolumeElProps> = (props: VolumeElProps) => {
   const { value, set, up, down, onChange } = props;
   return (
     <>
-      <MdVolumeDown onClick={down} />
+      <MdVolumeDown onClick={() => { down(); onChange(); }} />
       <input
         type="range"
         min={MIN_VOLUME}
@@ -81,7 +81,7 @@ export const VolumeEl: FC<VolumeElProps> = (props: VolumeElProps) => {
           onChange();
         }}
         value={value()} />
-      <MdVolumeUp onClick={up} />
+      <MdVolumeUp onClick={() => { up(); onChange(); }} />
     </>
   );
 };
