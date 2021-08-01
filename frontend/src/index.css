@@ -79,3 +79,86 @@ code {
   padding: 10px;
   cursor: pointer;
 }
+
+.card-title.lg,
+.card-title {
+  font-size: 100%;
+}
+.card-title.md {
+  font-size: 90%;
+}
+.card-title.sm {
+  font-size: 80%;
+}
+
+
+/* .card-img-top
+.card-body */
+
+.board-game .card .kard {
+  position: relative;
+}
+
+.board-game .card:hover {
+  cursor: pointer;
+}
+
+.board-game .card .kard:hover {
+  background: black;
+  transform: scale(1.1);
+  border-radius: 5px;
+}
+
+.board-game .card .kard .ikon {
+  display: none;
+  width: 100%;
+  text-align: center;
+}
+
+.board-game .card .kard:hover .ikon {
+  color: white;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-top: 100px;
+}
+
+.board-game .card .kard:hover img {
+  opacity: 0.8;
+  border-radius: 5px;
+}
+
+.board-game .card .card-body {
+  position: relative;
+}
+
+.board-game .card .card-body .card-title + .card-title {
+  display: none;
+}
+
+.board-game .card .card-body:hover {
+  border-radius: 0 0 5px 5px;
+}
+
+.board-game .card .card-body.on-list:hover {
+  background-color: pink;
+}
+
+.board-game .card .card-body.off-list:hover {
+  background-color: lightgreen;
+}
+
+.board-game .card .card-body:hover .card-title + .card-title {
+  text-align: center;
+  width: 100%;
+  display: block;
+  position: absolute;
+  top: 35px;
+  left: 0;
+}
+
+.board-game .card .card-body.off-list:hover svg.remove,
+.board-game .card .card-body.on-list:hover svg.add {
+  display: none;
+}

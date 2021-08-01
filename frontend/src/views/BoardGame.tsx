@@ -50,44 +50,90 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     }
   };
 
+  const currentUser = currentUsers.filter((user: Player) => {
+    return user.name === username;
+  });
+  
+  const speaker = currentUsers.filter((user: Player) => {
+    return user.speaker;
+  });
+
   return (
     <>
-      <div className="content">
+      <div className="content board-game">
         <Container fluid>
           <Row>
-            <div>
-              <h2>User List {connectionStatus}</h2>
-              <ul>
-                { currentUsers.map((user: Player) => {
+            <Col>
+              <Row className="big-card-list">
+                { cards.map((card) => {
+                  const onList = currentUser?.cards?.includes(card.id)
+                  console.log(currentUser);
                   return (
-                    <li key={`user-${user.name}`}>
-                      {user.name}
-                      {cards
-                          .filter((card) => user.cards.includes(card.id))
-                          .map((card) => { 
-                            return (
-                              <Col>
-                                <GameCard card={card}/>
-                              </Col>
-                            )}
-                          )
-                      }
-                    </li>
+                    <Col>
+                      <GameCard
+                        onList={onList}
+                        size={"lg"}
+                        card={card}
+                        handleClick={toggleCard(card)} />
+                    </Col>
                   );
-                }) }
-              </ul>
-            </div>
+                })}
+              </Row>
+            </Col>
+            <Col>
+              <h2>User List {connectionStatus}</h2>
+              { currentUsers.filter((user: Player) => {
+                return !user.speaker;
+              }).map((user: Player) => {
+                return (
+                  <div key={`user-${user.name}`}>
+                    {user.name}
+                    <Row>
+                      {cards
+                        .filter((card) => user.cards.includes(card.id))
+                        .map((card) => {
+                          const onList = currentUser?.cards?.includes(card.id)
+                          return (
+                            <Col>
+                              <GameCard
+                                onList={onList}
+                                size={"md"}
+                                card={card}
+                                handleClick={toggleCard(card)} />
+                            </Col>
+                          )}
+                        )
+                      }
+                    </Row>
+                  </div>
+                );
+              }) }
+            </Col>
           </Row>
           <Row>
-            { cards.map((card) => {
-              return (
-                <Col>
-                  <GameCard
-                    card={card}
-                    handleClick={toggleCard(card)} />
-                </Col>
-              );
-            })}
+            <Col>
+              { speaker.map((user: Player) => {
+                return (
+                    <Row>
+                      {cards
+                        .filter((card) => user.cards.includes(card.id))
+                        .map((card) => {
+                          const onList = currentUser?.cards?.includes(card.id)
+                          return (
+                            <Col>
+                              <GameCard
+                                onList={onList}
+                                size={"lg"}
+                                card={card}
+                                handleClick={toggleCard(card)} />
+                            </Col>
+                          )}
+                        )
+                      }
+                    </Row>
+                );
+              }) }
+            </Col>
           </Row>
         </Container>
       </div>
