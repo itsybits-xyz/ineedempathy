@@ -34,7 +34,7 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
       <Row className={'cards'}>
         { cards.map((card: Card) => {
           return (
-            <Col>
+            <Col key={card.id}>
               <GameCard
                 onList={onList(card)}
                 size={'md'}

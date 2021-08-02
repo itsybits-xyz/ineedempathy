@@ -1,7 +1,8 @@
 import React, { FC, useState } from "react";
-import { ButtonGroup, Button, Dropdown, Col, Row } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Dropdown, Col, Row } from 'react-bootstrap';
 import { PlaySound, GameCard } from "../components";
 import { CardLevel, CardType, Card } from "../schemas";
+import { CardPage } from '.';
 
 export interface BoardGamePickerProps {
   cards: Card[];
@@ -15,6 +16,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
   const [ type, _setType ] = useState<CardType|null>(null);
   const [ howToPlay, _setHowToPlay ] = useState<boolean>(false);
   const { playToggle } = PlaySound();
+  const [selectedCard, setSelectedCard] = useState<Card|null>(null);
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
@@ -33,6 +35,19 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
   const setType = (newType: CardType|null) => {
     playToggle();
     return _setType(newType);
+  };
+
+  const customToggleCard = (card: Card) => {
+    return () => {
+      setSelectedCard(null);
+      return toggleCard(card)();
+    }
+  };
+
+  const toggleInfo = (card: Card) => {
+    return () => {
+      setSelectedCard(card);
+    }
   };
 
   return (
@@ -129,8 +144,8 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
             if (level === CardLevel.all) return true;
             return card.level <= level;
           }).sort((card1: Card, card2: Card) => {
-            if (Math.floor(Math.random() * 1000) % 2 === 0) return 1;
-            if (Math.floor(Math.random() * 1000) % 2 === 0) return -1;
+            if (card1.name > card2.name) return 1;
+            if (card2.name > card1.name) return -1;
             return 0;
           }).map((card: Card) => {
             return (
@@ -139,12 +154,40 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
                   onList={onList(card)}
                   size={"lg"}
                   card={card}
-                  handleClick={toggleCard(card)} />
+                  handleInfo={toggleInfo(card)}
+                  handleClick={customToggleCard(card)} />
               </Col>
             );
           }
         )}
       </Row>
+      { selectedCard && (
+        <Modal
+          show={true}
+          dialogClassName="modal-90w"
+          onHide={() => setSelectedCard(null) }>
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedCard.displayName}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <CardPage match={{ params: selectedCard }} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setSelectedCard(null) }>
+              Close
+            </Button>
+            { onList(selectedCard) ? (
+              <Button variant="primary" onClick={toggleCard(selectedCard)}>
+                Remove
+              </Button>
+            ) : (
+              <Button variant="primary" onClick={toggleCard(selectedCard)}>
+                Add
+              </Button>
+            ) }
+          </Modal.Footer>
+        </Modal>
+      ) }
     </>
   );
 };

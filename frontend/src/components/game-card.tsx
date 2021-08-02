@@ -8,12 +8,13 @@ import { MdInfoOutline, MdRemoveCircleOutline, MdLibraryAdd } from 'react-icons/
 export interface GameCardProps {
   card: CardSchema;
   handleClick: () => void;
+  handleInfo: () => void;
   size?: string;
   onList: boolean;
 };
 
 export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
-  const { size, card, handleClick, onList } = props;
+  const { size, card, handleInfo, handleClick, onList } = props;
   const [ error, setError ] = useState(false);
   let cardWidth;
   let toggleSize;
@@ -49,7 +50,7 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
           <MdLibraryAdd className="add" size={toggleSize} />
         </div>
       </div>
-      <Card.Body>
+      <Card.Body onClick={handleInfo}>
         <Card.Title className={size}>{card.displayName}</Card.Title>
         <Card.Title>
           <MdInfoOutline size={toggleSize} />

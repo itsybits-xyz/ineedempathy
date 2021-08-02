@@ -41,7 +41,7 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
               <p>Type in a <strong>display name</strong></p>
               <p>to join "{roomname}"!</p>
             </Card.Title>
-            <Card.Text className="text-center">
+            <Card.Title className="text-center">
               <InputGroup size="lg">
                 <FormControl
                   placeholder="Type your display name here"
@@ -53,7 +53,7 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
               <Button variant="success" onClick={() => setReady(true)}>
                 Join Empathy Room
               </Button>
-            </Card.Text>
+            </Card.Title>
           </Card.Body>
         </Card>
       </Row>
