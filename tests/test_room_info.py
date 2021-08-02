@@ -51,6 +51,27 @@ def test_user_with_multiple_sockets():
     roominfo.add_user(user_token, socket_2)
     assert roominfo.empty() == False
     roominfo.remove_user(user_token, socket_1)
+    assert roominfo.empty() == True
+
+
+def test_user_with_multiple_cards():
+    socket_1 = 1
+    socket_2 = 2
+    card_1 = 1
+    room_token = 'princess.wiggles.room'
+    user_token = 'princess.wiggles.user'
+    roominfo = RoomInfo(
+        name=room_token,
+        users={},
+    )
+    assert roominfo.empty() == True
+    roominfo.add_user(user_token, socket_1)
+    roominfo.add_user(user_token, socket_2)
+    roominfo.toggle_card(user_token, card_1)
+    assert roominfo.empty() == False
+    roominfo.remove_user(user_token, socket_1)
     assert roominfo.empty() == False
     roominfo.remove_user(user_token, socket_2)
+    assert roominfo.empty() == False
+    roominfo.toggle_card(user_token, card_1)
     assert roominfo.empty() == True

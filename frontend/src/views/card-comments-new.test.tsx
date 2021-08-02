@@ -41,7 +41,6 @@ describe('happy paths', () => {
     }
     await act(async () => {
       render(<CardCommentsNew {...props} />);
-      fireEvent.change(screen.getByTestId('listbox'), { target: { value: "DEFINE" } });
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'princess.wiggles' }
       });
@@ -96,7 +95,6 @@ describe('error cases', () => {
     }
     await act(async () => {
       render(<CardCommentsNew {...props} />);
-      fireEvent.change(screen.getByTestId('listbox'), { target: { value: "DEFINE" } });
       fireEvent.change(screen.getByRole('textbox'), {
         target: { value: 'princess.wiggles' }
       });

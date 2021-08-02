@@ -60,7 +60,7 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
       <Container fluid>
         { filteredComments.length === 0 ? (
           <Row className="justify-content-sm-center">
-            <CardEl role="comment" style={{ width: '35rem' }}>
+            <CardEl role="info" style={{ width: '35rem' }}>
               <CardEl.Body>
                 <CardEl.Title>
                   <MdSearch size={36} />

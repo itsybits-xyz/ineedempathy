@@ -47,7 +47,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
               <ClickSound>
                 <Col>
                   <Dropdown>
-                    <Dropdown.Toggle variant="success">
+                    <Dropdown.Toggle data-testid={type} variant="success">
                       { commentTypeToString(card, type) }
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -77,7 +77,9 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
               </ClickSound>
             </Row>
             <Row>
-              <textarea onChange={(e) => setData(e.target.value)}>{data}</textarea>
+              <textarea
+                value={data}
+                onChange={(e) => setData(e.target.value)} />
             </Row>
             <Row>
               {submitted ? (

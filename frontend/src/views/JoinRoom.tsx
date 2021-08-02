@@ -16,9 +16,7 @@ export interface JoinRoomProps {
 }
 
 export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
-  const [gotoRoomName, setGotoRoomName] = useState<string>();
-  const [roomName, setRoomName] = useState<string>(props.oldRoomName || '');
-  const [error, setError] = useState<string>();
+  const [gotoRoomName, setGotoRoomName] = useState<string>(); const [roomName, setRoomName] = useState<string>(props.oldRoomName || ''); const [error, setError] = useState<string>();
   const { playToggle } = PlaySound();
 
   const handleNewRoom = () => {
@@ -69,7 +67,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
             <Card.Title>
               Join an existing Empathy Room
             </Card.Title>
-            <Card.Text className="text-center">
+            <Card.Title>
               <InputGroup size="lg">
                 <FormControl
                   placeholder="Type the Empathy Room key here"
@@ -81,7 +79,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
               <Button variant="success" onClick={handleJoinRoom}>
                 Join Empathy Room
               </Button>
-            </Card.Text>
+            </Card.Title>
           </Card.Body>
         </Card>
       </Row>
