@@ -31,6 +31,8 @@ class RoomInfo(RoomInfoBase):
     def toggle_card(self, name: str, card_id: int):
         if name in self.users:
             self.users[name].toggle_card(card_id)
+            if self.users[name].empty():
+                del self.users[name]
 
     @after("upsert_speaker")
     def add_user(self, name: str, socket: WebSocket):
