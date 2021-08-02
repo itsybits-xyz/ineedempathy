@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 from ..schemas import RoomInfo
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
+from ..utils import after
 
 
 class ConnectionManagerMiddleware:
@@ -44,6 +45,7 @@ class ConnectionManager:
         self._rooms[name] = room_info
         return room_info
 
+    @after("prune_rooms")
     def add_user(self, room: RoomInfo, name: str, socket: WebSocket):
         if room.name not in self._rooms:
             raise Exception('room_does_not_exist_meowww')
@@ -52,17 +54,24 @@ class ConnectionManager:
             socket=socket
         )
 
+    @after("prune_rooms")
     def remove_user(self, room: RoomInfo, name: str, socket: WebSocket):
         room_info = self._rooms.get(room.name)
+        if room_info is None:
+            return
         room_info.remove_user(name, socket)
-        if room_info is None or room_info.empty():
-            del self._rooms[room.name]
 
+    @after("prune_rooms")
     def toggle_card(self, room: RoomInfo, name: str, card_id: Optional[int]):
         if card_id is None:
             return
         room_info = self._rooms.get(room.name)
         room_info.toggle_card(name, card_id)
+
+    def prune_rooms(self):
+        for room_name in list(self._rooms):
+            if self._rooms[room_name].empty():
+                del self._rooms[room_name]
 
     async def send_update(self, room: RoomInfo):
         room_info = self._rooms.get(room.name)
