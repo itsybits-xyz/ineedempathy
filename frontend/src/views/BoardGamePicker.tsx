@@ -42,7 +42,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
           <Dropdown>
             <Dropdown.Toggle variant="success">
               {type === null ? (
-                <span>Both Cards</span>
+                <span>Both Types</span>
               ) : (
                 type === CardType.feeling ? (
                   <span>Feeling Cards</span>
@@ -55,10 +55,9 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
               <Dropdown.Item
                 active={type === null}
                 onClick={() => setType(null)}>
-                Both Cards
+                Both Types
               </Dropdown.Item>
-              <Dropdown.Item
-                active={type === CardType.feeling}
+              <Dropdown.Item active={type === CardType.feeling}
                 onClick={() => setType(CardType.feeling)}>
                 Feeling Cards
               </Dropdown.Item>
@@ -90,7 +89,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
             <Button
               onClick={() => setLevel(CardLevel.all) }
               variant={isCardLevel(CardLevel.all, "primary", "secondary")}>
-              All
+              All Levels
             </Button>
           </ButtonGroup>
         </Col>
@@ -129,9 +128,13 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
           }).filter((card: Card) => {
             if (level === CardLevel.all) return true;
             return card.level <= level;
-          }).map((card: Card, idx: number) => {
+          }).sort((card1: Card, card2: Card) => {
+            if (Math.floor(Math.random() * 1000) % 2 === 0) return 1;
+            if (Math.floor(Math.random() * 1000) % 2 === 0) return -1;
+            return 0;
+          }).map((card: Card) => {
             return (
-              <Col key={idx}>
+              <Col key={card.id}>
                 <GameCard
                   onList={onList(card)}
                   size={"lg"}

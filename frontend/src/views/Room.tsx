@@ -4,7 +4,6 @@ import {
   InputGroup,
   FormControl,
   Button,
-  Container,
   Row
 } from "react-bootstrap";
 import { BoardGame } from "./BoardGame";

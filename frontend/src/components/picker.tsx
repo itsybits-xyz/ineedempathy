@@ -48,6 +48,10 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   }).filter((card: Card) => {
       if (level === CardLevel.all) return true;
       return card.level <= level;
+  }).sort((card1: Card, card2: Card) => {
+    if (Math.floor(Math.random() * 1000) % 2 === 0) return 1;
+    if (Math.floor(Math.random() * 1000) % 2 === 0) return -1;
+    return 0;
   });
 
   return (
