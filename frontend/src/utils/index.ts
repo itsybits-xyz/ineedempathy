@@ -1,18 +1,19 @@
 import { CommentType, Card } from '../schemas';
+import shuffle from 'lodash.shuffle';
 
 export * from './api';
 
-const colors = ['pink', 'red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-const animals = ['whale', 'giraffe', 'turtle', 'jellyfish', 'dog', 'bison', 'cat'];
+const colors = [
+  'pink', 'red', 'orange', 'yellow', 'green', 'blue', 'purple',
+  'aqua', 'black', 'magenta', 'violet', 'opal', 'seafoam', 'coral',
+];
+const animals = [
+  'whale', 'giraffe', 'turtle', 'jellyfish', 'dog', 'bison', 'cat',
+  'hamster', 'sugar-glider', 'rabbit', 'gecko', 'mouse', 'moth', 'hedgehog',
+];
 export function generateName(): string {
-  const randomSort = (one: any, two: any) => {
-    if (Math.round(Math.random() * 1000) % 2) return 1;
-    if (Math.round(Math.random() * 1000) % 2) return -1;
-    return 0;
-  }
-
-  const color = colors.sort(randomSort)[0];
-  const animal = animals.sort(randomSort)[0];
+  const color = shuffle(colors)[0];
+  const animal = shuffle(animals)[0];
   const number = Math.round(Math.random() * 1000);
 
   return `${color}-${animal}-${number}`;
