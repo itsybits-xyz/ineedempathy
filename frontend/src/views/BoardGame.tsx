@@ -59,7 +59,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     return (
       <>
         <Alert variant="warning">
-          This room does not exist.
+          This room "{roomname}" does not exist.
         </Alert>
         <JoinRoom oldRoomName={roomname} />
       </>

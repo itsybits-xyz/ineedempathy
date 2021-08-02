@@ -16,7 +16,10 @@ export interface JoinRoomProps {
 }
 
 export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
-  const [gotoRoomName, setGotoRoomName] = useState<string>(); const [roomName, setRoomName] = useState<string>(props.oldRoomName || ''); const [error, setError] = useState<string>();
+  const { oldRoomName } = props;
+  const [gotoRoomName, setGotoRoomName] = useState<string>();
+  const [roomName, setRoomName] = useState<string>(oldRoomName || '');
+  const [error, setError] = useState<string>();
   const { playToggle } = PlaySound();
 
   const handleNewRoom = () => {
@@ -30,7 +33,9 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
 
   const handleJoinRoom = () => {
     playToggle();
-    setGotoRoomName(roomName);
+    if (roomName !== oldRoomName && String(roomName).length > 0) {
+      setGotoRoomName(roomName);
+    }
   };
 
   const styles = {
