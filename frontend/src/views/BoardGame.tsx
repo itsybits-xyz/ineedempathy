@@ -39,19 +39,11 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     }
   }, [lastMessage]);
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
-
   const toggleCard = (card: Card) => {
     return () => {
       playToggle();
       sendMessage(String(card.id))
-    }
+    };
   };
 
   const currentUser = currentUsers.find((user: Player) => {
@@ -82,18 +74,14 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             <Row className="big-card-list">
               <BoardGamePicker
                 cards={cards}
-                toggleCard={(card: Card) => {
-                  return () => {
-                    return toggleCard(card);
-                  }
-                }}
+                toggleCard={toggleCard}
                 onList={(card: Card) => {
                   return currentUser?.cards?.includes(card.id) || false;
                 }} />
             </Row>
           </Col>
           <Col className="users-list">
-            <h2>User List {connectionStatus}</h2>
+            <h2>User List</h2>
             { currentUsers.sort((user1: Player, user2: Player) => {
               // Speaker first
               if (user1.speaker) return -1;
@@ -105,7 +93,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             }).map((user: Player) => {
               return (
                 <CardListViewer
-                  key={`user-${user.name}`}
+                  key={user.name}
                   player={user}
                   toggleCard={toggleCard}
                   onList={(card: Card):boolean => {
