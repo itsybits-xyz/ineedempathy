@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap";
 import { BoardGame } from "./BoardGame";
 import { useAsync } from 'react-async';
-import { getCards } from '../utils/api';
+import { getCards, generateName } from '../utils';
 import { PlaySound } from "../components";
 
 export interface RoomProps {
@@ -22,7 +22,9 @@ export interface RoomProps {
 export const Room: FC<RoomProps> = (props: RoomProps) => {
   const roomname = props?.match?.params?.name;
   const { data } = useAsync(getCards);
-  const [username, setUsername] = useState<string>(localStorage.getItem(roomname) || "");
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem(roomname) || generateName()
+  );
   const [ready, _setReady] = useState<boolean>(false);
   const { playToggle } = PlaySound();
 
