@@ -2,9 +2,8 @@ import React, { FC, useState, useEffect } from "react";
 import { Col, Container, Row } from 'react-bootstrap';
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BACKEND_URL } from "../config";
-import { GameCard } from "../components";
 import { Card } from "../schemas";
-import { CardListViewer } from ".";
+import { BoardGamePicker, CardListViewer } from ".";
 import './BoardGame.scss';
 
 export interface BoardGameProps {
@@ -62,18 +61,16 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
         <Row className="cards-users">
           <Col className="cards-list">
             <Row className="big-card-list">
-              { cards.map((card) => {
-                const onList = currentUser?.cards?.includes(card.id) || false;
-                return (
-                  <Col>
-                    <GameCard
-                      onList={onList}
-                      size={"lg"}
-                      card={card}
-                      handleClick={toggleCard(card)} />
-                  </Col>
-                );
-              })}
+              <BoardGamePicker
+                cards={cards}
+                toggleCard={(card: Card) => {
+                  return () => {
+                    return toggleCard(card);
+                  }
+                }}
+                onList={(card: Card) => {
+                  return currentUser?.cards?.includes(card.id) || false;
+                }} />
             </Row>
           </Col>
           <Col className="users-list">
