@@ -4,3 +4,4 @@ export * from './About';
 export * from './Inventory';
 export * from './card-page';
 export * from './BoardGame';
+export * from './VerticalCardViewer';

@@ -1,0 +1,34 @@
+$speaker-height: 345px;
+.content.board-game {
+  padding: 0 0 0 15px;
+  margin: 0;
+  height: 100vh;
+  .cards-users {
+    background-color: blue;
+    height: calc(100% - #{$speaker-height});
+    width: 100%;
+    .cards-list {
+      background-color: pink;
+      width: 50%;
+      overflow: scroll;
+      height: 100%;
+    }
+    .users-list {
+      background-color: orange;
+      width: 50%;
+      overflow: scroll;
+      height: 100%;
+    }
+  }
+  .speaker {
+    background-color: purple;
+    width: 100%;
+    .speaker-list {
+      width: 100%;
+      height: $speaker-height;
+      background-color: yellow;
+      overflow-x: scroll;
+      overflow-y: hidden;
+    }
+  }
+}

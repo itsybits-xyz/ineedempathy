@@ -4,6 +4,8 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BACKEND_URL } from "../config";
 import { GameCard } from "../components";
 import { Card } from "../schemas";
+import { VerticalCardViewer } from ".";
+import './BoardGame.scss';
 
 export interface BoardGameProps {
   cards: Card[];
@@ -11,7 +13,7 @@ export interface BoardGameProps {
   username: string;
 }
 
-interface Player {
+export interface Player {
   name: string;
   speaker: boolean;
   cards: number[];
@@ -50,93 +52,68 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     }
   };
 
-  const currentUser = currentUsers.filter((user: Player) => {
+  const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
   });
   
-  const speaker = currentUsers.filter((user: Player) => {
+  const speaker = currentUsers.find((user: Player) => {
     return user.speaker;
   });
 
   return (
     <>
-      <div className="content board-game">
-        <Container fluid>
-          <Row>
-            <Col>
-              <Row className="big-card-list">
-                { cards.map((card) => {
-                  const onList = currentUser?.cards?.includes(card.id)
-                  console.log(currentUser);
-                  return (
-                    <Col>
-                      <GameCard
-                        onList={onList}
-                        size={"lg"}
-                        card={card}
-                        handleClick={toggleCard(card)} />
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Col>
-            <Col>
-              <h2>User List {connectionStatus}</h2>
-              { currentUsers.filter((user: Player) => {
-                return !user.speaker;
-              }).map((user: Player) => {
+      <Container className="content board-game" fluid>
+        <Row className="cards-users">
+          <Col className="cards-list">
+            <Row className="big-card-list">
+              { cards.map((card) => {
+                const onList = currentUser?.cards?.includes(card.id) || false;
                 return (
-                  <div key={`user-${user.name}`}>
-                    {user.name}
-                    <Row>
-                      {cards
-                        .filter((card) => user.cards.includes(card.id))
-                        .map((card) => {
-                          const onList = currentUser?.cards?.includes(card.id)
-                          return (
-                            <Col>
-                              <GameCard
-                                onList={onList}
-                                size={"md"}
-                                card={card}
-                                handleClick={toggleCard(card)} />
-                            </Col>
-                          )}
-                        )
-                      }
-                    </Row>
-                  </div>
+                  <Col>
+                    <GameCard
+                      onList={onList}
+                      size={"lg"}
+                      card={card}
+                      handleClick={toggleCard(card)} />
+                  </Col>
                 );
-              }) }
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              { speaker.map((user: Player) => {
-                return (
-                    <Row>
-                      {cards
-                        .filter((card) => user.cards.includes(card.id))
-                        .map((card) => {
-                          const onList = currentUser?.cards?.includes(card.id)
-                          return (
-                            <Col>
-                              <GameCard
-                                onList={onList}
-                                size={"lg"}
-                                card={card}
-                                handleClick={toggleCard(card)} />
-                            </Col>
-                          )}
-                        )
-                      }
-                    </Row>
-                );
-              }) }
-            </Col>
-          </Row>
-        </Container>
-      </div>
+              })}
+            </Row>
+          </Col>
+          <Col className="users-list">
+            <h2>User List {connectionStatus}</h2>
+            { currentUsers.filter((user: Player) => {
+              return !user.speaker;
+            }).map((user: Player) => {
+              return (
+                <VerticalCardViewer
+                  key={`user-${user.name}`}
+                  player={user}
+                  toggleCard={toggleCard}
+                  onList={(card: Card):boolean => {
+                    return currentUser?.cards?.includes(card.id) || false;
+                  }}
+                  cards={cards.filter((card) => {
+                    return user.cards.includes(card.id)
+                  })} />
+              );
+            }) }
+          </Col>
+        </Row>
+        <Row className="speaker">
+          <Col className="speaker-list">
+            <VerticalCardViewer
+              player={speaker}
+              toggleCard={toggleCard}
+              onList={(card: Card) => {
+                return true;
+              }}
+              cards={cards.filter((card) => {
+                return speaker?.cards.includes(card.id)
+              })} />
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };
