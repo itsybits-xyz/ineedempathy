@@ -13,6 +13,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
   const { toggleCard, onList, cards } = props;
   const [ level, setLevel ] = useState<CardLevel>(CardLevel.beginner);
   const [ type, setType ] = useState<CardType|null>(null);
+  const [ howToPlay, setHowToPlay ] = useState<boolean>(false);
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
@@ -77,7 +78,33 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
             </Button>
           </ButtonGroup>
         </Col>
+        <Col className="info">
+          <Button
+            variant="info"
+            onClick={() => setHowToPlay(!howToPlay) }>
+            Help
+          </Button>
+        </Col>
       </Row>
+      { howToPlay && (
+        <Row>
+          <p>
+            If you're the <strong>speaker</strong> tell the listeners what's going
+            on for you. Attempt to keep the bits small, and allow them to repeat
+            them back to you. If you notice a feeling or need come up, add it to
+            your list. The listeners can also suggest cards for you to add to your
+            list. Once you're fully done talking, change the speaker and you'll
+            become a listener.
+          </p>
+          <p>
+            If you're the <strong>listener</strong> listen to what the user says,
+            being as present as possible. Reflect back what the speaker says and
+            make guesses at what they are feeling or needing. If you're having
+            trouble, browse the card list. If the listener adds a feeling or need
+            to their list, this will also be available to look at.
+          </p>
+        </Row>
+      ) }
       <Row>
         { cards
           .filter((card: Card) => {
