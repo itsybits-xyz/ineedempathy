@@ -7,9 +7,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.nav .nav-link svg {
-  position: relative;
-  top: 3px;
+.nav .nav-link {
+  &.active {
+    color: white;
+  }
+  svg {
+    position: relative;
+    top: 3px;
+  }
 }
 
 code {

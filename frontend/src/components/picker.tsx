@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { ButtonGroup, Button, Container, Col, Row } from 'react-bootstrap';
 import { getCards } from '../utils/api';
 import { useAsync } from 'react-async';
-import { PickerCard, Hidden } from './';
+import { PlaySound, PickerCard, Hidden } from './';
 import { CardLevel, Card } from '../schemas';
 
 export interface PickerProps {
@@ -15,8 +15,14 @@ const defaultProps: PickerProps = {
 };
 
 export const Picker: FC<PickerProps> = (props: PickerProps) => {
+  const { playToggle } = PlaySound();
   const { data, error, isPending } = useAsync(getCards);
-  const [ level, setLevel ] = useState<CardLevel>(CardLevel.all);
+  const [ level, _setLevel ] = useState<CardLevel>(CardLevel.all);
+
+  const setLevel = (newLevel: CardLevel) => {
+    playToggle();
+    return _setLevel(newLevel);
+  };
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
