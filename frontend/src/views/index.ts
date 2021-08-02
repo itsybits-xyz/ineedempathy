@@ -6,3 +6,4 @@ export * from './card-page';
 export * from './BoardGame';
 export * from './CardListViewer';
 export * from './BoardGamePicker';
+export * from './JoinRoom';

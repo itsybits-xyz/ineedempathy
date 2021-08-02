@@ -1,8 +1,16 @@
 import React, { FC, useState } from "react";
-import { Button } from 'react-bootstrap';
+import {
+  Card,
+  InputGroup,
+  FormControl,
+  Button,
+  Container,
+  Row
+} from "react-bootstrap";
 import { BoardGame } from "./BoardGame";
 import { useAsync } from 'react-async';
 import { getCards } from '../utils/api';
+import { PlaySound } from "../components";
 
 export interface RoomProps {
   match: {
@@ -17,25 +25,39 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
   const { data } = useAsync(getCards);
   const [username, setUsername] = useState<string>(localStorage.getItem(roomname) || "");
   const [ready, _setReady] = useState<boolean>(false);
+  const { playToggle } = PlaySound();
 
   const setReady = (value:boolean) => {
+    playToggle();
     localStorage.setItem(roomname, username);
     return _setReady(value);
   };
 
   if (!ready) {
     return (
-      <>
-        <div>
-          Type in your username to join {roomname}
-        </div>
-        <div>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value) } />
-        </div>
-        <div>
-          <Button onClick={() => setReady(true)}>Join Now</Button>
-        </div>
-      </>
+      <Row>
+        <Card style={{ marginLeft: '35px',  width: '35rem' }}>
+          <Card.Body>
+            <Card.Title>
+              <p>Type in a <strong>display name</strong></p>
+              <p>to join "{roomname}"!</p>
+            </Card.Title>
+            <Card.Text className="text-center">
+              <InputGroup size="lg">
+                <FormControl
+                  placeholder="Type your display name here"
+                  value={username}
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                  }} />
+              </InputGroup>
+              <Button variant="success" onClick={() => setReady(true)}>
+                Join Empathy Room
+              </Button>
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      </Row>
     );
   }
 

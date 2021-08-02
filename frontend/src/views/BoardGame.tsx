@@ -1,10 +1,11 @@
 import React, { FC, useState, useEffect } from "react";
-import { Col, Container, Row } from 'react-bootstrap';
+import { Alert, Col, Container, Row } from 'react-bootstrap';
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BACKEND_URL } from "../config";
 import { Card } from "../schemas";
-import { BoardGamePicker, CardListViewer } from ".";
+import { JoinRoom, BoardGamePicker, CardListViewer } from ".";
 import './BoardGame.scss';
+import { PlaySound } from "../components";
 
 export interface BoardGameProps {
   cards: Card[];
@@ -27,6 +28,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const socketUrl = `${BACKEND_URL.replace("http", "ws")}/rooms/${roomname}/users/${username}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
+  const { playToggle } = PlaySound();
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -47,6 +49,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
 
   const toggleCard = (card: Card) => {
     return () => {
+      playToggle();
       sendMessage(String(card.id))
     }
   };
@@ -54,6 +57,22 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
   });
+
+  const isClosed = readyState === ReadyState.CLOSED;
+  const isUninstantiated = readyState === ReadyState.UNINSTANTIATED;
+  const isClosing = readyState === ReadyState.CLOSING;
+  const isNotRecoverable = isClosing || isUninstantiated || isClosed;
+
+  if (isNotRecoverable) {
+    return (
+      <>
+        <Alert variant="warning">
+          This room does not exist.
+        </Alert>
+        <JoinRoom oldRoomName={roomname} />
+      </>
+    );
+  }
 
   return (
     <>

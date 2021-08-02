@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { ButtonGroup, Button, Dropdown, Col, Row } from 'react-bootstrap';
-import { GameCard } from "../components";
+import { PlaySound, GameCard } from "../components";
 import { CardLevel, CardType, Card } from "../schemas";
 
 export interface BoardGamePickerProps {
@@ -11,12 +11,28 @@ export interface BoardGamePickerProps {
 
 export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePickerProps) => {
   const { toggleCard, onList, cards } = props;
-  const [ level, setLevel ] = useState<CardLevel>(CardLevel.beginner);
-  const [ type, setType ] = useState<CardType|null>(null);
-  const [ howToPlay, setHowToPlay ] = useState<boolean>(false);
+  const [ level, _setLevel ] = useState<CardLevel>(CardLevel.beginner);
+  const [ type, _setType ] = useState<CardType|null>(null);
+  const [ howToPlay, _setHowToPlay ] = useState<boolean>(false);
+  const { playToggle } = PlaySound();
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
+  };
+
+  const setHowToPlay = (newVal: boolean) => {
+    playToggle();
+    return _setHowToPlay(newVal);
+  };
+
+  const setLevel = (newLevel: CardLevel) => {
+    playToggle();
+    return _setLevel(newLevel);
+  };
+
+  const setType = (newType: CardType|null) => {
+    playToggle();
+    return _setType(newType);
   };
 
   return (
@@ -24,7 +40,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
       <Row className="filters">
         <Col>
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle variant="success">
               {type === null ? (
                 <span>Both Cards</span>
               ) : (
@@ -113,9 +129,9 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
           }).filter((card: Card) => {
             if (level === CardLevel.all) return true;
             return card.level <= level;
-          }).map((card: Card) => {
+          }).map((card: Card, idx: number) => {
             return (
-              <Col>
+              <Col key={idx}>
                 <GameCard
                   onList={onList(card)}
                   size={"lg"}
