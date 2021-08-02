@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
+import React, { FC, useState } from 'react';
+import { ButtonGroup, Button, Container, Col, Row } from 'react-bootstrap';
 import { getCards } from '../utils/api';
 import { useAsync } from 'react-async';
 import { PickerCard, Hidden } from './';
-import { Card } from '../schemas';
+import { CardLevel, Card } from '../schemas';
 
 export interface PickerProps {
   type?: string;
@@ -16,6 +16,11 @@ const defaultProps: PickerProps = {
 
 export const Picker: FC<PickerProps> = (props: PickerProps) => {
   const { data, error, isPending } = useAsync(getCards);
+  const [ level, setLevel ] = useState<CardLevel>(CardLevel.all);
+
+  const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
+    return lookLevel === level ? success : fail;
+  };
 
   if (error) {
     return (
@@ -34,11 +39,38 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   const filterType = props.type === 'needs' ? 'need' : 'feeling';
   const cards = data.filter((card: Card) => {
     return card.type === filterType;
+  }).filter((card: Card) => {
+      if (level === CardLevel.all) return true;
+      return card.level <= level;
   });
 
   return (
     <div className="content fn-cards">
       <Container fluid>
+        <Row>
+          <ButtonGroup aria-label="Basic example">
+            <Button
+              onClick={() => setLevel(CardLevel.intro) }
+              variant={isCardLevel(CardLevel.intro, "primary", "secondary")}>
+              Intro
+            </Button>
+            <Button
+              onClick={() => setLevel(CardLevel.beginner) }
+              variant={isCardLevel(CardLevel.beginner, "primary", "secondary")}>
+              Beginner
+            </Button>
+            <Button
+              onClick={() => setLevel(CardLevel.intermediate) }
+              variant={isCardLevel(CardLevel.intermediate, "primary", "secondary")}>
+              Intermediate
+            </Button>
+            <Button
+              onClick={() => setLevel(CardLevel.all) }
+              variant={isCardLevel(CardLevel.all, "primary", "secondary")}>
+              All
+            </Button>
+          </ButtonGroup>
+        </Row>
         <Row>
           { cards.map((card) => {
             return (

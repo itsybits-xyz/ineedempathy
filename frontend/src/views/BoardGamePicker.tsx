@@ -17,7 +17,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
-  }
+  };
 
   return (
     <>
@@ -39,17 +39,17 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
               <Dropdown.Item
                 active={type === null}
                 onClick={() => setType(null)}>
-                Both
+                Both Cards
               </Dropdown.Item>
               <Dropdown.Item
                 active={type === CardType.feeling}
                 onClick={() => setType(CardType.feeling)}>
-                Feelings
+                Feeling Cards
               </Dropdown.Item>
               <Dropdown.Item
                 active={type === CardType.need}
                 onClick={() => setType(CardType.need)}>
-                Needs
+                Need Cards
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

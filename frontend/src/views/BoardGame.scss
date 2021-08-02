@@ -6,7 +6,6 @@
   padding: 0;
   margin: 0;
   .cards-users {
-    background-color: blue;
     width: 100%;
     .users-list,
     .cards-list {
@@ -15,11 +14,9 @@
     }
     .cards-list {
       width: 65%;
-      background-color: pink;
     }
     .users-list {
       width: 35%;
-      background-color: orange;
     }
   }
   .info, .filters .dropdown {
