@@ -1,34 +1,25 @@
-$speaker-height: 345px;
 .content.board-game {
-  padding: 0 0 0 15px;
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  padding: 0;
   margin: 0;
-  height: 100vh;
   .cards-users {
     background-color: blue;
-    height: calc(100% - #{$speaker-height});
     width: 100%;
+    .users-list,
     .cards-list {
+      height:100vh;
+      overflow-y: scroll;
+    }
+    .cards-list {
+      width: 65%;
       background-color: pink;
-      width: 50%;
-      overflow: scroll;
-      height: 100%;
     }
     .users-list {
+      width: 35%;
       background-color: orange;
-      width: 50%;
-      overflow: scroll;
-      height: 100%;
-    }
-  }
-  .speaker {
-    background-color: purple;
-    width: 100%;
-    .speaker-list {
-      width: 100%;
-      height: $speaker-height;
-      background-color: yellow;
-      overflow-x: scroll;
-      overflow-y: hidden;
     }
   }
 }

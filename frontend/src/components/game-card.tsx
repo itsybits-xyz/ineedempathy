@@ -15,40 +15,44 @@ export interface GameCardProps {
 export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
   const { size, card, handleClick, onList } = props;
   const [ error, setError ] = useState(false);
-  let width;
+  let cardWidth;
+  let toggleSize;
   switch (size) {
     case 'sm':
-        width = '5rem'
+      cardWidth = '5rem'
+      toggleSize = 15
       break;
     case 'md':
-      width = '7rem'
+      cardWidth = '7rem'
+      toggleSize = 25
       break;
     case 'lg':
     default:
-      width = '10rem';
+      cardWidth = '10rem';
+      toggleSize = 36
   }
   if (error) {
     return <Hidden error={error} />
   }
   return (
-    <Card style={{ width: width }}>
+    <Card style={{ width: cardWidth }}>
       <div className="kard">
         <Card.Img
-          alt={card.name}
+          alt={card.displayName}
           variant="top"
           onError={(er: any) => setError(er)}
           src={ BACKEND_URL + card.image.md } />
-        <div className="ikon">
-          <MdInfoOutline size={36} />
+        <div className={"ikon " + size}>
+          <MdInfoOutline size={toggleSize} />
         </div>
       </div>
       <Card.Body
         onClick={handleClick}
         className={onList ? 'on-list' : 'off-list'}>
-        <Card.Title className={size}>{card.name}</Card.Title>
+        <Card.Title className={size}>{card.displayName}</Card.Title>
         <Card.Title>
-          <MdRemoveCircleOutline className="remove" size={36} />
-          <MdLibraryAdd className="add" size={36} />
+          <MdRemoveCircleOutline className="remove" size={toggleSize} />
+          <MdLibraryAdd className="add" size={toggleSize} />
         </Card.Title>
       </Card.Body>
     </Card>

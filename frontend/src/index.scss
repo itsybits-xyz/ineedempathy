@@ -101,7 +101,9 @@ code {
           position: absolute;
           top: 0;
           left: 0;
-          padding-top: 100px;
+          &.sm { padding-top: 10px; }
+          &.md { padding-top: 70px; }
+          &.lg { padding-top: 100px; }
         }
         img {
           opacity: 0.8;
@@ -120,6 +122,7 @@ code {
       }
       &:hover {
         position: relative;
+        border-radius: 0 0 5px 5px;
         &.on-list {
           background-color: pink;
           svg.add { display: none }

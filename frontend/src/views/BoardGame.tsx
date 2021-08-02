@@ -4,7 +4,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { BACKEND_URL } from "../config";
 import { GameCard } from "../components";
 import { Card } from "../schemas";
-import { VerticalCardViewer } from ".";
+import { CardListViewer } from ".";
 import './BoardGame.scss';
 
 export interface BoardGameProps {
@@ -55,10 +55,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
   });
-  
-  const speaker = currentUsers.find((user: Player) => {
-    return user.speaker;
-  });
 
   return (
     <>
@@ -82,11 +78,17 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
           </Col>
           <Col className="users-list">
             <h2>User List {connectionStatus}</h2>
-            { currentUsers.filter((user: Player) => {
-              return !user.speaker;
+            { currentUsers.sort((user1: Player, user2: Player) => {
+              // Speaker first
+              if (user1.speaker) return -1;
+              if (user2.speaker) return 1;
+              // Name second
+              if (user1.name > user2.name) return -1;
+              if (user2.name > user1.name) return 1;
+              return 0;
             }).map((user: Player) => {
               return (
-                <VerticalCardViewer
+                <CardListViewer
                   key={`user-${user.name}`}
                   player={user}
                   toggleCard={toggleCard}
@@ -98,19 +100,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                   })} />
               );
             }) }
-          </Col>
-        </Row>
-        <Row className="speaker">
-          <Col className="speaker-list">
-            <VerticalCardViewer
-              player={speaker}
-              toggleCard={toggleCard}
-              onList={(card: Card) => {
-                return true;
-              }}
-              cards={cards.filter((card) => {
-                return speaker?.cards.includes(card.id)
-              })} />
           </Col>
         </Row>
       </Container>
