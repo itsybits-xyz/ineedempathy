@@ -33,6 +33,9 @@ code {
   }
 }
 .card, .fn-cards {
+  &[role=comment] .card-title {
+    text-align: left;
+  }
   .card-title {
     text-align: center;
   }
