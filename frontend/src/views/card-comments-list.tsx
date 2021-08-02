@@ -3,6 +3,7 @@ import { Card, Comment } from '../schemas';
 import { ClickSound } from '../components';
 import { commentTypeToString } from '../utils';
 import { Badge, Card as CardEl, Container, Row, Button, ButtonGroup } from 'react-bootstrap';
+import { MdSearch } from 'react-icons/md';
 
 export interface CardCommentsListProps {
   card: Card,
@@ -21,6 +22,13 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
   if (comments.length === 0) {
     return null;
   }
+
+  const filteredComments = comments.filter((comment: Comment) => {
+    const filter = filters.find((filter) => {
+      return filter.key === comment.type
+    });
+    return filter && filter.active;
+  })
 
   return (
     <Container fluid>
@@ -49,33 +57,49 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
           )) }
         </ButtonGroup>
       </Row>
-      <Row className="justify-content-sm-center">
-        { comments.map((comment: Comment, idx: number) => {
-          const filter = filters.find((filter) => {
-            return filter.key === comment.type
-          });
-          if (!filter || !filter.active) {
-            return null;
-          }
-          return (
-            <CardEl
-              role="comment"
-              key={idx}
-              style={{ width: '35rem' }}>
+      <Container fluid>
+        { filteredComments.length === 0 ? (
+          <Row className="justify-content-sm-center">
+            <CardEl role="comment" style={{ width: '35rem' }}>
               <CardEl.Body>
                 <CardEl.Title>
-                  <Badge pill variant={filter.variant}>
-                    &nbsp;
-                  </Badge>
-                  {' '}
-                  {commentTypeToString(card, comment.type)}
+                  <MdSearch size={36} />
                 </CardEl.Title>
-                <CardEl.Text>{comment.data}</CardEl.Text>
+                <CardEl.Title>
+                  No comments found.
+                </CardEl.Title>
+                <CardEl.Title>
+                  Try adjusting your filters, or <strong>contributing</strong> your own.
+                </CardEl.Title>
               </CardEl.Body>
             </CardEl>
-          );
-        }) }
-      </Row>
+          </Row>
+        ) : (
+          filteredComments.map((comment: Comment, idx: number) => {
+            const filter = filters.find((filter) => {
+              return filter.key === comment.type
+            });
+            return (
+              <Row key={idx} className="justify-content-sm-center">
+                <CardEl
+                  role="comment"
+                  style={{ width: '35rem' }}>
+                  <CardEl.Body>
+                    <CardEl.Title>
+                      <Badge pill variant={filter?.variant}>
+                        &nbsp;
+                      </Badge>
+                      {' '}
+                      {commentTypeToString(card, comment.type)}
+                    </CardEl.Title>
+                    <CardEl.Text>{comment.data}</CardEl.Text>
+                  </CardEl.Body>
+                </CardEl>
+              </Row>
+            );
+          })
+        )}
+      </Container>
     </Container>
   );
 };

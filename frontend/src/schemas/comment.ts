@@ -1,10 +1,17 @@
 export interface CommentBase {
   cardId: number;
-  type: string;
+  type: CommentType;
   data: string;
 }
 
-export interface CommentCreate {
+export interface CommentCreate extends CommentBase {
+}
+
+export enum CommentType {
+  NEED_MET = "NEED_MET",
+  NEED_NOT_MET = "NEED_NOT_MET",
+  DEFINE = "DEFINE",
+  THINK = "THINK",
 }
 
 // Room object from backend.

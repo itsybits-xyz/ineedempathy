@@ -1,11 +1,11 @@
-import { Card } from '../schemas';
+import { CommentType, Card } from '../schemas';
 
 export * from './api';
 
-export function commentTypeToString(card:Card, commentType:string) {
+export function commentTypeToString(card:Card, commentType:CommentType) {
   const cardName:string = card.displayName;
   switch(commentType) {
-    case 'NEED_MET':
+    case CommentType.NEED_MET:
       switch (card.type) {
         case 'feeling':
           return `When I felt ${cardName} the needs that were met were..`;
@@ -14,7 +14,7 @@ export function commentTypeToString(card:Card, commentType:string) {
         default:
           return '';
       }
-    case 'NEED_NOT_MET':
+    case CommentType.NEED_NOT_MET:
       switch (card.type) {
         case 'feeling':
           return `When I felt ${cardName} the needs that were not met were..`;
@@ -23,9 +23,9 @@ export function commentTypeToString(card:Card, commentType:string) {
         default:
           return '';
       }
-    case 'DEFINE':
+    case CommentType.DEFINE:
       return `I define ${cardName} as..`;
-    case 'THINK':
+    case CommentType.THINK:
       return `My thoughts on ${cardName} are..`;
     default:
       return '';
