@@ -90,23 +90,30 @@ code {
       cursor: pointer;
     }
     .kard {
-      position: relative;
       &:hover {
-        background: black;
         transform: scale(1.1);
         border-radius: 5px;
+        position: relative;
+
+        &.on-list .ikon {
+          svg.add { display: none; }
+          svg.remove { color: pink; }
+        }
+
+        &.off-list .ikon {
+          svg.add { color: lightgreen; }
+          svg.remove { display: none; }
+        }
+
         .ikon {
           color: white;
           display: block;
           position: absolute;
-          top: 0;
           left: 0;
-          &.sm { padding-top: 10px; }
-          &.md { padding-top: 70px; }
-          &.lg { padding-top: 100px; }
+          bottom: 0;
         }
+
         img {
-          opacity: 0.8;
           border-radius: 5px;
         }
       }
@@ -121,15 +128,14 @@ code {
         display: none;
       }
       &:hover {
+        background-color: rgba(0, 0, 0, 0.6);
         position: relative;
         border-radius: 0 0 5px 5px;
-        &.on-list {
-          background-color: pink;
-          svg.add { display: none }
+        svg {
+          color: black;
         }
-        &.off-list {
-          background-color: lightgreen;
-          svg.remove { display: none }
+        .card-title {
+          color: white;
         }
         .card-title + .card-title {
           text-align: center;

@@ -36,23 +36,23 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
   }
   return (
     <Card style={{ width: cardWidth }}>
-      <div className="kard">
+      <div
+        onClick={handleClick}
+        className={onList ? 'kard on-list' : 'kard off-list'}>
         <Card.Img
           alt={card.displayName}
           variant="top"
           onError={(er: any) => setError(er)}
           src={ BACKEND_URL + card.image.md } />
         <div className={"ikon " + size}>
-          <MdInfoOutline size={toggleSize} />
-        </div>
-      </div>
-      <Card.Body
-        onClick={handleClick}
-        className={onList ? 'on-list' : 'off-list'}>
-        <Card.Title className={size}>{card.displayName}</Card.Title>
-        <Card.Title>
           <MdRemoveCircleOutline className="remove" size={toggleSize} />
           <MdLibraryAdd className="add" size={toggleSize} />
+        </div>
+      </div>
+      <Card.Body>
+        <Card.Title className={size}>{card.displayName}</Card.Title>
+        <Card.Title>
+          <MdInfoOutline size={toggleSize} />
         </Card.Title>
       </Card.Body>
     </Card>
