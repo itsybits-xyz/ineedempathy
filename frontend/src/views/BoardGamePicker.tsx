@@ -1,22 +1,21 @@
 import React, { FC, useState } from "react";
-import { Modal, ButtonGroup, Button, Dropdown, Col, Row } from 'react-bootstrap';
+import {  ButtonGroup, Button, Dropdown, Col, Row } from 'react-bootstrap';
 import { PlaySound, GameCard } from "../components";
 import { CardLevel, CardType, Card } from "../schemas";
-import { CardPage } from '.';
 
 export interface BoardGamePickerProps {
   cards: Card[];
   toggleCard: (card: Card) => () => void;
   onList: (card: Card) => boolean;
+  setSelectedCard: (card: Card|null) => void;
 }
 
 export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePickerProps) => {
-  const { toggleCard, onList, cards } = props;
+  const { setSelectedCard, toggleCard, onList, cards } = props;
   const [ level, _setLevel ] = useState<CardLevel>(CardLevel.beginner);
   const [ type, _setType ] = useState<CardType|null>(null);
   const [ howToPlay, _setHowToPlay ] = useState<boolean>(false);
   const { playToggle } = PlaySound();
-  const [selectedCard, setSelectedCard] = useState<Card|null>(null);
 
   const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
     return lookLevel === level ? success : fail;
@@ -39,7 +38,6 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
 
   const customToggleCard = (card: Card) => {
     return () => {
-      setSelectedCard(null);
       return toggleCard(card)();
     }
   };
@@ -161,33 +159,6 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
           }
         )}
       </Row>
-      { selectedCard && (
-        <Modal
-          show={true}
-          dialogClassName="modal-90w"
-          onHide={() => setSelectedCard(null) }>
-          <Modal.Header closeButton>
-            <Modal.Title>{selectedCard.displayName}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <CardPage match={{ params: selectedCard }} />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setSelectedCard(null) }>
-              Close
-            </Button>
-            { onList(selectedCard) ? (
-              <Button variant="primary" onClick={toggleCard(selectedCard)}>
-                Remove
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={toggleCard(selectedCard)}>
-                Add
-              </Button>
-            ) }
-          </Modal.Footer>
-        </Modal>
-      ) }
     </>
   );
 };

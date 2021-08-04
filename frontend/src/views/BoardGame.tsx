@@ -1,11 +1,11 @@
 import React, { FC, useState, useEffect } from "react";
-import { Alert, Col, Container, Row } from 'react-bootstrap';
+import { Alert, Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { BACKEND_URL } from "../config";
 import { Card } from "../schemas";
 import { JoinRoom, BoardGamePicker, CardListViewer } from ".";
 import './BoardGame.scss';
 import { PlaySound } from "../components";
+import { CardPage } from '.';
 
 export interface BoardGameProps {
   cards: Card[];
@@ -28,6 +28,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const socketUrl = `${window.location.origin.replace("http", "ws")}/api/rooms/${roomname}/users/${username}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
+  const [ selectedCard, setSelectedCard ] = useState<Card|null>(null);
   const { playToggle } = PlaySound();
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
 
   const changeSpeaker = (user: Player) => {
     return () => {
-      if (currentUser.speaker && currentUser !== user) {
+      if (currentUser?.speaker && currentUser !== user) {
         playToggle();
         sendMessage(JSON.stringify({changeSpeaker: user.name}))
       }
@@ -84,6 +85,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             <Row className="big-card-list">
               <BoardGamePicker
                 cards={cards}
+                setSelectedCard={setSelectedCard}
                 toggleCard={toggleCard}
                 onList={(card: Card) => {
                   return currentUser?.cards?.includes(card.id) || false;
@@ -105,6 +107,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                 <CardListViewer
                   key={user.name}
                   player={user}
+                  setSelectedCard={setSelectedCard}
                   changeSpeaker={changeSpeaker}
                   toggleCard={toggleCard}
                   onList={(card: Card):boolean => {
@@ -117,6 +120,33 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             }) }
           </Col>
         </Row>
+        { selectedCard && (
+          <Modal
+            show={true}
+            size='lg'
+            onHide={() => setSelectedCard(null) }>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedCard.displayName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <CardPage match={{ params: selectedCard }} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setSelectedCard(null) }>
+                Close
+              </Button>
+              { currentUser?.cards?.includes(selectedCard?.id) || false ? (
+                <Button variant="primary" onClick={toggleCard(selectedCard)}>
+                  Remove
+                </Button>
+              ) : (
+                <Button variant="primary" onClick={toggleCard(selectedCard)}>
+                  Add
+                </Button>
+              ) }
+            </Modal.Footer>
+          </Modal>
+        ) }
       </Container>
     </>
   );

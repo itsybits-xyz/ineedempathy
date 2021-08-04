@@ -12,10 +12,11 @@ export interface CardListViewerProps {
   changeSpeaker: (user: Player) => () => void;
   onList: (card: Card) => boolean;
   player?: Player;
+  setSelectedCard: (card: Card|null) => void;
 }
 
 export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerProps) => {
-  const { player, onList, toggleCard, changeSpeaker, cards } = props;
+  const { setSelectedCard, player, onList, toggleCard, changeSpeaker, cards } = props;
   return (
     <Row className={player?.speaker ? 'speaker' : 'listener'}>
       { player && (
@@ -43,6 +44,7 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
                 onList={onList(card)}
                 size={'md'}
                 card={card}
+                handleInfo={() => setSelectedCard(card)}
                 handleClick={toggleCard(card)} />
             </Col>
           );
