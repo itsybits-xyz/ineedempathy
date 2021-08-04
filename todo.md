@@ -1,8 +1,11 @@
 # Server Todo:
 
+* [ ] Host the domain with dreamhost VPC
+* [ ] GH Actions to auto-deploy
+* [ ] Logging
+
 # UI Todo:
 
-* [ ] Logging
 
 ## Card Page
 
