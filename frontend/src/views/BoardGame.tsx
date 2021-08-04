@@ -42,13 +42,23 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const toggleCard = (card: Card) => {
     return () => {
       playToggle();
-      sendMessage(String(card.id))
+      sendMessage(JSON.stringify({toggleCard: card.id}))
     };
   };
+
 
   const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
   });
+
+  const changeSpeaker = (user: Player) => {
+    return () => {
+      if (currentUser.speaker && currentUser !== user) {
+        playToggle();
+        sendMessage(JSON.stringify({changeSpeaker: user.name}))
+      }
+    };
+  };
 
   const isClosed = readyState === ReadyState.CLOSED;
   const isUninstantiated = readyState === ReadyState.UNINSTANTIATED;
@@ -95,6 +105,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                 <CardListViewer
                   key={user.name}
                   player={user}
+                  changeSpeaker={changeSpeaker}
                   toggleCard={toggleCard}
                   onList={(card: Card):boolean => {
                     return currentUser?.cards?.includes(card.id) || false;

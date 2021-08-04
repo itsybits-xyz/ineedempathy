@@ -48,11 +48,8 @@ class ConnectionManager:
     @after("prune_rooms")
     def add_user(self, room: RoomInfo, name: str, socket: WebSocket):
         if room.name not in self._rooms:
-            raise Exception('room_does_not_exist_meowww')
-        self._rooms[room.name].add_user(
-            name=name,
-            socket=socket
-        )
+            raise Exception("room_does_not_exist_meowww")
+        self._rooms[room.name].add_user(name=name, socket=socket)
 
     @after("prune_rooms")
     def remove_user(self, room: RoomInfo, name: str, socket: WebSocket):
@@ -67,6 +64,14 @@ class ConnectionManager:
             return
         room_info = self._rooms.get(room.name)
         room_info.toggle_card(name, card_id)
+
+    @after("prune_rooms")
+    def change_speaker(self, room: RoomInfo, name: str):
+        if name is None:
+            return
+        room_info = self._rooms.get(room.name)
+        user_info = room_info.get_user(name)
+        room_info.set_speaker(user_info)
 
     def prune_rooms(self):
         for room_name in list(self._rooms):

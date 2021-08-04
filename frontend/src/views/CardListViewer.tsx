@@ -9,16 +9,18 @@ import { MdChatBubble, MdHearing } from 'react-icons/md';
 export interface CardListViewerProps {
   cards: Card[];
   toggleCard: (card: Card) => () => void;
+  changeSpeaker: (user: Player) => () => void;
   onList: (card: Card) => boolean;
   player?: Player;
 }
 
 export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerProps) => {
-  const { player, onList, toggleCard, cards } = props;
+  const { player, onList, toggleCard, changeSpeaker, cards } = props;
   return (
     <Row className={player?.speaker ? 'speaker' : 'listener'}>
       { player && (
-        <Row className={'player-info'}>
+        <Row 
+          className={'player-info'}>
           { player.speaker ? (
             <span>
               Speaker <MdChatBubble />
@@ -28,7 +30,9 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
               Listener <MdHearing />
             </span>
           ) }
-          { player.name }
+          <span onClick={changeSpeaker(player)}>
+            { player.name }
+          </span>
         </Row>
       ) }
       <Row className={'cards'}>

@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .config import settings
 from .deps import get_db
-from .schemas import CardCreate, Card, RoomInfoBase
+from .schemas import Card, RoomInfoBase
 from .schemas import Comment, CommentCreate
 from .middleware import ConnectionManagerMiddleware, ConnectionManager
 
@@ -65,11 +65,7 @@ def get_comments(
 
 
 @app.post("/cards/{card_name}/comments", status_code=201, response_model=Comment)
-def create_comment(
-    card_name: str,
-    comment: CommentCreate,
-    db: Session = Depends(get_db)
-) -> models.Comment:
+def create_comment(card_name: str, comment: CommentCreate, db: Session = Depends(get_db)) -> models.Comment:
     return crud.create_comment(db, card_name, comment)
 
 
@@ -97,8 +93,11 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
         connection_manager.add_user(room, user_name, websocket)
         await connection_manager.send_update(room)
         while True:
-            card_id = await websocket.receive_json()
-            connection_manager.toggle_card(room, user_name, card_id)
+            data = await websocket.receive_json()
+            if "toggleCard" in data:
+                connection_manager.toggle_card(room, user_name, data["toggleCard"])
+            elif "changeSpeaker" in data:
+                connection_manager.change_speaker(room, data["changeSpeaker"])
             await connection_manager.send_update(room)
     except WebSocketDisconnect:
         connection_manager.remove_user(room, user_name, websocket)
