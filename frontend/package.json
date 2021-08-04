@@ -29,9 +29,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "rm -fr ../templates && cp -r build ../templates",
+    "postbuild": "rm -fr ../templates && cp -r build ../templates && echo Ready!",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch": "watch 'npm run build' src/"
   },
   "eslintConfig": {
     "extends": [

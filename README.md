@@ -59,7 +59,7 @@ python3 script/seed.py
 nvm use 14
 cd frontend
 npm install
-npm start
+npm run watch
 ```
 
-Check http://localhost:3000/
+Check http://localhost:8000/
