@@ -6,6 +6,7 @@ import { JoinRoom, BoardGamePicker, CardListViewer } from ".";
 import './BoardGame.scss';
 import { PlaySound } from "../components";
 import { CardPage } from '.';
+import { SOCKET_URL } from '../config';
 
 export interface BoardGameProps {
   cards: Card[];
@@ -25,7 +26,7 @@ interface Message {
 
 export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const { roomname, username, cards } = props;
-  const socketUrl = `${window.location.origin.replace("http", "ws")}/api/rooms/${roomname}/users/${username}.ws`;
+  const socketUrl = `${SOCKET_URL}/rooms/${roomname}/users/${username}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
   const [ selectedCard, setSelectedCard ] = useState<Card|null>(null);

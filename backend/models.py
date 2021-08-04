@@ -19,9 +19,9 @@ class Card(Base):
     @hybrid_property
     def image(self):
         return {
-            "og": "/assets/og/" + self.name + ".jpg",
-            "lg": "/assets/lg/" + self.name + ".jpg",
-            "md": "/assets/md/" + self.name + ".jpg",
+            "og": "/static/og/" + self.name + ".jpg",
+            "lg": "/static/lg/" + self.name + ".jpg",
+            "md": "/static/md/" + self.name + ".jpg",
         }
 
 
