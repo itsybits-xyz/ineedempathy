@@ -64,6 +64,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   };
 
   const copyRoom = () => {
+    playToggle();
     const copyText = document.getElementById('roomUrl');
     copyText?.select();
     copyText?.setSelectionRange(0, 99999);
