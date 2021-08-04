@@ -14,10 +14,8 @@
 
 ## Empathy Room
 
-* [ ] Switch speakers
-* [ ] Display speakers cards
-* [ ] Display listeners cards
-* [ ] Styling
+* [ ] Styling speaker differently from listeners
+* [ ] Style user name and actions
 
 ## Bug
 
