@@ -39,9 +39,11 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
               </Row>
             ) }
           </CardEl.Title>
-          <CardEl.Text>
-            <Row>
-              { cards.map((card: Card) => {
+          <Row>
+            { cards.length === 0 ? (
+              <span>Try adding a card to your list.</span>
+            ) : (
+              cards.map((card: Card) => {
                 return (
                   <Col key={card.id}>
                     <GameCard
@@ -52,9 +54,9 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
                       handleClick={toggleCard(card)} />
                   </Col>
                 );
-              })}
-            </Row>
-          </CardEl.Text>
+              })
+            )}
+          </Row>
         </CardEl.Body>
       </CardEl>
     </Row>

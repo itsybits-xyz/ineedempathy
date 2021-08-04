@@ -106,15 +106,13 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
               <CardEl style={{ width: '100%' }}>
                 <CardEl.Body>
                   <CardEl.Title>Share Empathy Room</CardEl.Title>
-                  <CardEl.Text>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                      <Form.Control type="text" id="roomUrl" value={roomUrl} />
-                      <Form.Text className="text-muted">
-                        Share this link to people you want to join the Empathy Room with you.
-                      </Form.Text>
-                    </Form.Group>
-                    <Button variant="primary" onClick={copyRoom}>Copy URL</Button>
-                  </CardEl.Text>
+                  <Form.Group className="mb-3">
+                    <Form.Control readOnly type="text" id="roomUrl" value={roomUrl} />
+                    <Form.Text className="text-muted">
+                      Share this link to people you want to join the Empathy Room with you.
+                    </Form.Text>
+                  </Form.Group>
+                  <Button variant="primary" onClick={copyRoom}>Copy URL</Button>
                 </CardEl.Body>
               </CardEl>
             </Row>
