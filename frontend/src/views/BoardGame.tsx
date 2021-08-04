@@ -25,7 +25,7 @@ interface Message {
 
 export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const { roomname, username, cards } = props;
-  const socketUrl = `${BACKEND_URL.replace("http", "ws")}/rooms/${roomname}/users/${username}.ws`;
+  const socketUrl = `${window.location.origin.replace("http", "ws")}/api/rooms/${roomname}/users/${username}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
   const { playToggle } = PlaySound();

@@ -1,7 +1,6 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey
+from sqlalchemy import Column, DateTime, ForeignKey
 from sqlalchemy import Integer, String, Text, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
 
 from .database import Base
 from sqlalchemy.sql import func
@@ -20,14 +19,10 @@ class Card(Base):
     @hybrid_property
     def image(self):
         return {
-            'og': '/static/og/' + self.name + '.jpg',
-            'lg': '/static/lg/' + self.name + '.jpg',
-            'md': '/static/md/' + self.name + '.jpg',
+            "og": "/assets/og/" + self.name + ".jpg",
+            "lg": "/assets/lg/" + self.name + ".jpg",
+            "md": "/assets/md/" + self.name + ".jpg",
         }
-
-    #@hybrid_property
-    #def image_lg(self):
-        #return '/static/lg/' + self.name + '.jpg'
 
 
 class Comment(Base):
