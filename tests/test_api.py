@@ -4,7 +4,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from backend.main import app, crud
+from backend.main import app
+from backend import crud
 from backend.deps import get_db
 from backend.database import Base
 from backend.schemas import CardCreate
@@ -34,15 +35,8 @@ def setup_function():
     Base.metadata.create_all(bind=engine)
 
 
-def test_root():
-    rv = test_client.get("/")
-    assert rv.status_code == 200
-    assert rv.headers["content-type"] == "application/json"
-    assert rv.json()["msg"] == "Check /docs"
-
-
 def test_create_room():
-    response = test_client.post("/rooms")
+    response = test_client.post("/api/rooms")
     assert response.status_code == 201
     json = response.json()
     assert len(list(json.keys())) == 1
@@ -60,9 +54,9 @@ def test_get_card():
             level=1,
             definition="<3",
             definition_source="<3.com",
-        )
+        ),
     )
-    response = test_client.get("/cards/compersion")
+    response = test_client.get("/api/cards/compersion")
     assert response.status_code == 200
     json = response.json()
     assert len(list(json.keys())) == 8
@@ -89,19 +83,14 @@ def test_create_and_get_comment():
             level=1,
             definition="<3",
             definition_source="<3.com",
-        )
+        ),
     )
     post_response = test_client.post(
-        f"/cards/{card.name}/comments",
-        json={
-            "cardId": card.id,
-            "type": "NEED_MET",
-            "data": "princess.wiggles"
-        }
+        f"/api/cards/{card.name}/comments", json={"cardId": card.id, "type": "NEED_MET", "data": "princess.wiggles"}
     )
     assert post_response.status_code == 201
     comment_response = test_client.get(
-        f"/cards/{card.name}/comments",
+        f"/api/cards/{card.name}/comments",
     )
     assert comment_response.status_code == 200
     json = comment_response.json()
@@ -115,7 +104,7 @@ def test_create_and_get_comment():
 
 
 def socket_url(room_token, user_token):
-    return f"/rooms/{room_token}/users/{user_token}.ws"
+    return f"/api/rooms/{room_token}/users/{user_token}.ws"
 
 
 def test_invalid_websocket_connect():
@@ -130,45 +119,37 @@ def test_invalid_websocket_connect():
 
 
 def test_websocket_add_cards():
-    user_token = 'user.princess.wiggles'
-    room = test_client.post("/rooms", json={}).json()
+    user_token = "user.princess.wiggles"
+    room = test_client.post("/api/rooms", json={}).json()
     client = TestClient(app)
     with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
         websocket.receive_json()  # join "status" not asserted
-        websocket.send_text('1')
+        websocket.send_text('{"toggleCard": 1}')
         data = websocket.receive_json()
         assert data == {
-            "users": [
-                {"name": user_token, "speaker": True, "cards": [1]}
-            ],
+            "users": [{"name": user_token, "speaker": True, "cards": [1]}],
         }
-        websocket.send_text('4')
+        websocket.send_text('{"toggleCard": 4}')
         data = websocket.receive_json()
         assert data == {
-            "users": [
-                {"name": user_token, "speaker": True, "cards": [1, 4]}
-            ],
+            "users": [{"name": user_token, "speaker": True, "cards": [1, 4]}],
         }
-        websocket.send_text('4')
+        websocket.send_text('{"toggleCard": 4}')
         data = websocket.receive_json()
         assert data == {
-            "users": [
-                {"name": user_token, "speaker": True, "cards": [1]}
-            ],
+            "users": [{"name": user_token, "speaker": True, "cards": [1]}],
         }
 
 
 def test_websocket_connect():
-    user_token = 'user.princess.wiggles'
-    user_token_2 = 'user.princess.wiggles.2'
-    room = test_client.post("/rooms", json={}).json()
+    user_token = "user.princess.wiggles"
+    user_token_2 = "user.princess.wiggles.2"
+    room = test_client.post("/api/rooms", json={}).json()
     client = TestClient(app)
     with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
         data = websocket.receive_json()
         assert data == {
-            "users": [
-                {"name": user_token, "speaker": True, "cards": []}
-            ],
+            "users": [{"name": user_token, "speaker": True, "cards": []}],
         }
         with client.websocket_connect(socket_url(room["name"], user_token_2)) as websocket_2:
             data = websocket_2.receive_json()
@@ -182,7 +163,5 @@ def test_websocket_connect():
             assert data == data_2
         data = websocket.receive_json()
         assert data == {
-            "users": [
-                {"name": user_token, "speaker": True, "cards": []}
-            ],
+            "users": [{"name": user_token, "speaker": True, "cards": []}],
         }
