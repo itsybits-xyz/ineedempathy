@@ -97,7 +97,7 @@ code {
 }
 
 .board-game {
-  .card {
+  .card.game-card {
     &:hover {
       cursor: pointer;
     }

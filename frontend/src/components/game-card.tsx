@@ -36,7 +36,7 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
     return <Hidden error={error} />
   }
   return (
-    <Card style={{ width: cardWidth }}>
+    <Card className="game-card" style={{ width: cardWidth }}>
       <div
         onClick={handleClick}
         className={onList ? 'kard on-list' : 'kard off-list'}>
