@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { CommentCreate, CommentType, Card } from '../schemas';
 import { commentTypeToString, createComment } from '../utils';
 import { ClickSound, Hidden } from '../components';
-import { Col, Dropdown, Row, Button, Card as CardEl } from 'react-bootstrap';
+import { Alert, Col, Dropdown, Row, Button, Card as CardEl } from 'react-bootstrap';
 
 export interface CardCommentsNewProps {
   card: Card,
@@ -16,8 +16,12 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
   const [ type, setType ] = useState<CommentType>(CommentType.NEED_MET);
   const [ data, setData ] = useState<string>('');
   const [ error, setError ] = useState(false);
+  const [ noBodyAlert, setNoBodyAlert ] = useState(false);
 
   const localSubmit = () => {
+    if (data.length === 0) {
+      return setNoBodyAlert(true);
+    }
     const comment: CommentCreate = {
       cardId: card.id,
       type: type,
@@ -77,7 +81,13 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
               </ClickSound>
             </Row>
             <Row>
+              {noBodyAlert && (
+                <Alert data-testid='nobody-error' variant="warning" onClose={() => setNoBodyAlert(false)} dismissible>
+                  <p>Ruh roh! You forgot to enter a comment.</p>
+                </Alert>
+              )}
               <textarea
+                placeholder="Type your comment here.."
                 value={data}
                 onChange={(e) => setData(e.target.value)} />
             </Row>

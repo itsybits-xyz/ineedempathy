@@ -14,14 +14,9 @@
 
 ## Empathy Room
 
-* [ ] Switch speakers
-* [ ] Display speakers cards
-* [ ] Display listeners cards
-* [ ] Styling
+* [ ] Styling speaker differently from listeners
+* [ ] Style user name and actions
 
 ## Bug
 
-* [ ] Empty comments
-* [ ] Change the width of the pop up info window
-* [ ] Pop up modal for right side of the screen
 * [ ] When will a room get cleaned up?

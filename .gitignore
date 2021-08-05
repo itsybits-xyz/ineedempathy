@@ -1,6 +1,5 @@
 *.db
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Byte-compiled / optimized / DLL files __pycache__/
 *.py[cod]
 *$py.class
 
@@ -128,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Deploy
+templates/*.js
+templates/*.html
+templates/*.txt
+templates/*.json
+templates/*.jpg
+templates/*.png
+templates/*.ico
+templates/static/media
+templates/static/js
+templates/static/css
