@@ -53,6 +53,15 @@ code {
   button[type=submit] {
     margin-left: 15px;
   }
+  .alert {
+    margin: 5px 5% auto;
+    width: 95%;
+    padding: 10px 5px;
+    p {
+      padding: 5px;
+      margin-bottom: 0;
+    }
+  }
 }
 
 

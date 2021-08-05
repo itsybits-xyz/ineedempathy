@@ -1,6 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey
 from sqlalchemy import Integer, String, Text, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import validates
 
 from .database import Base
 from sqlalchemy.sql import func
@@ -32,3 +33,10 @@ class Comment(Base):
     type = Column(Enum("NEED_MET", "NEED_NOT_MET", "DEFINE", "THINK", name="type"), nullable=False, index=True)
     data = Column(Text, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
+
+    @validates('data')
+    def validate_data(self, key, data):
+        if len(data) == 0:
+            raise ValueError("Comment must exist")
+        else:
+            return data

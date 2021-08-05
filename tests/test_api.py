@@ -3,6 +3,7 @@ from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import pytest
 
 from backend.main import app
 from backend import crud
@@ -86,7 +87,11 @@ def test_create_and_get_comment():
         ),
     )
     post_response = test_client.post(
-        f"/api/cards/{card.name}/comments", json={"cardId": card.id, "type": "NEED_MET", "data": "princess.wiggles"}
+        f"/api/cards/{card.name}/comments", json={
+            "cardId": card.id,
+            "type": "NEED_MET",
+            "data": "princess.wiggles"
+        }
     )
     assert post_response.status_code == 201
     comment_response = test_client.get(
@@ -101,6 +106,29 @@ def test_create_and_get_comment():
     assert comment["type"] == "NEED_MET"
     assert comment["data"] == "princess.wiggles"
     assert comment["createdAt"]
+
+
+def test_invalid_comment():
+    db = TestingSessionLocal()
+    card = crud.create_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion",
+            name="compersion",
+            type="feeling",
+            level=1,
+            definition="<3",
+            definition_source="<3.com",
+        ),
+    )
+    with pytest.raises(ValueError):
+        post_response = test_client.post(
+            f"/api/cards/{card.name}/comments", json={
+                "cardId": card.id,
+                "type": "NEED_MET",
+                "data": "",
+            }
+        )
 
 
 def socket_url(room_token, user_token):
