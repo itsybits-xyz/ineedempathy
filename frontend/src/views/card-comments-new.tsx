@@ -44,7 +44,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
       <CardEl.Body className="createComment">
         <CardEl.Title>Contribute a new comment</CardEl.Title>
         { hasCommented ? (
-          <p role="alert">Thank you for your <strong>contribution</strong>.</p>
+          <p data-testid="success-info" role="alert">Thank you for your <strong>contribution</strong>.</p>
         ) : (
           <>
             <Row>
