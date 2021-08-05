@@ -13,7 +13,7 @@ from fastapi.templating import Jinja2Templates
 app = FastAPI()
 app.include_router(api_router, prefix="/api")
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
-app.mount("/api/static", StaticFiles(directory="backend/static"), name="static")
+app.mount("/api/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Set all CORS enabled origins
