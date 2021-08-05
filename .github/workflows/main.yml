@@ -1,14 +1,12 @@
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 jobs:
   python:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.9]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -42,3 +40,20 @@ jobs:
         run: cd frontend && npm install
       - name: Run npm unit tests
         run: cd frontend && npm test
+
+      - name: Build artifacts
+        run: | 
+          cd frontend
+          npm run build
+          cd ..
+          ./build.sh
+          echo $GITHUB_SHA > latest_sha.txt
+
+      - name: Copy files to dreamhost
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.DH_SSH_KEY }}
+          source: "templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
+          target: "ineedempathy.com"
