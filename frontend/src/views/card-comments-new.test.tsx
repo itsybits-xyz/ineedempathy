@@ -1,19 +1,9 @@
 import React from 'react';
-import { act, render, screen, fireEvent, createEvent } from '@testing-library/react';
 import { Card, Comment } from '../schemas';
 import { CardCommentsNewProps, CardCommentsNew } from './card-comments-new';
 import { createComment } from '../utils'
-
-
-const change = async (el: HTMLElement, value: string) => {
-  const changeEvent = createEvent.change(el, {
-    target: { value: value },
-  });
-  changeEvent.inputType = 'insertText';
-  act(() => {
-    el.dispatchEvent(changeEvent);
-  });
-}
+import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('../utils', () => {
   return {
@@ -22,119 +12,113 @@ jest.mock('../utils', () => {
   };
 });
 
-describe('happy paths', () => {
-  beforeEach(() => {
-    createComment.mockImplementation(() => {
-      return Promise.resolve();
+describe('<CardCommentsNew />', () => {
+  describe('happy paths', () => {
+    beforeEach(() => {
+      createComment.mockImplementation(() => {
+        return Promise.resolve();
+      });
     });
-  });
-  test('submitting form invokes callback', async () => {
-    let called = false;
-    const props: CardCommentsNewProps = {
-      card<Card>: {
-        id: 1,
-        displayName: 'Compersion',
-        name: 'compersion',
-        type: 'feeling',
-        level: 1,
-        definition: 'meow',
-        definitionSource: 'meow',
-        image: {
-          og: 'about:blank',
-          lg: 'about:blank',
-          md: 'about:blank',
+    it('adds a comment', async () => {
+      let called = false;
+      const props: CardCommentsNewProps = {
+        card<Card>: {
+          id: 1,
+          displayName: 'Compersion',
+          name: 'compersion',
+          type: 'feeling',
+          level: 1,
+          definition: 'meow',
+          definitionSource: 'meow',
+          image: {
+            og: 'about:blank',
+            lg: 'about:blank',
+            md: 'about:blank',
+          },
         },
-      },
-      hasCommented: false,
-      onSubmit: () => {
-        called = true;
-      },
-    }
-    render(<CardCommentsNew {...props} />);
-    await act(async () => {
-      await change(screen.getByRole('textbox'), 'princess.wiggles');
-      fireEvent.click(screen.getByText('Add Comment'));
-    });
-    expect(() => screen.getByText('Add Comment')).toThrow();
-    expect(called).toBeTruthy();
-  });
-
-  test('renders submitted message', () => {
-    const props: CardCommentsNewProps = {
-      card<Card>: {
-        name: 'compersion',
-        type: 'feeling',
-        textUrl: 'about:blank',
-      },
-      hasCommented: true,
-      onSubmit: (ev: any) => {},
-    }
-    render(<CardCommentsNew {...props} />);
-    expect(screen.getByRole('alert')).toBeTruthy();
-  });
-});
-
-describe('error cases', () => {
-  beforeEach(() => {
-    createComment.mockImplementation(() => {
-      return Promise.reject();
-    });
-  });
-
-  test('handles empty comment on submit', async () => {
-    let called = false;
-    const props: CardCommentsNewProps = {
-      card<Card>: {
-        id: 1,
-        displayName: 'Compersion',
-        name: 'compersion',
-        type: 'feeling',
-        level: 1,
-        definition: 'meow',
-        definitionSource: 'meow',
-        image: {
-          og: 'about:blank',
-          lg: 'about:blank',
-          md: 'about:blank',
+        hasCommented: false,
+        onSubmit: () => {
+          called = true;
         },
-      },
-      hasCommented: false,
-      onSubmit: () => { called = true },
-    }
-    render(<CardCommentsNew {...props} />);
-    await act(async () => {
-      fireEvent.click(screen.getByText('Add Comment'));
+      };
+      const screen = mount(<CardCommentsNew {...props} />);
+      const el = screen.find('textarea');
+      await act(async () => {
+        el.simulate("change", {
+          target: { value: 'princess.wiggles' }
+        })
+      });
+      expect(el.instance().value).toEqual('princess.wiggles');
+      const submit = screen.find('button[type="submit"]');
+      await act(async () => {
+        await submit.simulate("click");
+      });
+      expect(screen.find('[role="success-info"]')).toBeTruthy();
+      expect(called).toBeTruthy();
     });
-    expect(screen.getByTestId('nobody-error')).toBeTruthy();
-    expect(called).toBeFalsy();
   });
-
-  test('handles error on submit', async () => {
-    let called = false;
-    const props: CardCommentsNewProps = {
-      card<Card>: {
-        id: 1,
-        displayName: 'Compersion',
-        name: 'compersion',
-        type: 'feeling',
-        level: 1,
-        definition: 'meow',
-        definitionSource: 'meow',
-        image: {
-          og: 'about:blank',
-          lg: 'about:blank',
-          md: 'about:blank',
+  describe('forlorn paths', () => {
+    beforeEach(() => {
+      createComment.mockImplementation(() => {
+        return Promise.reject();
+      });
+    });
+    test('handles empty comment on submit', async () => {
+      let called = false;
+      const props: CardCommentsNewProps = {
+        card<Card>: {
+          id: 1,
+          displayName: 'Compersion',
+          name: 'compersion',
+          type: 'feeling',
+          level: 1,
+          definition: 'meow',
+          definitionSource: 'meow',
+          image: {
+            og: 'about:blank',
+            lg: 'about:blank',
+            md: 'about:blank',
+          },
         },
-      },
-      hasCommented: false,
-      onSubmit: () => { called = true },
-    }
-    await act(async () => {
-      render(<CardCommentsNew {...props} />);
-      await change(screen.getByRole('textbox'), 'princess.wiggles');
-      fireEvent.click(screen.getByText('Add Comment'));
+        hasCommented: false,
+        onSubmit: () => { called = true },
+      }
+      const screen = mount(<CardCommentsNew {...props} />);
+      const el = screen.find('textarea');
+      const submit = screen.find('button[type="submit"]');
+      await act(async () => {
+        await submit.simulate("click");
+      });
+      expect(screen.find('[data-testid="nobody-error"]')).toBeTruthy();
       expect(called).toBeFalsy();
-      expect(screen.getByText('Add Comment')).toBeTruthy();
+    });
+    test('handles error on submit', async () => {
+      let called = false;
+      const props: CardCommentsNewProps = {
+        card<Card>: {
+          id: 1,
+          displayName: 'Compersion',
+          name: 'compersion',
+          type: 'feeling',
+          level: 1,
+          definition: 'meow',
+          definitionSource: 'meow',
+          image: {
+            og: 'about:blank',
+            lg: 'about:blank',
+            md: 'about:blank',
+          },
+        },
+        hasCommented: false,
+        onSubmit: () => { called = true },
+      }
+      const screen = mount(<CardCommentsNew {...props} />);
+      const submit = screen.find('button[type="submit"]');
+      await act(async () => {
+        await submit.simulate("click");
+      });
+      expect(called).toBeFalsy();
+      expect(screen.find('button[type="submit"]')).toBeTruthy();
     });
   });
 });
