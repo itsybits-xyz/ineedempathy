@@ -55,5 +55,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.DH_SSH_KEY }}
-          source: "templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
+          source: "static,templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
           target: "ineedempathy.com"

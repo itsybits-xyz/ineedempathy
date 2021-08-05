@@ -9,9 +9,9 @@ pip install shiv
 pip install -r <(poetry export -f requirements.txt --without-hashes --with-credentials) --target dist/
 pip install --no-deps ./dist/backend-0.1.0-py3-none-any.whl --target dist/
 
-cp -r \
-   -t dist \
-   backend/static
+#cp -r \
+   #-t dist \
+   #backend/static
 
 shiv --site-packages=dist \
     --python="/home/amjith/opt/python-3.9.5/bin/python3" \
