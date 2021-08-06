@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uvicorn backend.main:app --reload
+poetry run uvicorn backend.main:app --reload
