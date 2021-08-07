@@ -1,11 +1,15 @@
 # Server Todo:
 
-* [ ] Host the domain with dreamhost VPC
 * [ ] GH Actions to auto-deploy
 * [ ] Logging
 
 # UI Todo:
 
+* [ ] JS Error catching (sentry?)
+
+## Cards Page
+
+* [ ] Mobile friendly filters
 
 ## Card Page
 

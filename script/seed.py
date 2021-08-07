@@ -103,7 +103,7 @@ add_feeling(
     'Affectionate',
     'affectionate',
     3,
-    'meow',
+    'ruff',
 )
 add_feeling(
     'Anxious',
