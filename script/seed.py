@@ -431,127 +431,148 @@ add_need(
     'Acceptance',
     'acceptance',
     4,
-    'meow',
+    'The action or process of being received as adequate or suitable, typically to be admitted into a group.',
+    'https://www.lexico.com/en/definition/The',
 )
 add_need(
     'Beauty',
     'beauty',
     4,
-    'meow',
+    'A combination of qualities, such as shape, color, or form, that pleases the aesthetic senses, especially the sight.',
+    'https://www.lexico.com/en/definition/beauty',
 )
 add_need(
     'Belonging',
     'belonging',
     4,
-    'meow',
+    'An affinity for a place or situation.',
+    'https://www.lexico.com/en/definition/belonging',
 )
 add_need(
     'Challenge',
     'challenge',
     4,
-    'meow',
+    'A difficult task, especially one that the person making the attempt finds more enjoyable because of that difficulty.',
+    'https://en.wiktionary.org/wiki/challenge',
 )
 add_need(
     'Compassion',
     'compassion',
     4,
-    'meow',
+    'Deep awareness of the suffering of another, coupled with the wish to relieve it. ',
+    'https://en.wiktionary.org/wiki/compassion',
 )
 add_need(
     'Competence',
     'competence',
     4,
-    'meow',
+    'The ability to do something successfully or efficiently.',
+    'https://www.lexico.com/en/definition/Competence',
 )
 add_need(
     'Consideration',
     'consideration',
     4,
-    'meow',
+    'A fact or a motive taken into account in deciding or judging something.',
+    'https://www.lexico.com/en/definition/consideration',
 )
 add_need(
     'Contribution',
     'contribution',
     4,
-    'meow',
+    'Something given or offered that adds to a larger whole.',
+    'https://en.wiktionary.org/wiki/contribution',
 )
 add_need(
     'Creativity',
     'creativity',
     4,
-    'meow',
+    'The ability to use imagination to produce a novel idea or product.',
+    'https://en.wiktionary.org/wiki/creativity',
 )
 add_need(
     'Ease',
     'ease',
     4,
-    'meow',
+    'Absence of difficulty or effort.',
+    'https://www.lexico.com/en/definition/Absence',
 )
 add_need(
     'Empathy',
     'empathy',
     4,
-    'meow',
+    'The ability to understand and share the feelings (and needs) of another.',
+    'https://www.lexico.com/en/definition/empathy',
 )
 add_need(
     'Exercise',
     'exercise',
     4,
-    'meow',
+    'A process or activity carried out for a specific purpose, especially one concerned with a specified area or skill.',
+    'https://www.lexico.com/en/definition/exercise',
 )
 add_need(
     'Freedom',
     'freedom',
     4,
-    'meow',
+    'The power or right to act, speak, or think as one wants without hindrance or restraint.',
+    'https://www.lexico.com/en/definition/freedom',
 )
 add_need(
     'Learning',
     'learning',
     4,
-    'meow',
+    'The acquisition of knowledge or skills through experience, study, or by being taught.',
+    'https://www.lexico.com/en/definition/learning',
 )
 add_need(
     'Order',
     'order',
     4,
-    'meow',
+    'The arrangement or disposition of people or things in relation to each other according to a particular sequence, pattern, or method.',
+    'https://www.lexico.com/en/definition/order',
 )
 add_need(
     'Peace',
     'peace',
     4,
-    'meow',
+    'Freedom from disturbance; tranquility.',
+    'https://www.lexico.com/en/definition/Freedom',
 )
 add_need(
     'Respect',
     'respect',
     4,
-    'meow',
+    'Due regard for the feelings, wishes, rights, or traditions of others.',
+    'https://www.lexico.com/en/definition/respect',
 )
 add_need(
-    'Rest/Sleep',
+    'Rest or Sleep',
     'rest_sleep',
     4,
-    'meow',
+    'freedom from activity or labor',
+    'https://www.merriam-webster.com/dictionary/rest',
 )
 add_need(
     'To Know and Be Known',
     'toknowandbeknown',
     4,
-    'meow',
+    'To Know and Be Known',
+    '',
 )
 add_need(
     'To See and Be Seen',
     'toseeandbeseen',
     4,
-    'meow',
+    'To See and Be Seen',
+    '',
 )
 add_need(
     'Trust',
     'trust',
     4,
-    'meow',
+    'confident expectation of something',
+    'https://www.dictionary.com/browse/something',
 )
 
 print('Card Count: ')
