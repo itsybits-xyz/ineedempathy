@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
-import { ButtonGroup, Button, Container, Col, Row } from 'react-bootstrap';
-import { getCards } from '../utils/api';
+import { Dropdown, Container, Col, Row } from 'react-bootstrap';
+import { displayLevel, getCards } from '../utils';
 import { useAsync } from 'react-async';
 import { PlaySound, PickerCard, Hidden } from './';
 import { CardLevel, Card } from '../schemas';
@@ -22,10 +22,6 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   const setLevel = (newLevel: CardLevel) => {
     playToggle();
     return _setLevel(newLevel);
-  };
-
-  const isCardLevel = (lookLevel: CardLevel, success: any, fail: any):any => {
-    return lookLevel === level ? success : fail;
   };
 
   if (error) {
@@ -58,28 +54,33 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
     <div className="content fn-cards">
       <Container fluid>
         <Row>
-          <ButtonGroup aria-label="Basic example">
-            <Button
-              onClick={() => setLevel(CardLevel.intro) }
-              variant={isCardLevel(CardLevel.intro, "primary", "secondary")}>
-              Intro
-            </Button>
-            <Button
-              onClick={() => setLevel(CardLevel.beginner) }
-              variant={isCardLevel(CardLevel.beginner, "primary", "secondary")}>
-              Beginner
-            </Button>
-            <Button
-              onClick={() => setLevel(CardLevel.intermediate) }
-              variant={isCardLevel(CardLevel.intermediate, "primary", "secondary")}>
-              Intermediate
-            </Button>
-            <Button
-              onClick={() => setLevel(CardLevel.all) }
-              variant={isCardLevel(CardLevel.all, "primary", "secondary")}>
-              All
-            </Button>
-          </ButtonGroup>
+          <Dropdown>
+            <Dropdown.Toggle variant="success">
+              {displayLevel(level)}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                active={level === CardLevel.intro}
+                onClick={() => setLevel(CardLevel.intro)}>
+                {displayLevel(CardLevel.intro)}
+              </Dropdown.Item>
+              <Dropdown.Item
+                active={level === CardLevel.beginner}
+                onClick={() => setLevel(CardLevel.beginner)}>
+                {displayLevel(CardLevel.beginner)}
+              </Dropdown.Item>
+              <Dropdown.Item
+                active={level === CardLevel.intermediate}
+                onClick={() => setLevel(CardLevel.intermediate)}>
+                {displayLevel(CardLevel.intermediate)}
+              </Dropdown.Item>
+              <Dropdown.Item
+                active={level === CardLevel.all}
+                onClick={() => setLevel(CardLevel.all)}>
+                {displayLevel(CardLevel.all)}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Row>
         <Row>
           { cards.map((card) => {

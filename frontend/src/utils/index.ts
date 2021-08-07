@@ -1,4 +1,4 @@
-import { CommentType, Card } from '../schemas';
+import { CardLevel, CommentType, Card } from '../schemas';
 import shuffle from 'lodash.shuffle';
 
 export * from './api';
@@ -18,11 +18,7 @@ export function generateName(): string {
 
   return `${color}-${animal}-${number}`;
 }
-
-export function commentTypeToString(card:Card, commentType:CommentType) {
-  const cardName:string = card.displayName;
-  switch(commentType) {
-    case CommentType.NEED_MET:
+export function commentTypeToString(card:Card, commentType:CommentType) { const cardName:string = card.displayName; switch(commentType) { case CommentType.NEED_MET:
       switch (card.type) {
         case 'feeling':
           return `When I felt ${cardName} the needs that were met were..`;
@@ -48,3 +44,12 @@ export function commentTypeToString(card:Card, commentType:CommentType) {
       return '';
   }
 }
+
+export function displayLevel(level: CardLevel): string {
+  return {
+    [CardLevel.intro]: 'Intro Cards',
+    [CardLevel.beginner]: 'Beginner Cards',
+    [CardLevel.intermediate]: 'Intermediate Cards',
+    [CardLevel.all]: 'All Cards',
+  }[level] || 'Unknown';
+};

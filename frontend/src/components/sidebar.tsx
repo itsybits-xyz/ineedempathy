@@ -4,7 +4,13 @@ import { MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 import { VolumeControl } from "../components";
 import { ClickSound } from '.';
 
-export const SideBar: FC = () => {
+export interface SideBarProps {
+  handleClick: () => void,
+};
+
+
+export const SideBar: FC<SideBarProps> = (props: SideBarProps) => {
+  const { handleClick } = props;
   const isActiveFor = (navLinkMatch:RegExp) => {
     return (match:any, location:any) => {
       return location?.pathname?.match(navLinkMatch);
@@ -16,7 +22,7 @@ export const SideBar: FC = () => {
         className="sidebar"
         data-color="purple"
         data-background-color="white"
-        data-image="../assets/img/sidebar-1.jpg"
+        onClick={handleClick}
       >
         <div className="logo">
           <a href="http://ineedempathy.com" className="simple-text logo-normal">

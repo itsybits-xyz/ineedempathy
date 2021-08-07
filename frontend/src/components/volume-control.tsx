@@ -9,7 +9,9 @@ export const VolumeControl: FC = () => {
   return (
     <Container id="volume-control">
       { showOptions && (
-        <Row className="justify-content-sm-center">
+        <Row className="justify-content-sm-center" onClick={(ev) => {
+          ev.stopPropagation();
+        }}>
           <PlaySound.VolumeEl
             {...volume}
             onChange={playToggle} />
@@ -17,7 +19,8 @@ export const VolumeControl: FC = () => {
       )}
       <Row
         title="Adjust Volume"
-        onClick={() => {
+        onClick={(ev) => {
+          ev.stopPropagation();
           playToggle();
           setShowOptions(!showOptions);
         }}

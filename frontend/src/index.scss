@@ -170,3 +170,15 @@ code {
     }
   }
 }
+
+.sidebar {
+  &::before{
+    background-color: #fff !important;
+  }
+}
+.navbar {
+  & > .container-fluid.pos-top-right {
+    display: block;
+    text-align: right;
+  }
+}

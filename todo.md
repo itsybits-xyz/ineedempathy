@@ -2,14 +2,12 @@
 
 * [ ] GH Actions to auto-deploy
 * [ ] Logging
+* [ ] Remove screen/ adding supervisord (w/ web user)
 
 # UI Todo:
 
 * [ ] JS Error catching (sentry?)
-
-## Cards Page
-
-* [ ] Mobile friendly filters
+* [ ] Mobile friendly
 
 ## Card Page
 

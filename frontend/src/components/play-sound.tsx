@@ -5,7 +5,6 @@ import { MdVolumeDown, MdVolumeUp } from 'react-icons/md';
 import nudgePersonSound from '../sound/rising-pops.mp3';
 import toggleCardSound from '../sound/toggle-card.mp3';
 import matchSound from '../sound/match.wav';
-
 const VOLUME = 'PlaySound.volume';
 const MAX_VOLUME = 100;
 const MIN_VOLUME = 0;
