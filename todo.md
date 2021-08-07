@@ -14,7 +14,6 @@
 ## Card Page
 
 * [ ] Captcha
-* [ ] Finish definition seeds
 
 ## Empathy Room
 

@@ -19,15 +19,11 @@ def upsert_card(display_name, name, type, level, definition, definition_source):
     )
 
 
-# TODO - once we have all definitions, let's remove default value for
-# definition_source
-def add_feeling(display_name, name, level, definition, definition_source='about:blank'):
+def add_feeling(display_name, name, level, definition, definition_source):
     return upsert_card(display_name, name, 'feeling', level, definition, definition_source)
 
 
-# TODO - once we have all definitions, let's remove default value for
-# definition_source
-def add_need(display_name, name, level, definition, definition_source='about:blank'):
+def add_need(display_name, name, level, definition, definition_source):
     return upsert_card(display_name, name, 'need', level, definition, definition_source)
 
 
@@ -103,67 +99,78 @@ add_feeling(
     'Affectionate',
     'affectionate',
     3,
-    'ruff',
+    'Readily feeling or showing fondness or tenderness.',
+    'https://www.lexico.com/en/definition/affectionate',
 )
 add_feeling(
     'Anxious',
     'anxious',
     3,
-    'meow',
+    'Experiencing worry, unease, or nervousness, typically about an imminent event or something with an uncertain outcome.',
+    'https://www.lexico.com/en/definition/anxious',
 )
 add_feeling(
     'Empowered',
     'empowered',
     3,
-    'meow',
+    'Having been given the power to make choices relevant to one\'s situation',
+    'https://en.wiktionary.org/wiki/empowered',
 )
 add_feeling(
     'Encouraged',
     'encouraged',
     3,
-    'meow',
+    'to stimulate by assistance, approval, etc.',
+    'https://www.dictionary.com/browse/encouraged',
 )
 add_feeling(
     'Excited',
     'excited',
     3,
-    'meow',
+    'Very enthusiastic and eager.',
+    'https://www.lexico.com/en/definition/excited',
 )
 add_feeling(
     'Frustrated',
     'frustrated',
     3,
-    'meow',
+    'Prevented from progressing, succeeding, or being fulfilled.',
+    'https://www.lexico.com/en/definition/frustrated',
 )
 add_feeling(
     'Hurt',
     'hurt',
     3,
-    'meow',
+    'to feel or suffer bodily or mental pain or distress:',
+    'https://www.dictionary.com/browse/hurt',
 )
 add_feeling(
     'Hopeless',
     'hopeless',
     3,
-    'meow',
+    'having no expectation of good or success',
+    'https://www.merriam-webster.com/dictionary/hopeless',
 )
 add_feeling(
     'Irritable',
     'irritable',
     3,
-    'meow',
+    'Easily exasperated or excited.',
+    'https://en.wiktionary.org/wiki/irritable',
 )
 add_feeling(
     'Overwhelmed',
     'overwhelmed',
     3,
-    'meow',
+    'completely overcome in mind or feeling',
+    'https://www.dictionary.com/browse/overwhelmed',
 )
 add_feeling(
     'Puzzled',
     'puzzled',
     3,
-    'meow',
+    'Unable to understand; perplexed.',
+    'https://www.lexico.com/en/definition/puzzled',
 )
 
 # Feelings level 4
@@ -171,121 +178,141 @@ add_feeling(
     'Annoyed',
     'annoyed',
     4,
-    'meow',
+    'feeling or showing angry irritation',
+    'https://www.merriam-webster.com/dictionary/annoyed',
 )
 add_feeling(
     'Centered',
     'centered',
     4,
-    'meow',
+    'emotionally stable and secure',
+    'https://www.merriam-webster.com/dictionary/centered',
 )
 add_feeling(
     'Depressed',
     'depressed',
     4,
-    'meow',
+    'low in spirits',
+    'https://www.merriam-webster.com/dictionary/depressed',
 )
 add_feeling(
     'Disappointed',
     'disappointed',
     4,
-    'meow',
+    'depressed or discouraged by the failure of one\'s hopes or expectations',
+    'https://www.dictionary.com/browse/disappointed',
 )
 add_feeling(
     'Discouraged',
     'discouraged',
     4,
-    'meow',
+    'Having lost confidence or enthusiasm; disheartened.',
+    'https://www.lexico.com/en/definition/discouraged',
 )
 add_feeling(
     'Engaged',
     'engaged',
     4,
-    'meow',
+    'involved in an activity',
+    'https://www.merriam-webster.com/dictionary/engaged',
 )
 add_feeling(
     'Fidgety',
     'fidgety',
     4,
-    'meow',
+    'Inclined to fidget; restless or uneasy.',
+    'https://www.lexico.com/en/definition/fidgety',
 )
 add_feeling(
     'Fulfilled',
     'fulfilled',
     4,
-    'meow',
+    'Satisfied or happy because of fully developing one\'s abilities or character.',
+    'https://www.lexico.com/en/definition/fulfilled',
 )
 add_feeling(
     'Grateful',
     'grateful',
     4,
-    'meow',
+    'warmly or deeply appreciative of kindness or benefits received; thankful:',
+    'https://www.dictionary.com/browse/grateful',
 )
 add_feeling(
     'Impatient',
     'impatient',
     4,
-    'meow',
+    'restless in desire or expectation; eagerly desirous.',
+    'https://www.dictionary.com/browse/impatient',
 )
 add_feeling(
     'Insecure',
     'insecure',
     4,
-    'meow',
+    'not confident or certain; uneasy; anxious:',
+    'https://www.dictionary.com/browse/insecure',
 )
 add_feeling(
     'Inspired',
     'inspired',
     4,
-    'meow',
+    'aroused, animated, or imbued with the spirit to do something',
+    'https://www.dictionary.com/browse/inspired',
 )
 add_feeling(
     'Joyful',
     'joyful',
     4,
-    'meow',
+    'Feeling, expressing, or causing great pleasure and happiness.',
+    'https://www.lexico.com/en/definition/joyful',
 )
 add_feeling(
     'Peaceful',
     'peaceful',
     4,
-    'meow',
+    'Free from disturbance; tranquil.',
+    'https://www.lexico.com/en/definition/peaceful',
 )
 add_feeling(
     'Secure',
     'secure',
     4,
-    'meow',
+    'Fixed or fastened so as not to give way, become loose, or be lost.',
+    'https://www.lexico.com/en/definition/secure',
 )
 add_feeling(
     'Startled',
     'startled',
     4,
-    'meow',
+    'Feeling or showing sudden shock or alarm.',
+    'https://www.lexico.com/en/definition/startled',
 )
 add_feeling(
     'Uncomfortable',
     'uncomfortable',
     4,
-    'meow',
+    'Causing or feeling slight pain or physical discomfort.',
+    'https://www.lexico.com/en/definition/uncomfortable',
 )
 add_feeling(
     'Upset',
     'upset',
     4,
-    'meow',
+    'Unhappy, disappointed, or worried.',
+    'https://www.lexico.com/en/definition/upset',
 )
 add_feeling(
     'Vulnerable',
     'vulnerable',
     4,
-    'meow',
+    'More or most likely to be exposed to the chance of being attacked or harmed, either physically or emotionally. ',
+    'https://en.wiktionary.org/wiki/vulnerable',
 )
 add_feeling(
     'Hopeful',
     'hopeful',
     4,
-    'meow',
+    'promising advantage or success',
+    'https://www.dictionary.com/browse/hopeful',
 )
 
 # Needs Level 1
@@ -360,67 +387,78 @@ add_need(
     'Advice',
     'advice',
     3,
-    'meow',
+    'an opinion or recommendation offered as a guide to action, conduct, etc.',
+    'https://www.dictionary.com/browse/advice',
 )
 add_need(
     'Affection',
     'affection',
     3,
-    'meow',
+    'a feeling of liking and caring for someone or something',
+    'https://www.merriam-webster.com/dictionary/affection',
 )
 add_need(
     'Care',
     'care',
     3,
-    'meow',
+    'The provision of what is necessary for the health, welfare, maintenance, and protection of someone or something.',
+    'https://www.lexico.com/en/definition/care',
 )
 add_need(
     'Community',
     'community',
     3,
-    'meow',
+    'A feeling of fellowship with others, as a result of sharing common attitudes, interests, and goals.',
+    'https://www.lexico.com/en/definition/community',
 )
 add_need(
     'Cooperation',
     'cooperation',
     3,
-    'meow',
+    'The process of working together to the same end.',
+    'https://www.lexico.com/en/definition/cooperation',
 )
 add_need(
     'Hope',
     'hope',
     3,
-    'meow',
+    'expectation and desire for a certain thing to happen.',
+    'https://www.lexico.com/en/definition/hope',
 )
 add_need(
     'Mourning',
     'mourning',
     3,
-    'meow',
+    'to feel or express sorrow or grief.',
+    'https://www.dictionary.com/browse/mourn',
 )
 add_need(
     'Play',
     'play',
     3,
-    'meow',
+    'Engage in activity for enjoyment and recreation rather than a serious or practical purpose.',
+    'https://www.lexico.com/en/definition/play',
 )
 add_need(
     'Safety',
     'safety',
     3,
-    'meow',
+    'The condition of being protected from or unlikely to cause danger, risk, or injury.',
+    'https://www.lexico.com/en/definition/safety',
 )
 add_need(
     'Self Expression',
     'selfexpression',
     3,
-    'meow',
+    'The expression of one\'s feelings, thoughts, or ideas, especially in writing, art, music, or dance.',
+    'https://www.lexico.com/en/definition/self-expression',
 )
 add_need(
     'Understanding',
     'understanding',
     3,
-    'meow',
+    'Sympathetically aware of other people\'s feelings; tolerant and forgiving.',
+    'https://www.lexico.com/en/definition/understanding',
 )
 
 # Needs level 4
@@ -429,7 +467,7 @@ add_need(
     'acceptance',
     4,
     'The action or process of being received as adequate or suitable, typically to be admitted into a group.',
-    'https://www.lexico.com/en/definition/The',
+    'https://www.lexico.com/en/definition/acceptance',
 )
 add_need(
     'Beauty',
