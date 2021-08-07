@@ -15,11 +15,10 @@ server {
                 proxy_set_header Connection "Upgrade";
         }
 
-        location ~ \.(ico|jpg|png|json|txt) {
+        location ~ \.(ico|png|json|txt) {
                 index /var/www/ineedempathy/templates;
                 root /var/www/ineedempathy/templates;
         }
-
 }
 ~~~
 
