@@ -1,4 +1,4 @@
 #!/bin/bash
 
-poetry run python ./script/seed.py
-poetry run uvicorn backend.main:app --reload
+/home/baylee/.local/bin/poetry run python ./script/seed.py
+/home/baylee/.local/bin/poetry run uvicorn backend.main:app --reload
