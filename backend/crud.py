@@ -30,6 +30,31 @@ def create_comment(db: Session, card_name: str, comment: CommentCreate) -> Optio
     return db_obj
 
 
+def upsert_card(db: Session, card: CardCreate) -> Card:
+    dbCard = db.query(Card).filter(Card.name == card.name).first()
+    if dbCard is not None:
+        dbCard.display_name = card.display_name
+        dbCard.type = card.type
+        dbCard.level = card.level
+        dbCard.definition = card.definition
+        dbCard.definition_source = card.definition_source
+        db.commit()
+        return dbCard
+    else:
+        db_obj = Card(
+            display_name=card.display_name,
+            name=card.name,
+            type=card.type,
+            level=card.level,
+            definition=card.definition,
+            definition_source=card.definition_source
+        )
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+
 def create_card(db: Session, card: CardCreate) -> Card:
     db_obj = Card(
         display_name=card.display_name,

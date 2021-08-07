@@ -73,6 +73,59 @@ def test_get_card():
     }
 
 
+def test_upsert_new_card():
+    db = TestingSessionLocal()
+    crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion!",
+            name="compersion-2",
+            type="feeling",
+            level=2,
+            definition="<33",
+            definition_source="<33.com",
+        ),
+    );
+    card = crud.get_card(db, 'compersion-2');
+    assert card.display_name == 'Compersion!';
+    assert card.type == 'feeling';
+    assert card.level == 2;
+    assert card.definition == '<33';
+    assert card.definition_source == '<33.com';
+
+
+def test_upsert_existing_card():
+    db = TestingSessionLocal()
+    card = crud.create_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion",
+            name="compersion",
+            type="need",
+            level=1,
+            definition="<3",
+            definition_source="<3.com",
+        ),
+    );
+    crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Compersion!",
+            name="compersion",
+            type="feeling",
+            level=2,
+            definition="<33",
+            definition_source="<33.com",
+        ),
+    );
+    card = crud.get_card(db, 'compersion');
+    assert card.display_name == 'Compersion!';
+    assert card.type == 'feeling';
+    assert card.level == 2;
+    assert card.definition == '<33';
+    assert card.definition_source == '<33.com';
+
+
 def test_create_and_get_comment():
     db = TestingSessionLocal()
     card = crud.create_card(
