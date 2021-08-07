@@ -7,16 +7,17 @@ server {
         listen [::]:80;
         server_name ineedempathy.com;
 
-        location ~ \.(ico|jpg|png|json|txt) {
-                root /var/www/ineedempathy/templates;
-        }
-
         location / {
                 include proxy_params;
                 proxy_pass http://127.0.0.1:8000;
                 proxy_http_version 1.1;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection "Upgrade";
+        }
+
+        location ~ \.(ico|jpg|png|json|txt) {
+                index /var/www/ineedempathy/templates;
+                root /var/www/ineedempathy/templates;
         }
 
 }
