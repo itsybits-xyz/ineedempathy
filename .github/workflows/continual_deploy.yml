@@ -21,26 +21,19 @@ jobs:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: ${{ runner.os }}-poetry-
-      - name: Set up pre-commit cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pre-commit
-          key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
-          restore-keys: ${{ runner.os }}-pre-commit-
-      - name: Install Poetry
+      - name: Install Dependencies
         run: |
           curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
           python get-poetry.py -y
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Install poetry dependencies
-        run: poetry install --no-interaction
+          source $HOME/.poetry/env
+          poetry install --no-interaction
+          cd frontend
+          npm install
       - name: Run poetry unit tests
         run: poetry run pytest
-      - name: Install npm dependencies
-        run: cd frontend && npm install
       - name: Run npm unit tests
         run: cd frontend && npm test
-
       - name: Build artifacts
         run: | 
           cd frontend
@@ -48,12 +41,11 @@ jobs:
           cd ..
           ./build.sh
           echo $GITHUB_SHA > latest_sha.txt
-
-      - name: Copy files to dreamhost
+      - name: Copy files to host
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.DH_SSH_KEY }}
           source: "static,templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
-          target: "ineedempathy.com"
+          target: "ineedempathy"

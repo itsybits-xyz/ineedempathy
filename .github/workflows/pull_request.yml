@@ -1,0 +1,38 @@
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14.15.1'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up Poetry cache for Python dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: ${{ runner.os }}-poetry-
+      - name: Install Dependencies
+        run: |
+          curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+          python get-poetry.py -y
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          source $HOME/.poetry/env
+          poetry install --no-interaction
+          cd frontend
+          npm install
+      - name: Run poetry unit tests
+        run: poetry run pytest
+      - name: Run npm unit tests
+        run: cd frontend && npm test
