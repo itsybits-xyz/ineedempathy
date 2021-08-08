@@ -7,7 +7,6 @@
 # UI Todo:
 
 * [ ] JS Error catching (sentry?)
-* [ ] Mobile friendly
 
 ## Card Page
 
@@ -17,7 +16,3 @@
 
 * [ ] Styling speaker differently from listeners
 * [ ] Style user name and actions
-
-## Bug
-
-* [ ] When will a room get cleaned up?
