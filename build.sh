@@ -10,6 +10,6 @@ pip install -r <(poetry export -f requirements.txt --without-hashes --with-crede
 pip install --no-deps ./dist/backend-0.1.0-py3-none-any.whl --target dist/
 
 shiv --site-packages=dist \
-    --python="/home/amjith/opt/python-3.9.5/bin/python3" \
+    --python="/usr/bin/python" \
     --output-file=ineedempathy.pyz \
     --entry-point=backend.entrypoint
