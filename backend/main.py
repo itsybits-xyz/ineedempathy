@@ -5,10 +5,11 @@ from fastapi import (
     FastAPI,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from .middleware import ConnectionManagerMiddleware, SentryMiddleware
+from .middleware import ConnectionManagerMiddleware
 from .config import settings
 from .routers.api import router as api_router
 from fastapi.templating import Jinja2Templates
+from sentry_asgi import SentryMiddleware
 
 sentry_sdk.init(
     "https://2147b3c92a9b482eaefc19feaeda5ecd@o948279.ingest.sentry.io/5897486",
