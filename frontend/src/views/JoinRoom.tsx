@@ -4,7 +4,6 @@ import {
   InputGroup,
   FormControl,
   Button,
-  Container,
   Row
 } from "react-bootstrap";
 import { createRoom } from "../utils/api";
@@ -36,10 +35,6 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
     if (roomName !== oldRoomName && String(roomName).length > 0) {
       setGotoRoomName(roomName);
     }
-  };
-
-  const styles = {
-    width: '35rem',
   };
 
   if (error) {
