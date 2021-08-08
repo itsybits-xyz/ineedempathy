@@ -4,7 +4,7 @@ import {
   InputGroup,
   FormControl,
   Button,
-  Row
+  Row,
 } from "react-bootstrap";
 import { BoardGame } from "./BoardGame";
 import { useAsync } from 'react-async';
@@ -25,7 +25,8 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
   const [username, setUsername] = useState<string>(
     localStorage.getItem(roomname) || generateName()
   );
-  const [ready, _setReady] = useState<boolean>(false);
+  const hasJoined = String(localStorage.getItem(roomname)).length > 0;
+  const [ready, _setReady] = useState<boolean>(hasJoined);
   const { playToggle } = PlaySound();
 
   const setReady = (value:boolean) => {
@@ -59,6 +60,14 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
           </Card.Body>
         </Card>
       </Row>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="content">
+        Loading...
+      </div>
     );
   }
 

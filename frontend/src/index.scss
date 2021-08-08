@@ -171,6 +171,11 @@ code {
   }
 }
 
+@media (min-width: 992px) {
+  .navbar {
+    display: none !important;
+  }
+}
 .sidebar {
   &::before{
     background-color: #fff !important;
@@ -178,7 +183,11 @@ code {
 }
 .navbar {
   & > .container-fluid.pos-top-right {
+    float: right;
     display: block;
-    text-align: right;
+    width: 80px;
+    position: absolute;
+    top: 5px;
+    right: 0;
   }
 }
