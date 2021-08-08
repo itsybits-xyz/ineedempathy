@@ -2,11 +2,9 @@
 
 * [ ] GH Actions to auto-deploy
 * [ ] Logging
-* [ ] Remove screen/ adding supervisord (w/ web user)
+* [ ] Multi-process support for socket connections
 
 # UI Todo:
-
-* [ ] JS Error catching (sentry?)
 
 ## Card Page
 
