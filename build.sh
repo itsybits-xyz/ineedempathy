@@ -2,6 +2,12 @@
 
 set -e
 
+# frontend
+cd frontend
+npm run build
+cd ..
+
+# Backend
 rm -fr dist ineedempathy.pyz
 
 poetry build --format wheel
@@ -13,3 +19,7 @@ shiv --site-packages=dist \
     --python="/usr/bin/python" \
     --output-file=ineedempathy.pyz \
     --entry-point=backend.entrypoint
+
+# Identification
+echo $GITHUB_SHA > latest_sha.txt
+echo $GITHUB_SHA > templates/latest_sha.txt

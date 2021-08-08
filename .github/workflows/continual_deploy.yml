@@ -35,13 +35,7 @@ jobs:
       - name: Run npm unit tests
         run: cd frontend && npm test
       - name: Build artifacts
-        run: | 
-          cd frontend
-          npm run build
-          cd ..
-          ./build.sh
-          echo $GITHUB_SHA > latest_sha.txt
-          echo $GITHUB_SHA > templates/latest_sha.txt
+        run: ./build.sh
       - name: Copy files to host
         uses: appleboy/scp-action@master
         with:
