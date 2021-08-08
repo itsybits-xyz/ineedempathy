@@ -1,3 +1,23 @@
+# supervisord
+
+```
+sudo apt install supervisor
+sudo service supervisor start
+sudo service supervisor status
+
+sudo supervisorctl   # Launch interactive supervisord controller
+```
+
+Edit: 
+
+`/etc/supervisor/supervisord.conf`
+
+~~~
+[include]
+files = /var/www/ineedempathy/supervisord.conf
+~~~
+
+
 # Nginx
 
 `/etc/nginx/sites-available/ineedempathy`
