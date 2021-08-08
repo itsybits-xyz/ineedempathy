@@ -1,1 +1,1 @@
-from .connectionmanager import ConnectionManagerMiddleware, ConnectionManager
+from .connectionmanager import ConnectionManagerMiddleware, ConnectionManager, SentryMiddleware

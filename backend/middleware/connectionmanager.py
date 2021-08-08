@@ -1,7 +1,9 @@
+from sentry_sdk import set_tag
 from typing import List, OrderedDict, Optional
 from ..schemas import RoomInfo
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
+from ..utils import after
 from ..utils import after
 
 
@@ -14,6 +16,8 @@ class ConnectionManagerMiddleware:
         self._connection_manager = ConnectionManager()
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        set_tag("number_of_rooms", len(self._connection_manager))
+        set_tag("number_of_empty_rooms", len(self._connection_manager.empty_rooms()))
         if scope["type"] in ("lifespan", "http", "websocket"):
             scope["connection_manager"] = self._connection_manager
         await self._app(scope, receive, send)

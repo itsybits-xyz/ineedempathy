@@ -5,7 +5,7 @@ from fastapi import (
     FastAPI,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from .middleware import ConnectionManagerMiddleware
+from .middleware import ConnectionManagerMiddleware, SentryMiddleware
 from .config import settings
 from .routers.api import router as api_router
 from fastapi.templating import Jinja2Templates
@@ -36,20 +36,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.add_middleware(ConnectionManagerMiddleware)
-
-@app.middleware("http")
-async def sentry_exception(request: Request, call_next):
-    try:
-        response = await call_next(request)
-        return response
-    except Exception as e:
-        with sentry_sdk.push_scope() as scope:
-            scope.set_context("request", request)
-            scope.user = {
-                "ip_address": request.client.host,
-            }
-            sentry_sdk.capture_exception(e)
-        raise e
+app.add_middleware(SentryMiddleware)
 
 @app.get("/{full_path:path}")
 async def catch_all(request: Request, full_path: str):
