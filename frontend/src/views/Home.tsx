@@ -36,11 +36,11 @@ export const Home: FC = () => {
               your personal experiences.
             </p>
             <p>
-              Work together to collaborate on understanding an experience you
-              are going through, that you'd like to <strong>be heard</strong>{' '}
-              on or a conflict between you and others. Create an Empathy Room,
-              invite people to join, and they can make an empathy guess about
-              what you are feeling and needing.
+              Create an Empathy Room, invite people to join, and they can make
+              an empathy guess about what you are feeling and needing. Work
+              together to collaborate on understanding an experience you are
+              going through, that you'd like to <strong>be heard</strong>{' '}
+              on or a conflict between you and others.
             </p>
             <p>
               <strong>Connect</strong> and <strong>empathize</strong> with{' '}
