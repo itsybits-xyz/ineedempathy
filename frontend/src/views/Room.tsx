@@ -25,7 +25,7 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
   const [username, setUsername] = useState<string>(
     localStorage.getItem(roomname) || generateName()
   );
-  const hasJoined = String(localStorage.getItem(roomname)).length > 0;
+  const hasJoined = String(localStorage.getItem(roomname) || '').length > 0;
   const [ready, _setReady] = useState<boolean>(hasJoined);
   const { playToggle } = PlaySound();
 
