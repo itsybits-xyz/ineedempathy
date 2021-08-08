@@ -21,7 +21,7 @@ export const CardComments: FC<CardCommentsProps> = (props: CardCommentsProps) =>
   }, [card, hasCommented]);
 
   return (
-    <Container fluid>
+    <>
       <Row className="justify-content-sm-center">
         { comments.length === 0 ? (
           <h3>No Comments</h3>
@@ -40,6 +40,6 @@ export const CardComments: FC<CardCommentsProps> = (props: CardCommentsProps) =>
       <Row className="justify-content-sm-center">
         <CardCommentsList card={card} comments={comments} />
       </Row>
-    </Container>
+    </>
   );
 };

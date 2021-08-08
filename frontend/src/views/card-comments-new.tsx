@@ -40,7 +40,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
   }
 
   return (
-    <CardEl style={{ width: '35rem' }}>
+    <CardEl>
       <CardEl.Body className="createComment">
         <CardEl.Title>Contribute a new comment</CardEl.Title>
         { hasCommented ? (
@@ -50,7 +50,7 @@ export const CardCommentsNew: FC<CardCommentsNewProps> = (props: CardCommentsNew
             <Row>
               <ClickSound>
                 <Col>
-                  <Dropdown>
+                  <Dropdown className="comment-type">
                     <Dropdown.Toggle data-testid={type} variant="success">
                       { commentTypeToString(card, type) }
                     </Dropdown.Toggle>

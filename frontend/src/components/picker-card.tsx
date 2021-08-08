@@ -14,7 +14,7 @@ export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
   return (
     <Link to={`/${card.type}/${card.name}`}>
       <ClickSound>
-        <Card style={{ width: '10rem' }}>
+        <Card>
           <Card.Img
             alt={card.name}
             variant="top"

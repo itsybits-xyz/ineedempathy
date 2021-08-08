@@ -31,7 +31,7 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
   })
 
   return (
-    <Container fluid>
+    <Container fluid className="card-comments-list">
       <Row className="justify-content-sm-center">
         <ButtonGroup>
           { filters.map((filter, idx) => (
@@ -60,7 +60,7 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
       <Container fluid>
         { filteredComments.length === 0 ? (
           <Row className="justify-content-sm-center">
-            <CardEl role="info" style={{ width: '35rem' }}>
+            <CardEl role="info">
               <CardEl.Body>
                 <CardEl.Title>
                   <MdSearch size={36} />
@@ -82,8 +82,7 @@ export const CardCommentsList: FC<CardCommentsListProps> = (props: CardCommentsL
             return (
               <Row key={idx} className="justify-content-sm-center">
                 <CardEl
-                  role="comment"
-                  style={{ width: '35rem' }}>
+                  role="comment">
                   <CardEl.Body>
                     <CardEl.Title>
                       <Badge pill variant={filter?.variant}>

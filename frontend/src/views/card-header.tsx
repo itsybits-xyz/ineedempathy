@@ -23,28 +23,26 @@ export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
       <p>Image failed to load</p>
     </div>
   ) : (
-    <Container fluid>
-      <Row className="justify-content-md-center">
-        <Card style={{ width: '35rem' }}>
-          <Card.Img
-            alt={card.displayName}
-            variant="top"
-            onError={(er: any) => setError(er)}
-            src={ BACKEND_URL + card.image.lg } />
-          <Card.Body>
-            <Card.Title>{card.displayName}</Card.Title>
-            <Card.Text>
-              {card.definition}
-            </Card.Text>
-            <Card.Text>
-              Source:
-              <a rel="noreferrer" target="_blank" href={card.definitionSource}>
-                {getDomain(card.definitionSource)}
-              </a>
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </Row>
-    </Container>
+    <Row className="justify-content-md-center">
+      <Card>
+        <Card.Img
+          alt={card.displayName}
+          variant="top"
+          onError={(er: any) => setError(er)}
+          src={ BACKEND_URL + card.image.lg } />
+        <Card.Body>
+          <Card.Title>{card.displayName}</Card.Title>
+          <Card.Text>
+            {card.definition}
+          </Card.Text>
+          <Card.Text>
+            Source:
+            <a rel="noreferrer" target="_blank" href={card.definitionSource}>
+              {getDomain(card.definitionSource)}
+            </a>
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    </Row>
   );
 };

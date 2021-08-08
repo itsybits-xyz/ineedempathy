@@ -48,7 +48,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
   ) : (
     <>
       <Row className="justify-content-md-center">
-        <Card style={{ width: '35rem' }}>
+        <Card className="responsive">
           <Card.Body>
             <Card.Title>
               Would you like to meet your need for <strong>empathy</strong>?
@@ -62,7 +62,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
         </Card>
       </Row>
       <Row className="justify-content-md-center">
-        <Card style={{ width: '35rem' }}>
+        <Card className="responsive">
           <Card.Body>
             <Card.Title>
               Join an existing Empathy Room

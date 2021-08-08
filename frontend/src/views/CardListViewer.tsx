@@ -18,7 +18,7 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
   const { setSelectedCard, player, onList, toggleCard, changeSpeaker, cards } = props;
   return (
     <Row className={player?.speaker ? 'speaker' : 'listener'}>
-      <CardEl className='users-cards' style={{ width: '100%' }}>
+      <CardEl className='users-cards'>
         <CardEl.Body>
           <CardEl.Title>
             { player && (

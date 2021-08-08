@@ -104,7 +104,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
           </Col>
           <Col className="users-list">
             <Row>
-              <CardEl style={{ width: '100%' }}>
+              <CardEl>
                 <CardEl.Body>
                   <CardEl.Title>Share Empathy Room</CardEl.Title>
                   <Form.Group className="mb-3">
@@ -131,7 +131,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                 return 0;
               }).map((user: Player) => {
                 return (
-                  <Row style={{width: '100%'}} key={user.name}>
+                  <Row key={user.name}>
                     <CardListViewer
                       player={user}
                       setSelectedCard={setSelectedCard}

@@ -24,6 +24,7 @@ code {
 
 .fn-cards {
   .card {
+    width: 10rem;
     border: none;
     outline: none;
     transition: .1s;
@@ -106,7 +107,11 @@ code {
 }
 
 .board-game {
+  margin: 15px;
   .card.game-card {
+    &.sm { width: 5rem; }
+    &.md { width: 7rem; }
+    &.lg { width: 10rem; }
     &:hover {
       cursor: pointer;
     }
@@ -190,4 +195,20 @@ code {
     top: 5px;
     right: 0;
   }
+}
+.card-page {
+  max-width: 35rem;
+  margin: 15px;
+  .card {
+    margin: 5px;
+  }
+  .comment-type button {
+    text-transform: none;
+    font-size: 100%;
+  }
+}
+
+.card.responsive {
+  max-width: 35rem;
+  margin: 15px;
 }

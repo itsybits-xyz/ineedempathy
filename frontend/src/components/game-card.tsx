@@ -16,27 +16,23 @@ export interface GameCardProps {
 export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
   const { size, card, handleInfo, handleClick, onList } = props;
   const [ error, setError ] = useState(false);
-  let cardWidth;
   let toggleSize;
   switch (size) {
     case 'sm':
-      cardWidth = '5rem'
       toggleSize = 15
       break;
     case 'md':
-      cardWidth = '7rem'
       toggleSize = 25
       break;
     case 'lg':
     default:
-      cardWidth = '10rem';
       toggleSize = 36
   }
   if (error) {
     return <Hidden error={error} />
   }
   return (
-    <Card className="game-card" style={{ width: cardWidth }}>
+    <Card className={`game-card ${size}`}>
       <div
         onClick={handleClick}
         className={onList ? 'kard on-list' : 'kard off-list'}>

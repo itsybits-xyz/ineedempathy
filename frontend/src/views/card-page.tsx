@@ -5,7 +5,7 @@ import { CardHeader } from './card-header';
 import { CardComments } from './card-comments';
 import { Card } from '../schemas';
 import { Link } from 'react-router-dom';
-import { Button, Row } from 'react-bootstrap';
+import { Container, Button, Row } from 'react-bootstrap';
 
 export interface CardPageProps {
   backButton?: boolean;
@@ -38,7 +38,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
   }
 
   return card.name ? (
-    <>
+    <Container fluid className="card-page">
       { backButton && (
         <Row className="justify-content-sm-center">
           <ClickSound>
@@ -50,7 +50,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
       ) }
       <CardHeader card={card} />
       <CardComments card={card} />
-    </>
+    </Container>
   ) : (
     <p role="alert">Loading...</p>
   );

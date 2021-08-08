@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import {
   Card,
+  Container,
   InputGroup,
   FormControl,
   Button,
@@ -37,29 +38,31 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
 
   if (!ready) {
     return (
-      <Row>
-        <Card style={{ marginLeft: '35px',  width: '35rem' }}>
-          <Card.Body>
-            <Card.Title>
-              <p>Type in a <strong>display name</strong></p>
-              <p>to join "{roomname}"!</p>
-            </Card.Title>
-            <Card.Title className="text-center">
-              <InputGroup size="lg">
-                <FormControl
-                  placeholder="Type your display name here"
-                  value={username}
-                  onChange={(event) => {
-                    setUsername(event.target.value);
-                  }} />
-              </InputGroup>
-              <Button variant="success" onClick={() => setReady(true)}>
-                Join Empathy Room
-              </Button>
-            </Card.Title>
-          </Card.Body>
-        </Card>
-      </Row>
+      <Container className="content" fluid>
+        <Row className="justify-content-md-center">
+          <Card className="responsive">
+            <Card.Body>
+              <Card.Title>
+                <p>Type in a <strong>display name</strong></p>
+                <p>to join "{roomname}"!</p>
+              </Card.Title>
+              <Card.Title className="text-center">
+                <InputGroup size="lg">
+                  <FormControl
+                    placeholder="Type your display name here"
+                    value={username}
+                    onChange={(event) => {
+                      setUsername(event.target.value);
+                    }} />
+                </InputGroup>
+                <Button variant="success" onClick={() => setReady(true)}>
+                  Join Empathy Room
+                </Button>
+              </Card.Title>
+            </Card.Body>
+          </Card>
+        </Row>
+      </Container>
     );
   }
 
