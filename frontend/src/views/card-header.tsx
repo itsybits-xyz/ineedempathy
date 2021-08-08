@@ -38,7 +38,7 @@ export const CardHeader: FC<CardHeaderProps> = (props: CardHeaderProps) => {
             </Card.Text>
             <Card.Text>
               Source:
-              <a target="_blank" href={card.definitionSource}>
+              <a rel="noreferrer" target="_blank" href={card.definitionSource}>
                 {getDomain(card.definitionSource)}
               </a>
             </Card.Text>
