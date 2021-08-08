@@ -3,7 +3,7 @@ import { Card, Comment } from '../schemas';
 import { getComments } from '../utils';
 import { CardCommentsList } from './card-comments-list';
 import { CardCommentsNew } from './card-comments-new';
-import { Container, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 
 export interface CardCommentsProps {
   card: Card,
