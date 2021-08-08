@@ -1,3 +1,4 @@
+from sentry_sdk import set_tag
 from typing import List, Optional
 from fastapi import Depends, Request, WebSocket, WebSocketDisconnect, APIRouter
 from ..schemas import Card, RoomInfoBase
@@ -42,6 +43,8 @@ def create_comment(card_name: str, comment: CommentCreate, db: Session = Depends
 @router.post("/rooms", status_code=201, response_model=RoomInfoBase)
 def create_room(request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
     connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
+    set_tag("number_of_rooms", len(connection_manager))
+    set_tag("number_of_empty_rooms", len(connection_manager.empty_rooms()))
     available = None
     while available is None:
         name = generate_slug(4)
