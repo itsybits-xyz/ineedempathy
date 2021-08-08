@@ -20,11 +20,11 @@ test('renders card header', () => {
   }
   render(<CardHeader card={card} />);
   const img = screen.getByRole('img');
-  expect(img).toHaveAttribute('alt');
+  expect(img.alt).toBeTruthy();
   expect(() => screen.getByRole('alert') ).toThrow();
 });
 
-test('renders error header', () => {
+test('can handle error on card header', () => {
   const card: Card = {
     id: 1,
     displayName: 'Compersion',
