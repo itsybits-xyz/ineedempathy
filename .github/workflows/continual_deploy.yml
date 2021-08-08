@@ -41,6 +41,7 @@ jobs:
           cd ..
           ./build.sh
           echo $GITHUB_SHA > latest_sha.txt
+          echo $GITHUB_SHA > templates/latest_sha.txt
       - name: Copy files to host
         uses: appleboy/scp-action@master
         with:
