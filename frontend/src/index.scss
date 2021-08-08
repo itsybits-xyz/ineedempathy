@@ -212,3 +212,13 @@ code {
   max-width: 35rem;
   margin: 15px;
 }
+
+.logo img {
+  width: 100%;
+  border-radius: 7px;
+}
+
+#root .main-panel > .content {
+  padding-top: 0;
+  margin-top: 0;
+}

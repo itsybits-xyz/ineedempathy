@@ -14,6 +14,16 @@ export const Home: FC = () => {
   return (
     <Container className="content" fluid>
       <Row className="justify-content-md-center">
+        <Card className="logo responsive">
+          <Card.Body>
+            <img
+              alt="I Need Empathy Logo - Blue background, with a rainbow coming from a cloud"
+              src="/logo.png"
+            />
+          </Card.Body>
+        </Card>
+      </Row>
+      <Row className="justify-content-md-center">
         <Card className="responsive">
           <Card.Body>
             <Card.Title>
