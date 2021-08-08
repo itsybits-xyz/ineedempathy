@@ -10,7 +10,7 @@ class UserInfo(BaseModel):
     cards: List[int] = []
 
     def empty(self):
-        return len(self.cards) == 0
+        return len(self.sockets) == 0
 
     def add_socket(self, socket: WebSocket):
         self.sockets[id(socket)] = socket

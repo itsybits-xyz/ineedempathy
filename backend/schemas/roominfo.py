@@ -1,3 +1,4 @@
+import datetime
 from typing import Dict
 from pydantic import BaseModel
 from fastapi import WebSocket
@@ -6,12 +7,15 @@ from ..utils import after
 
 
 class RoomInfoBase(BaseModel):
-    name: str
+    name: str = ''
 
 
 class RoomInfo(RoomInfoBase):
     speaker: UserInfo = None
     users: Dict[str, UserInfo] = {}
+
+    def __init__(self, *args, **kwargs):
+        super(RoomInfo, self).__init__(*args, **kwargs)
 
     def get_speaker(self):
         if self.speaker is None:
@@ -22,7 +26,12 @@ class RoomInfo(RoomInfoBase):
         self.speaker = speaker
 
     def empty(self):
-        return len(self.users) == 0
+        if len(self.users) == 0:
+            return True
+        for idx in self.users:
+            if not self.users[idx].empty():
+                return False
+        return True
 
     def get_user(self, name: str):
         if name in self.users:
@@ -31,8 +40,6 @@ class RoomInfo(RoomInfoBase):
     def toggle_card(self, name: str, card_id: int):
         if name in self.users:
             self.users[name].toggle_card(card_id)
-            if self.users[name].empty():
-                del self.users[name]
 
     @after("upsert_speaker")
     def add_user(self, name: str, socket: WebSocket):
@@ -46,14 +53,19 @@ class RoomInfo(RoomInfoBase):
     def remove_user(self, name: str, socket: WebSocket):
         if name in self.users:
             self.users[name].remove_socket(socket)
-            if self.users[name].empty():
-                del self.users[name]
+
+    def active_users(self):
+        speaker = self.get_speaker()
+        return [userinfo for userinfo in self.users.values()
+                if not userinfo.empty()]
 
     def upsert_speaker(self):
-        no_speaker = self.get_speaker().name not in self.users
-        has_players = len(self.users) >= 1
+        no_speaker = self.get_speaker().empty()
+        active_players = self.active_users()
+        has_players = len(active_players) > 0
         if no_speaker and has_players:
-            return self.set_speaker(list(self.users.values())[0])
+            print(active_players[0].name)
+            return self.set_speaker(active_players[0])
         elif not has_players:
             return self.set_speaker(None)
 
@@ -66,7 +78,8 @@ class RoomInfo(RoomInfoBase):
 
     def current_users(self):
         speaker = self.get_speaker()
-        return [userinfo.progress(speaker) for userinfo in self.users.values()]
+        return [userinfo.progress(speaker) for userinfo in self.users.values()
+                if not userinfo.empty()]
 
     async def broadcast_message(self, msg: Dict):
         for user_id in self.users:

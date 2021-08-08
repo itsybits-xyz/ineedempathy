@@ -14,6 +14,20 @@ def test_toggle_card():
     assert len(user.cards) == 2
 
 
+def test_empty():
+    user_token = 'meow.user'
+    card_token = 1
+    socket_token = 'socket_1'
+    user = UserInfo(name=user_token)
+    assert user.empty()
+    user.toggle_card(card_token)
+    assert user.empty()
+    user.add_socket(socket_token)
+    assert not user.empty()
+    user.remove_socket(socket_token)
+    assert user.empty()
+
+
 def test_progress():
     user_1_token = 'meow.user.1'
     user_2_token = 'meow.user.2'
