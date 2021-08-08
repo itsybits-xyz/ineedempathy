@@ -49,6 +49,11 @@ def create_room(request: Request, db: Session = Depends(get_db)) -> RoomInfoBase
     return connection_manager.create_room(name)
 
 
+@router.get("/error")
+def error() -> None:
+    1 / 0
+
+
 @router.websocket("/rooms/{room_name}/users/{user_name}.ws")
 async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
     print(f"Connecting new socket {id(websocket)}...")
