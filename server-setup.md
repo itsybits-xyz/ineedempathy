@@ -8,7 +8,7 @@ sudo service supervisor status
 sudo supervisorctl   # Launch interactive supervisord controller
 ```
 
-Edit: 
+Edit:
 
 `/etc/supervisor/supervisord.conf`
 
@@ -81,12 +81,25 @@ chmod 775 /var/www/ineedempathy
 Enable no sudo for our users
 
 ```
+# add users
+sudo adduser amjith
+sudo adduser baylee
+sudo adduser web-runner
+
+ln -s /var/www/ineedempathy ~/ineedempathy
+
+# add group
+groupadd -g 10000 webteam
+sudo groupadd -g 10000 root
+sudo groupadd -g 10000 amjith
+sudo groupadd -g 10000 baylee
+sudo groupadd -g 10000 web-runner
+
+# don't require passwords on sudo
 sudo update-alternatives --config editor
 sudo visudo
 
-
-# add to the bottom:
-# enable sudo w/o password
 baylee ALL=(ALL) NOPASSWD: ALL
 amjith ALL=(ALL) NOPASSWD: ALL
+web-runner ALL=(ALL) NOPASSWD: ALL
 ```
