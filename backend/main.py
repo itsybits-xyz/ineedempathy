@@ -1,3 +1,4 @@
+import sentry_sdk
 from fastapi.staticfiles import StaticFiles
 from fastapi import (
     Request,
@@ -9,6 +10,13 @@ from .config import settings
 from .routers.api import router as api_router
 from fastapi.templating import Jinja2Templates
 
+sentry_sdk.init(
+    "https://2147b3c92a9b482eaefc19feaeda5ecd@o948279.ingest.sentry.io/5897486",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+)
 
 app = FastAPI()
 app.include_router(api_router, prefix="/api")
