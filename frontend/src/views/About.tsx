@@ -21,7 +21,7 @@ export const About: FC = () => {
           <ul>
             <li>
               Website and Gameplay is Open Sourced{' '}
-              <a href="https://github.com/amjith/ineedempathy">
+              <a href="https://github.com/itsybits-xyz/ineedempathy">
                 on Github
               </a>
             </li>

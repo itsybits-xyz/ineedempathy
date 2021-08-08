@@ -51,7 +51,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
   return gotoRoomName ? (
     <Redirect to={`/room/${gotoRoomName}`} />
   ) : (
-    <Container className="content" style={styles} fluid>
+    <>
       <Row className="justify-content-md-center">
         <Card style={{ width: '35rem' }}>
           <Card.Body>
@@ -88,6 +88,6 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
           </Card.Body>
         </Card>
       </Row>
-    </Container>
+    </>
   );
 };
