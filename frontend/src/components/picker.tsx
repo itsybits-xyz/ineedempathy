@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Dropdown, Container, Col, Form, Row } from 'react-bootstrap';
+import { Alert, Dropdown, Container, Col, Form, Row } from 'react-bootstrap';
 import { displayLevel, getCards } from '../utils';
 import { useAsync } from 'react-async';
 import { PlaySound, PickerCard, Hidden } from './';
@@ -93,13 +93,19 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
             placeholder="Search..." />
         </Row>
         <Row>
-          { cards.map((card) => {
-            return (
-              <Col key={card.id}>
-                <PickerCard card={ card } />
-              </Col>
-            );
-          }) }
+          { cards.length === 0 ? (
+            <Alert variant="light">
+              No cards were found. Try expanding your filters or removing your search term.
+            </Alert>
+          ) : (
+            cards.map((card: Card) => {
+              return (
+                <Col key={card.id}>
+                  <PickerCard card={ card } />
+                </Col>
+              );
+            })
+          )}
         </Row>
       </Container>
     </div>

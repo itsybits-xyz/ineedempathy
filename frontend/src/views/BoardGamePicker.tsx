@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Button, Col, Dropdown, Form, Row } from 'react-bootstrap';
+import { Alert, Button, Col, Dropdown, Form, Row } from 'react-bootstrap';
 import { PlaySound, GameCard } from "../components";
 import { CardLevel, CardType, Card } from "../schemas";
 import { displayLevel } from '../utils';
@@ -46,6 +46,18 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
       setSelectedCard(card);
     }
   };
+
+  const cardsToDisplay = fuzzyfind(query, cards, {
+    accessor: (card: Card) => {
+      return `${card.name} ${card.displayName} ${card.definition}`;
+    },
+  }).filter((card: Card) => {
+    if (type === null) return true;
+    return type === card.type;
+  }).filter((card: Card) => {
+    if (level === CardLevel.all) return true;
+    return card.level <= level;
+  });
 
   return (
     <>
@@ -146,18 +158,12 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
         </Row>
       ) }
       <Row>
-        {
-          fuzzyfind(query, cards, {
-            accessor: (card: Card) => {
-              return `${card.name} ${card.displayName} ${card.definition}`;
-            },
-          }).filter((card: Card) => {
-            if (type === null) return true;
-            return type === card.type;
-          }).filter((card: Card) => {
-            if (level === CardLevel.all) return true;
-            return card.level <= level;
-          }).map((card: Card) => {
+        { cardsToDisplay.length === 0 ? (
+          <Alert variant="light">
+            No cards were found. Try expanding your filters or removing your search term.
+          </Alert>
+        ) : (
+          cardsToDisplay.map((card: Card) => {
             return (
               <Col key={card.id}>
                 <GameCard
@@ -169,7 +175,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
               </Col>
             );
           })
-        }
+        )}
       </Row>
     </>
   );
