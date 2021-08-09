@@ -1,9 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Dropdown, Container, Col, Row } from 'react-bootstrap';
+import { Dropdown, Container, Col, Form, Row } from 'react-bootstrap';
 import { displayLevel, getCards } from '../utils';
 import { useAsync } from 'react-async';
 import { PlaySound, PickerCard, Hidden } from './';
 import { CardLevel, Card } from '../schemas';
+import fuzzyfind from 'fuzzyfind';
 
 export interface PickerProps {
   type?: string;
@@ -18,6 +19,7 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   const { playToggle } = PlaySound();
   const { data, error, isPending } = useAsync(getCards);
   const [ level, _setLevel ] = useState<CardLevel>(CardLevel.all);
+  const [ query, setQuery ] = useState<string>('');
 
   const setLevel = (newLevel: CardLevel) => {
     playToggle();
@@ -39,15 +41,15 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
   }
 
   const filterType = props.type === 'needs' ? 'need' : 'feeling';
-  const cards = data.filter((card: Card) => {
+  const cards = fuzzyfind(query, data, {
+    accessor: (card: Card) => {
+      return `${card.name} ${card.displayName} ${card.definition}`;
+    },
+  }).filter((card: Card) => {
     return card.type === filterType;
   }).filter((card: Card) => {
-      if (level === CardLevel.all) return true;
-      return card.level <= level;
-  }).sort((card1: Card, card2: Card) => {
-    if (card1.name > card2.name) return 1;
-    if (card2.name > card1.name) return -1;
-    return 0;
+    if (level === CardLevel.all) return true;
+    return card.level <= level;
   });
 
   return (
@@ -81,6 +83,14 @@ export const Picker: FC<PickerProps> = (props: PickerProps) => {
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+        </Row>
+        <Row>
+          <Form.Control
+            size='lg'
+            value={query}
+            onChange={(ev) => setQuery(ev.target.value)}
+            type="input"
+            placeholder="Search..." />
         </Row>
         <Row>
           { cards.map((card) => {

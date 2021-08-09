@@ -22,4 +22,11 @@
   .info, .filters .dropdown {
     margin-top: 6px;
   }
+  .big-card-list .filters {
+    input.form-control-lg {
+      max-width: 200px;
+      min-width: 120px;
+      height: 50px;
+    }
+  }
 }

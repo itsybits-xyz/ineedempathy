@@ -23,6 +23,12 @@ code {
 }
 
 .fn-cards {
+  input.form-control-lg {
+    max-width: 300px;
+    min-width: 120px;
+    height: 50px;
+  }
+
   .card {
     width: 10rem;
     border: none;
