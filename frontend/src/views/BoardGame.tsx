@@ -7,6 +7,7 @@ import './BoardGame.scss';
 import { PlaySound } from "../components";
 import { CardPage } from '.';
 import { SOCKET_URL } from '../config';
+import { Prompt } from "react-router-dom";
 
 export interface BoardGameProps {
   cards: Card[];
@@ -49,7 +50,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     };
   };
 
-
   const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
   });
@@ -62,6 +62,14 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       }
     };
   };
+  
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      if (!!currentUser?.cards?.length || (currentUsers.length > 1)) {
+        return "Are you sure you wish to leave the Empathy Room?";
+      }
+    };
+  }, [currentUser, currentUsers])
 
   const copyRoom = () => {
     playToggle();
@@ -176,6 +184,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             </Modal.Footer>
           </Modal>
         ) }
+        <Prompt when={!!currentUser?.cards?.length || (currentUsers.length > 1)} message="Are you sure you wish you leave the Empathy Room?"/>
       </Container>
     </>
   );

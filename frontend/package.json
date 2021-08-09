@@ -13,6 +13,7 @@
     "@types/react": "^16.14.2",
     "@types/react-bootstrap": "^0.32.24",
     "@types/react-dom": "^16.9.10",
+    "chokidar": "^3.5.2",
     "classnames": "2.2.6",
     "fuzzyfind": "^2.0.0",
     "lodash.shuffle": "^4.2.0",
