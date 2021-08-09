@@ -7,6 +7,7 @@ import './BoardGame.scss';
 import { PlaySound } from "../components";
 import { CardPage } from '.';
 import { SOCKET_URL } from '../config';
+import { Prompt } from "react-router-dom";
 
 export interface BoardGameProps {
   cards: Card[];
@@ -41,6 +42,14 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       setCurrentUsers(currentStatus.users);
     }
   }, [lastMessage]);
+  
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      if (currentUsers.length || cards.length) {
+        return "Are you sure you want to navigate away?";
+      }
+    };
+  }, [])
 
   const toggleCard = (card: Card) => {
     return () => {
@@ -48,7 +57,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       sendMessage(JSON.stringify({toggleCard: card.id}))
     };
   };
-
 
   const currentUser = currentUsers.find((user: Player) => {
     return user.name === username;
@@ -176,6 +184,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             </Modal.Footer>
           </Modal>
         ) }
+        <Prompt when={!!currentUser?.length || !!cards?.length} message="Are you sure?"/>
       </Container>
     </>
   );
