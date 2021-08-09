@@ -1,3 +1,5 @@
+![logo](/frontend/public/logo.png)
+
 # I Need Empathy
 
 An app to train a _needs consciousness_.
