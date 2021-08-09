@@ -14,6 +14,7 @@
     "@types/react-bootstrap": "^0.32.24",
     "@types/react-dom": "^16.9.10",
     "classnames": "2.2.6",
+    "fuzzyfind": "^2.0.0",
     "lodash.shuffle": "^4.2.0",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",

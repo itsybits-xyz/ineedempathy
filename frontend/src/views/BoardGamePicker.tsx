@@ -1,8 +1,9 @@
 import React, { FC, useState } from "react";
-import { Button, Dropdown, Col, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, Form, Row } from 'react-bootstrap';
 import { PlaySound, GameCard } from "../components";
 import { CardLevel, CardType, Card } from "../schemas";
 import { displayLevel } from '../utils';
+import fuzzyfind from 'fuzzyfind';
 
 export interface BoardGamePickerProps {
   cards: Card[];
@@ -16,6 +17,7 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
   const [ level, _setLevel ] = useState<CardLevel>(CardLevel.beginner);
   const [ type, _setType ] = useState<CardType|null>(null);
   const [ howToPlay, _setHowToPlay ] = useState<boolean>(false);
+  const [ query, setQuery ] = useState<string>('');
   const { playToggle } = PlaySound();
 
   const setHowToPlay = (newVal: boolean) => {
@@ -108,6 +110,14 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
             </Dropdown.Menu>
           </Dropdown>
         </Col>
+        <Col>
+          <Form.Control
+            size='lg'
+            value={query}
+            onChange={(ev) => setQuery(ev.target.value)}
+            type="input"
+            placeholder="Search..." />
+        </Col>
         <Col className="info">
           <Button
             variant="info"
@@ -136,17 +146,17 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
         </Row>
       ) }
       <Row>
-        { cards
-          .filter((card: Card) => {
+        {
+          fuzzyfind(query, cards, {
+            accessor: (card: Card) => {
+              return `${card.name} ${card.displayName} ${card.definition}`;
+            },
+          }).filter((card: Card) => {
             if (type === null) return true;
             return type === card.type;
           }).filter((card: Card) => {
             if (level === CardLevel.all) return true;
             return card.level <= level;
-          }).sort((card1: Card, card2: Card) => {
-            if (card1.name > card2.name) return 1;
-            if (card2.name > card1.name) return -1;
-            return 0;
           }).map((card: Card) => {
             return (
               <Col key={card.id}>
@@ -158,8 +168,8 @@ export const BoardGamePicker: FC<BoardGamePickerProps> = (props: BoardGamePicker
                   handleClick={customToggleCard(card)} />
               </Col>
             );
-          }
-        )}
+          })
+        }
       </Row>
     </>
   );
