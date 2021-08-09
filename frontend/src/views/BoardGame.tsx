@@ -42,14 +42,6 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       setCurrentUsers(currentStatus.users);
     }
   }, [lastMessage]);
-  
-  useEffect(() => {
-    window.onbeforeunload = function () {
-      if (currentUsers.length || cards.length) {
-        return "Are you sure you want to navigate away?";
-      }
-    };
-  }, [])
 
   const toggleCard = (card: Card) => {
     return () => {
@@ -70,6 +62,14 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       }
     };
   };
+  
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      if (!!currentUser?.cards?.length || (currentUsers.length > 1)) {
+        return "Are you sure you wish to leave the Empathy Room?";
+      }
+    };
+  }, [currentUser, currentUsers])
 
   const copyRoom = () => {
     playToggle();
@@ -184,7 +184,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             </Modal.Footer>
           </Modal>
         ) }
-        <Prompt when={!!currentUser?.length || !!cards?.length} message="Are you sure?"/>
+        <Prompt when={!!currentUser?.cards?.length || (currentUsers.length > 1)} message="Are you sure you wish you leave the Empathy Room?"/>
       </Container>
     </>
   );
