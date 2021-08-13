@@ -1,7 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { Alert, Button, Card as CardEl, Col, Container, Form, Modal, Row } from 'react-bootstrap';
-import useWebSocket, { ReadyState } from "react-use-websocket";
-import { Card } from "../schemas";
+import { Alert, Button, Card as CardEl, Col, Container, Form, Modal, Row } from 'react-bootstrap'; import useWebSocket, { ReadyState } from "react-use-websocket"; import { Card } from "../schemas";
 import { JoinRoom, BoardGamePicker, CardListViewer } from ".";
 import './BoardGame.scss';
 import { PlaySound } from "../components";
@@ -163,7 +161,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
             size='lg'
             onHide={() => setSelectedCard(null) }>
             <Modal.Header closeButton>
-              <Modal.Title>{selectedCard.displayName}</Modal.Title>
+              <Modal.Title>More information on {selectedCard.displayName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <CardPage match={{ params: selectedCard }} />

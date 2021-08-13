@@ -43,8 +43,7 @@ export const Room: FC<RoomProps> = (props: RoomProps) => {
           <Card className="responsive">
             <Card.Body>
               <Card.Title>
-                <p>Type in a <strong>display name</strong></p>
-                <p>to join "{roomname}"!</p>
+                <p>Type in a <strong>display name</strong> to join</p>
               </Card.Title>
               <Card.Title className="text-center">
                 <InputGroup size="lg">
