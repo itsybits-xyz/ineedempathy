@@ -86,7 +86,8 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
     return (
       <>
         <Alert variant="warning">
-          This room "{roomname}" does not exist.
+          You have disconnected from your Empathy Room. Try checking your
+          connection, and refreshing the page.
         </Alert>
         <JoinRoom oldRoomName={roomname} />
       </>
