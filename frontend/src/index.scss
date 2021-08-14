@@ -22,6 +22,16 @@ code {
     monospace;
 }
 
+[role="link"]:focus {
+  box-shadow: 0 0 3pt 2pt cornflowerblue;
+}
+a[role="link"]:focus {
+  box-shadow: none;
+  .card {
+    box-shadow: 0 0 3pt 2pt cornflowerblue;
+  }
+}
+
 .fn-cards {
   input.form-control-lg {
     max-width: 300px;
@@ -34,7 +44,7 @@ code {
     border: none;
     outline: none;
     transition: .1s;
-    &:hover {
+    &:focus, &:hover {
       box-shadow: 0 0 3pt 2pt cornflowerblue;
     }
   }

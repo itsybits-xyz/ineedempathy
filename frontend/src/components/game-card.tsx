@@ -34,6 +34,15 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
   return (
     <Card className={`game-card ${size}`}>
       <div
+        role="link"
+        title={(
+          onList ? (
+            `Click to remove the card ${card.displayName} to your list.`
+          ) : (
+            `Click to add the card ${card.displayName} to your list.`
+          )
+        )}
+        tabIndex={0}
         onClick={handleClick}
         className={onList ? 'kard on-list' : 'kard off-list'}>
         <Card.Img
@@ -46,7 +55,11 @@ export const GameCard: FC<GameCardProps> = (props: GameCardProps) => {
           <MdLibraryAdd className="add" size={toggleSize} />
         </div>
       </div>
-      <Card.Body onClick={handleInfo}>
+      <Card.Body
+        role="link"
+        title={`Click to get more information on ${card.displayName}`}
+        tabIndex={0}
+        onClick={handleInfo}>
         <Card.Title className={size}>{card.displayName}</Card.Title>
         <Card.Title>
           <MdInfoOutline size={toggleSize} />
