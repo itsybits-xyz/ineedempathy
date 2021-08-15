@@ -39,16 +39,6 @@ def create_comment(card_name: str, comment: CommentCreate, db: Session = Depends
     return crud.create_comment(db, card_name, comment)
 
 
-@router.post("/rooms", status_code=201, response_model=RoomInfoBase)
-def create_room(request: Request, db: Session = Depends(get_db)) -> RoomInfoBase:
-    connection_manager: Optional[ConnectionManager] = request.scope.get("connection_manager")
-    available = None
-    while available is None:
-        name = generate_slug(4)
-        available = not connection_manager.get_room(name)
-    return connection_manager.create_room(name)
-
-
 @router.get("/error")
 def error() -> None:
     1 / 0

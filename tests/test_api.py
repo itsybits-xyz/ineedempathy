@@ -36,14 +36,6 @@ def setup_function():
     Base.metadata.create_all(bind=engine)
 
 
-def test_create_room():
-    response = test_client.post("/api/rooms")
-    assert response.status_code == 201
-    json = response.json()
-    assert len(list(json.keys())) == 1
-    assert len(json["name"]) >= 1
-
-
 def test_get_card():
     db = TestingSessionLocal()
     crud.create_card(
@@ -188,22 +180,11 @@ def socket_url(room_token, user_token):
     return f"/api/rooms/{room_token}.ws"
 
 
-def test_invalid_websocket_connect():
-    try:
-        client = TestClient(app)
-        room = {"name": "fake-room"}
-        user = {"name": "fake-user"}
-        client.websocket_connect(socket_url(room, user))
-        assert False
-    except RuntimeError:
-        assert True
-
-
 def test_websocket_add_cards():
     user_token = "user.princess.wiggles"
-    room = test_client.post("/api/rooms", json={}).json()
+    room_name = 'empatymeplease.1'
     client = TestClient(app)
-    with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+    with client.websocket_connect(socket_url(room_name, user_token)) as websocket:
         websocket.send_text('{"setName": "' + user_token + '"}')
         websocket.receive_json()  # join "status" not asserted
         websocket.send_text('{"toggleCard": 1}')
@@ -224,17 +205,17 @@ def test_websocket_add_cards():
 
 
 def test_websocket_connect():
+    room_name = 'empatymeplease.2'
     user_token = "user.princess.wiggles"
     user_token_2 = "user.princess.wiggles.2"
-    room = test_client.post("/api/rooms", json={}).json()
     client = TestClient(app)
-    with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+    with client.websocket_connect(socket_url(room_name, user_token)) as websocket:
         websocket.send_text('{"setName": "' + user_token + '"}')
         data = websocket.receive_json()
         assert data == {
             "users": [{"name": user_token, "speaker": True, "cards": []}],
         }
-        with client.websocket_connect(socket_url(room["name"], user_token_2)) as websocket_2:
+        with client.websocket_connect(socket_url(room_name, user_token_2)) as websocket_2:
             websocket_2.send_text('{"setName": "' + user_token_2 + '"}')
             data = websocket_2.receive_json()
             assert data == {

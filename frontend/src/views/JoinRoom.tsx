@@ -6,7 +6,7 @@ import {
   Button,
   Row
 } from "react-bootstrap";
-import { createRoom } from "../utils/api";
+import { generateName } from "../utils";
 import { Redirect } from "react-router-dom";
 import { PlaySound, Hidden } from "../components";
 
@@ -23,11 +23,7 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
 
   const handleNewRoom = () => {
     playToggle();
-    return createRoom().then((newRoom) => {
-      setGotoRoomName(newRoom.name);
-    }).catch((er) => {
-      setError(er);
-    });
+    setGotoRoomName(generateName());
   };
 
   const handleJoinRoom = () => {

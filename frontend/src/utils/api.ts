@@ -52,10 +52,6 @@ export const getRoom: PromiseFn<Room> = ({roomId}) => {
   return get<Room>(`${BACKEND_URL}/rooms/${roomId}`);
 };
 
-export const createRoom = () => {
-  return post<null, Room>(`${BACKEND_URL}/rooms`);
-};
-
 export const getComments = (card: Card) => {
   return get<Comment[]>(`${BACKEND_URL}/cards/${card.name}/comments`);
 };
