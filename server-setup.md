@@ -24,11 +24,11 @@ files = /var/www/ineedempathy/supervisord.conf
 ~~~
 upstream empathyserver {
     hash $request_uri;
-    server 127.0.0.1:8000
-    server 127.0.0.1:8001
-    server 127.0.0.1:8002
-    server 127.0.0.1:8003
-    server 127.0.0.1:8004
+    server 127.0.0.1:8000;
+    server 127.0.0.1:8001;
+    server 127.0.0.1:8002;
+    server 127.0.0.1:8003;
+    server 127.0.0.1:8004;
 }
 server {
         listen 80;
