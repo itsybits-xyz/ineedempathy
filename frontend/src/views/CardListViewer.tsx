@@ -3,7 +3,7 @@ import { Badge, Button, Card as CardEl, Col, Row } from 'react-bootstrap';
 import { Card } from "../schemas";
 import { GameCard } from "../components";
 import { Player } from '.';
-import { MdChatBubble, MdHearing } from 'react-icons/md';
+import { MdCheckCircle, MdChatBubble, MdHearing } from 'react-icons/md';
 
 export interface CardListViewerProps {
   canChangeSpeaker: boolean;
@@ -12,6 +12,7 @@ export interface CardListViewerProps {
   changeSpeaker: (user: Player) => () => void;
   onList: (card: Card) => boolean;
   player?: Player;
+  currentUser?: Player;
   setSelectedCard: (card: Card|null) => void;
 }
 
@@ -20,6 +21,7 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
     canChangeSpeaker,
     setSelectedCard,
     player,
+    currentUser,
     onList,
     toggleCard,
     changeSpeaker,
@@ -42,6 +44,12 @@ export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerPro
                       Listener <MdHearing />
                     </Badge>
                   ) }&nbsp;
+                  { player === currentUser && (
+                    <>
+                      <Badge variant="primary">You <MdCheckCircle /></Badge>
+                      &nbsp;
+                    </>
+                  ) }
                   <span>
                     { player.name }
                   </span>

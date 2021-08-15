@@ -145,6 +145,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                   <Row className="user-list" key={user.name}>
                     <CardListViewer
                       player={user}
+                      currentUser={currentUser}
                       setSelectedCard={setSelectedCard}
                       changeSpeaker={changeSpeaker}
                       toggleCard={toggleCard}
