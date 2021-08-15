@@ -1,3 +1,4 @@
+import os
 import uvicorn
 from alembic.config import Config
 from alembic import command
@@ -9,5 +10,5 @@ command.upgrade(alembic_cfg, "head")
 
 # Start server
 
-# uvicorn.run("backend.main:app", fd=0, log_level="debug")
-uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, log_level="debug")
+uvicorn.run("backend.main:app", host="127.0.0.1",
+        port=int(os.getenv('USE_PORT')), log_level="info")
