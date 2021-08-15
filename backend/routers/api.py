@@ -62,7 +62,7 @@ async def websocket_endpoint(room_name: str, websocket: WebSocket):
         raise RuntimeError("Global `connection_manager` instance unavailable!")
     room = connection_manager.get_room(room_name)
     if room is None:
-        raise RuntimeError(f"Room instance '{room_name}' unavailable!")
+        room = connection_manager.create_room(room_name)
     try:
         await websocket.accept()
         data = await websocket.receive_json()
