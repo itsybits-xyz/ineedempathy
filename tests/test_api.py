@@ -185,7 +185,7 @@ def test_invalid_comment():
 
 
 def socket_url(room_token, user_token):
-    return f"/api/rooms/{room_token}/users/{user_token}.ws"
+    return f"/api/rooms/{room_token}.ws"
 
 
 def test_invalid_websocket_connect():
@@ -204,6 +204,7 @@ def test_websocket_add_cards():
     room = test_client.post("/api/rooms", json={}).json()
     client = TestClient(app)
     with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+        websocket.send_text('{"setName": "' + user_token + '"}')
         websocket.receive_json()  # join "status" not asserted
         websocket.send_text('{"toggleCard": 1}')
         data = websocket.receive_json()
@@ -228,11 +229,13 @@ def test_websocket_connect():
     room = test_client.post("/api/rooms", json={}).json()
     client = TestClient(app)
     with client.websocket_connect(socket_url(room["name"], user_token)) as websocket:
+        websocket.send_text('{"setName": "' + user_token + '"}')
         data = websocket.receive_json()
         assert data == {
             "users": [{"name": user_token, "speaker": True, "cards": []}],
         }
         with client.websocket_connect(socket_url(room["name"], user_token_2)) as websocket_2:
+            websocket_2.send_text('{"setName": "' + user_token_2 + '"}')
             data = websocket_2.receive_json()
             assert data == {
                 "users": [
