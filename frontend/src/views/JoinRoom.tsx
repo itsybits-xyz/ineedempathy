@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap";
 import { generateName } from "../utils";
 import { Redirect } from "react-router-dom";
-import { PlaySound, Hidden } from "../components";
+import { PlaySound } from "../components";
 
 export interface JoinRoomProps {
   oldRoomName?: string;
@@ -18,7 +18,6 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
   const { oldRoomName } = props;
   const [gotoRoomName, setGotoRoomName] = useState<string>();
   const [roomName, setRoomName] = useState<string>(oldRoomName || '');
-  const [error, setError] = useState<string>();
   const { playToggle } = PlaySound();
 
   const handleNewRoom = () => {
@@ -32,12 +31,6 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
       setGotoRoomName(roomName);
     }
   };
-
-  if (error) {
-    return (
-      <Hidden error={error} />
-    );
-  }
 
   return gotoRoomName ? (
     <Redirect to={`/room/${gotoRoomName}`} />
