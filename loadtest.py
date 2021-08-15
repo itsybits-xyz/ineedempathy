@@ -18,18 +18,12 @@ if PY_ENV == "prod":
 class EmpathyRoom:
     @classmethod
     def build(cls, room_size, room_id):
-        try:
-            url = "http://" + PY_DOMAIN + "/api/rooms"
-            room_name = json.loads(requests.post(url).text)["name"]
-            # print('OPEN | Room: ' + room_name)
-            klass = cls(room_name, room_size)
-            klass.fill_room(room_id)
-            return klass
-        except requests.exceptions.RequestException as e:
-            print("ERROR: ")
-            print(e)
+        klass = cls(room_id, generate_slug(3), room_size)
+        klass.fill_room()
+        return klass
 
-    def __init__(self, room_name, room_size):
+    def __init__(self, room_id, room_name, room_size):
+        self.room_id = room_id
         self.room_name = room_name
         self.room_size = room_size
         self.users = []
@@ -49,7 +43,7 @@ class EmpathyRoom:
             user.close()
             self.receive()
 
-    def fill_room(self, room_id):
+    def fill_room(self):
         for x in range(0, self.room_size):
             user = RoomUser.build(self.room_name)
             if user.connect():
@@ -57,7 +51,7 @@ class EmpathyRoom:
                 self.receive()
             else:
                 print(f"DROP | User: {user}")
-        print(f"CREATED | Room: {room_id} - {self.room_name} Users: {len(self.users)}")
+        print(f"CREATED | Room: {self.room_id} - {self.room_name} Users: {len(self.users)}")
 
 
 class RoomUser:
@@ -69,12 +63,15 @@ class RoomUser:
         self.room_name = room_name
         self.user_name = user_name
         # print('OPEN | Room: ' + self.room_name + '; User: ' + self.user_name)
-        self.url = "ws://" + PY_DOMAIN + "/api/rooms/" + self.room_name + "/users/" + self.user_name + ".ws"
+        self.url = "ws://" + PY_DOMAIN + "/api/rooms/" + self.room_name + ".ws"
 
     def connect(self):
         try:
+            #print(self.url)
             self.ws = websocket.create_connection(self.url)
-        except Exception:
+            self.identify()
+        except Exception as err:
+            print(err)
             return False
         return True
 
@@ -85,7 +82,10 @@ class RoomUser:
     def receive(self):
         if self.ws.connected:
             self.ws.recv()
-            # print("Received '%s'" % result)
+            #print("Received '%s'" % result)
+
+    def identify(self):
+        self.ws.send('{"setName": "' + self.user_name + '"}')
 
     def toggle(self, card_id):
         self.ws.send('{"toggleCard": ' + str(card_id) + "}")

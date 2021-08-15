@@ -20,6 +20,16 @@ files = /var/www/ineedempathy/supervisord.conf
 
 # Nginx
 
+`/etc/nginx/nginx.conf`
+
+Change this number to `ulimit -n`
+
+~~~
+events {
+    worker_connections 1024;
+}
+~~~
+
 `/etc/nginx/sites-available/ineedempathy`
 ~~~
 upstream empathyserver {
