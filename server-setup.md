@@ -22,6 +22,14 @@ files = /var/www/ineedempathy/supervisord.conf
 
 `/etc/nginx/sites-available/ineedempathy`
 ~~~
+upstream empathyserver {
+    hash $request_uri;
+    server 127.0.0.1:8000
+    server 127.0.0.1:8001
+    server 127.0.0.1:8002
+    server 127.0.0.1:8003
+    server 127.0.0.1:8004
+}
 server {
         listen 80;
         listen [::]:80;
@@ -29,7 +37,7 @@ server {
 
         location / {
                 include proxy_params;
-                proxy_pass http://127.0.0.1:8000;
+                proxy_pass http://empathyserver;
                 proxy_http_version 1.1;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection "Upgrade";
