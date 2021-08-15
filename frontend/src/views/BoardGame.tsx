@@ -26,11 +26,15 @@ interface Message {
 export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const roomUrl = window.location.href;
   const { roomname, username, cards } = props;
-  const socketUrl = `${SOCKET_URL}/rooms/${roomname}/users/${username}.ws`;
+  const socketUrl = `${SOCKET_URL}/rooms/${roomname}.ws`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const [ currentUsers, setCurrentUsers ] = useState<Player[]>([]);
   const [ selectedCard, setSelectedCard ] = useState<Card|null>(null);
   const { playToggle } = PlaySound();
+
+  useEffect(() => {
+    sendMessage(JSON.stringify({setName: username}))
+  }, [sendMessage, username]);
 
   useEffect(() => {
     if (!lastMessage) return;

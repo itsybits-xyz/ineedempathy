@@ -54,8 +54,8 @@ def error() -> None:
     1 / 0
 
 
-@router.websocket("/rooms/{room_name}/users/{user_name}.ws")
-async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket):
+@router.websocket("/rooms/{room_name}.ws")
+async def websocket_endpoint(room_name: str, websocket: WebSocket):
     print(f"Connecting new socket {id(websocket)}...")
     connection_manager: Optional[ConnectionManager] = websocket.scope.get("connection_manager")
     if connection_manager is None:
@@ -65,6 +65,8 @@ async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocke
         raise RuntimeError(f"Room instance '{room_name}' unavailable!")
     try:
         await websocket.accept()
+        data = await websocket.receive_json()
+        user_name = data['setName']
         connection_manager.add_user(room, user_name, websocket)
         await connection_manager.send_update(room)
         while True:
