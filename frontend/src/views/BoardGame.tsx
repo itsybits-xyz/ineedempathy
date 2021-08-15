@@ -60,7 +60,7 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
       }
     };
   };
-  
+
   useEffect(() => {
     window.onbeforeunload = function () {
       if (!!currentUser?.cards?.length || (currentUsers.length > 1)) {
@@ -138,12 +138,13 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
                 return 0;
               }).map((user: Player) => {
                 return (
-                  <Row key={user.name}>
+                  <Row className="user-list" key={user.name}>
                     <CardListViewer
                       player={user}
                       setSelectedCard={setSelectedCard}
                       changeSpeaker={changeSpeaker}
                       toggleCard={toggleCard}
+                      canChangeSpeaker={currentUser?.speaker || false}
                       onList={(card: Card):boolean => {
                         return currentUser?.cards?.includes(card.id) || false;
                       }}

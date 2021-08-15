@@ -1,11 +1,12 @@
 import { FC } from "react";
-import { Card as CardEl, Col, Row } from 'react-bootstrap';
+import { Badge, Button, Card as CardEl, Col, Row } from 'react-bootstrap';
 import { Card } from "../schemas";
 import { GameCard } from "../components";
 import { Player } from '.';
 import { MdChatBubble, MdHearing } from 'react-icons/md';
 
 export interface CardListViewerProps {
+  canChangeSpeaker: boolean;
   cards: Card[];
   toggleCard: (card: Card) => () => void;
   changeSpeaker: (user: Player) => () => void;
@@ -15,29 +16,46 @@ export interface CardListViewerProps {
 }
 
 export const CardListViewer: FC<CardListViewerProps> = (props: CardListViewerProps) => {
-  const { setSelectedCard, player, onList, toggleCard, changeSpeaker, cards } = props;
+  const {
+    canChangeSpeaker,
+    setSelectedCard,
+    player,
+    onList,
+    toggleCard,
+    changeSpeaker,
+    cards
+  } = props;
   return (
     <Row className={player?.speaker ? 'speaker' : 'listener'}>
       <CardEl className='users-cards'>
         <CardEl.Body>
           <CardEl.Title>
             { player && (
-              <Row 
-                className={'player-info'}>
-                { player.speaker ? (
+              <>
+                <Row className={'player-info'}>
+                  { player.speaker ? (
+                    <Badge variant="success">
+                      Speaker <MdChatBubble />
+                    </Badge>
+                  ) : (
+                    <Badge variant="info">
+                      Listener <MdHearing />
+                    </Badge>
+                  ) }&nbsp;
                   <span>
-                    Speaker <MdChatBubble />
+                    { player.name }
                   </span>
-                ) : (
-                  <span>
-                    Listener <MdHearing />
-                  </span>
-                ) }
-                <span onClick={changeSpeaker(player)}>
-                  { player.name }
-                </span>
-              </Row>
-            ) }
+                </Row>
+                {canChangeSpeaker && !player.speaker && (
+                  <Row>
+                    <Button
+                      onClick={changeSpeaker(player)}
+                      variant="outline-primary"
+                      size="sm">Make Speaker</Button>
+                  </Row>
+                )}
+              </>
+            )}
           </CardEl.Title>
           <Row>
             { cards.length === 0 ? (
