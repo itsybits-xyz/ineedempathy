@@ -55,7 +55,7 @@ def error() -> None:
 
 
 @router.websocket("/rooms/{room_name}/users/{user_name}.ws")
-async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket, db: Session = Depends(get_db)):
+async def websocket_endpoint(room_name: str, user_name: str, websocket: WebSocket):
     print(f"Connecting new socket {id(websocket)}...")
     connection_manager: Optional[ConnectionManager] = websocket.scope.get("connection_manager")
     if connection_manager is None:
