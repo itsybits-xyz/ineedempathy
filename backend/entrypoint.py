@@ -10,5 +10,8 @@ command.upgrade(alembic_cfg, "head")
 
 # Start server
 
-uvicorn.run("backend.main:app", host="127.0.0.1",
-        port=int(os.getenv('USE_PORT')), log_level="info")
+import newrelic.agent  # noqa
+
+newrelic.agent.initialize("/var/www/ineedempathy/newrelic.ini")
+
+uvicorn.run("backend.main:app", host="127.0.0.1", port=int(os.getenv("USE_PORT")), log_level="info")
