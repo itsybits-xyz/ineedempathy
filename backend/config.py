@@ -32,6 +32,7 @@ class Prod(Base):
 
 
 
+print("PYTHON_ENV: " + ENV)
 if ENV == "PROD":
     settings = Prod()
 elif ENV == "STAGING":
