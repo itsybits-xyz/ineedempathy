@@ -20,28 +20,6 @@ files = /var/www/ineedempathy/supervisord.conf
 
 # Nginx
 
-`systemctl edit --full nginx.service`
-
-Change 1048576 to `ulimit -Hn`
-
-~~~
-[Service]
-LimitNOFILE=1048576
-~~~
-
-`/etc/nginx/nginx.conf`
-
-Change 1024 to `ulimit -n` * CORE_COUNT
-Change 1048576 to `ulimit -Hn`
-
-~~~
-worker_rlimit_nofile 1048576;
-
-events {
-    worker_connections 1024;
-}
-~~~
-
 `/etc/nginx/sites-available/ineedempathy`
 ~~~
 upstream empathyserver {
@@ -75,6 +53,44 @@ server {
 ``` bash
 ln -s /etc/nginx/sites-available/ineedempathy /etc/nginx/sites-enabled/ineedempathy
 ```
+
+## Scaling Nginx
+
+### Single Core Limits
+
+We usually can handle around ~500 connections. That's around ~100 rooms/~5
+people per room.
+
+### 4 Core Limits
+
+If we go into Digital Ocean we can scale the application up, but it will shut
+down the server, losing all current connections. If we scale this up to 4 core
+(vs 1 we are at now) and change this nginx config, we can handle around ~2.6k
+connections on the single droplet.
+
+### Scaling Configuration
+
+`systemctl edit --full nginx.service`
+
+* Change 1048576 to `ulimit -Hn`
+
+~~~
+[Service]
+LimitNOFILE=1048576
+~~~
+
+`/etc/nginx/nginx.conf`
+
+* Change 1024 to `ulimit -n` * CORE_COUNT
+* Change 1048576 to `ulimit -Hn`
+
+~~~
+worker_rlimit_nofile 1048576;
+
+events {
+    worker_connections 1024;
+}
+~~~
 
 # Python
 
