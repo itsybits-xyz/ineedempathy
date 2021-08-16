@@ -31,7 +31,7 @@ LimitNOFILE=1048576
 
 `/etc/nginx/nginx.conf`
 
-Change 1024 to `ulimit -n`
+Change 1024 to `ulimit -n` * CORE_COUNT
 Change 1048576 to `ulimit -Hn`
 
 ~~~
