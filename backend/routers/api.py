@@ -1,8 +1,7 @@
 from typing import List, Optional
-from fastapi import Depends, Request, WebSocket, WebSocketDisconnect, APIRouter
-from ..schemas import Card, RoomInfoBase
+from fastapi import Depends, WebSocket, WebSocketDisconnect, APIRouter
+from ..schemas import Card
 from ..schemas import Comment, CommentCreate
-from coolname import generate_slug
 from ..middleware import ConnectionManager
 from .. import crud, models
 from sqlalchemy.orm import Session
@@ -51,12 +50,13 @@ async def websocket_endpoint(room_name: str, websocket: WebSocket):
     if connection_manager is None:
         raise RuntimeError("Global `connection_manager` instance unavailable!")
     room = connection_manager.get_room(room_name)
+    user_name = None
     if room is None:
         room = connection_manager.create_room(room_name)
     try:
         await websocket.accept()
         data = await websocket.receive_json()
-        user_name = data['setName']
+        user_name = data["setName"]
         connection_manager.add_user(room, user_name, websocket)
         await connection_manager.send_update(room)
         while True:
@@ -67,5 +67,6 @@ async def websocket_endpoint(room_name: str, websocket: WebSocket):
                 connection_manager.change_speaker(room, data["changeSpeaker"])
             await connection_manager.send_update(room)
     except WebSocketDisconnect:
-        connection_manager.remove_user(room, user_name, websocket)
-        await connection_manager.send_update(room)
+        if user_name:
+            connection_manager.remove_user(room, user_name, websocket)
+            await connection_manager.send_update(room)

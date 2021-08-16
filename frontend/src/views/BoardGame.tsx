@@ -32,9 +32,10 @@ export const BoardGame: FC<BoardGameProps> = (props: BoardGameProps) => {
   const [ selectedCard, setSelectedCard ] = useState<Card|null>(null);
   const { playToggle } = PlaySound();
 
+  const isOpen = readyState === ReadyState.OPEN;
   useEffect(() => {
-    sendMessage(JSON.stringify({setName: username}))
-  }, [sendMessage, username]);
+    if (isOpen) sendMessage(JSON.stringify({setName: username}))
+  }, [sendMessage, username, isOpen]);
 
   useEffect(() => {
     if (!lastMessage) return;
