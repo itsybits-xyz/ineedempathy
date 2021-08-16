@@ -20,11 +20,23 @@ files = /var/www/ineedempathy/supervisord.conf
 
 # Nginx
 
-`/etc/nginx/nginx.conf`
+`systemctl edit --full nginx.service`
 
-Change this number to `ulimit -n`
+Change 1048576 to `ulimit -Hn`
 
 ~~~
+[Service]
+LimitNOFILE=1048576
+~~~
+
+`/etc/nginx/nginx.conf`
+
+Change 1024 to `ulimit -n`
+Change 1048576 to `ulimit -Hn`
+
+~~~
+worker_rlimit_nofile 1048576;
+
 events {
     worker_connections 1024;
 }
