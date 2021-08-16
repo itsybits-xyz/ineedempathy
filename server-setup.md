@@ -54,6 +54,24 @@ server {
 ln -s /etc/nginx/sites-available/ineedempathy /etc/nginx/sites-enabled/ineedempathy
 ```
 
+## Horizontal Scaling
+
+Run nginx on the leader droplet. Proxy the incoming requests to multiple follower droplets using the hashing. 
+
+```
+upstream empathyserver {
+    hash $request_uri;
+    server droplet1:8000;
+    server droplet1:8001;
+    server droplet2:8000;
+    server droplet2:8001;
+    server droplet3:8000;
+    server droplet3:8001;
+}
+```
+
+In the future we might look into the digitalocean load balancer instead of using nginx. 
+
 ## Scaling Nginx
 
 ### Single Core Limits

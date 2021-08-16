@@ -1,9 +1,9 @@
-from sentry_sdk import set_tag
+import socket
+import newrelic.agent
 from typing import List, OrderedDict, Optional
 from ..schemas import RoomInfo
 from fastapi import WebSocket
 from starlette.types import ASGIApp, Receive, Scope, Send
-from ..utils import after
 from ..utils import after
 
 
@@ -16,9 +16,13 @@ class ConnectionManagerMiddleware:
         self._connection_manager = ConnectionManager()
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        set_tag("number_of_rooms", len(self._connection_manager))
-        set_tag("number_of_empty_rooms", len(self._connection_manager.empty_rooms()))
-        set_tag("total_connections", self._connection_manager.total_connections())
+        newrelic.agent.record_custom_event(
+            "ConnectionStats",
+            {
+                "connections": self._connection_manager.total_connections(),
+                "host": socket.gethostname(),
+            },
+        )
         if scope["type"] in ("lifespan", "http", "websocket"):
             scope["connection_manager"] = self._connection_manager
         await self._app(scope, receive, send)
@@ -85,8 +89,7 @@ class ConnectionManager:
         room_info.set_speaker(user_info)
 
     def empty_rooms(self):
-        return [roominfo for roominfo in self._rooms.values()
-                if roominfo.empty()]
+        return [roominfo for roominfo in self._rooms.values() if roominfo.empty()]
 
     def prune_rooms(self):
         prune_count = max(0, len(self.empty_rooms()) - MAX_EMPTY_ROOMS)
@@ -94,7 +97,7 @@ class ConnectionManager:
             if prune_count <= 0:
                 return
             if self._rooms[room_name].empty():
-                prune_count = prune_count - 1;
+                prune_count = prune_count - 1
                 del self._rooms[room_name]
 
     async def send_update(self, room: RoomInfo):
