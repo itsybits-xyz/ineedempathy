@@ -6,9 +6,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.scss';
 import './scss/material-dashboard.scss';
 import App from './App';
+import { SENTRY_DSN } from './config';
 
 Sentry.init({
-  dsn: "https://3355964559bb41f9a7d44b99c3f7123b@o948279.ingest.sentry.io/5897485",
+  dsn: SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 1.0,
 });

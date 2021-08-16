@@ -12,7 +12,7 @@ from .routers.api import router as api_router
 from fastapi.templating import Jinja2Templates
 
 sentry_sdk.init(
-    "https://2147b3c92a9b482eaefc19feaeda5ecd@o948279.ingest.sentry.io/5897486",
+    settings.SENTRY_DSN,
     traces_sample_rate=1.0,
 )
 
@@ -24,15 +24,14 @@ app.mount("/api/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
 app.add_middleware(ConnectionManagerMiddleware)
 
