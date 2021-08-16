@@ -1,3 +1,4 @@
+import os
 import socket
 import newrelic.agent
 from typing import List, OrderedDict, Optional
@@ -21,6 +22,7 @@ class ConnectionManagerMiddleware:
             {
                 "connections": self._connection_manager.total_connections(),
                 "host": socket.gethostname(),
+                "pid": os.getpid(),
             },
         )
         if scope["type"] in ("lifespan", "http", "websocket"):
