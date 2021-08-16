@@ -17,7 +17,7 @@ sentry_sdk.init(
 )
 
 app = FastAPI()
-SentryAsgiMiddleware(app)
+app.add_middleware(SentryAsgiMiddleware)
 app.include_router(api_router, prefix="/api")
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 app.mount("/api/static", StaticFiles(directory="static"), name="static")
@@ -34,6 +34,7 @@ app.add_middleware(
 )
 
 app.add_middleware(ConnectionManagerMiddleware)
+
 
 @app.get("/{full_path:path}")
 async def catch_all(request: Request, full_path: str):
