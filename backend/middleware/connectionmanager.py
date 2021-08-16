@@ -18,6 +18,7 @@ class ConnectionManagerMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         set_tag("number_of_rooms", len(self._connection_manager))
         set_tag("number_of_empty_rooms", len(self._connection_manager.empty_rooms()))
+        set_tag("total_connections", self._connection_manager.total_connections())
         if scope["type"] in ("lifespan", "http", "websocket"):
             scope["connection_manager"] = self._connection_manager
         await self._app(scope, receive, send)
@@ -33,6 +34,12 @@ class ConnectionManager:
     def __len__(self) -> int:
         """Get the number of users in the room."""
         return len(self._rooms)
+
+    def total_connections(self) -> int:
+        total = 0
+        for roominfo in self._rooms.values():
+            total += roominfo.total_connections()
+        return total
 
     @property
     def empty(self) -> bool:

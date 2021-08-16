@@ -9,6 +9,9 @@ class UserInfo(BaseModel):
     sockets: Dict[int, WebSocket] = {}
     cards: List[int] = []
 
+    def __len__(self) -> int:
+        return len(self.sockets)
+
     def empty(self):
         return len(self.sockets) == 0
 

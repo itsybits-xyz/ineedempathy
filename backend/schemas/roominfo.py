@@ -17,6 +17,12 @@ class RoomInfo(RoomInfoBase):
     def __init__(self, *args, **kwargs):
         super(RoomInfo, self).__init__(*args, **kwargs)
 
+    def total_connections(self) -> int:
+        total = 0
+        for userinfo in self.users.values():
+            total += len(userinfo)
+        return total
+
     def get_speaker(self):
         if self.speaker is None:
             return UserInfo(name='')
