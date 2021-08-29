@@ -4,6 +4,11 @@ from pyinfra.facts.files import File
 from pyinfra.api import FactBase
 import time
 
+
+for i in range(1, 5):
+    time.sleep(60);
+    print(f"Elapsed {i} minute")
+
 base_apt_packages = [
     "curl",
     "fish",
@@ -34,7 +39,8 @@ files.put(
 if host.get_fact(File, path='/.dockerenv'):
     base_apt_packages.append('openssh-server')
 
-apt.update()
+foo = apt.update()
+breakpoint()
 apt.packages(packages=base_apt_packages, present=True)
 
 ppa_added = apt.ppa(name="Add python ppa.", src="ppa:deadsnakes/ppa")
