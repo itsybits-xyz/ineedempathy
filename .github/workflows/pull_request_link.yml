@@ -17,12 +17,6 @@ jobs:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: ${{ runner.os }}-poetry-
-      - name: Setup Droplet
-        id: setup_droplet
-        run: |
-          cd pyinfra
-          poetry install
-          poetry run pyinfra droplet.py setup-server.py
       - name: Install Dependencies
         run: |
           curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
@@ -32,6 +26,12 @@ jobs:
           poetry install --no-interaction
           cd frontend
           npm install
+      - name: Setup Droplet
+        id: setup_droplet
+        run: |
+          cd pyinfra
+          poetry install
+          poetry run pyinfra droplet.py setup-server.py
       - name: Build artifacts
         run: ./build.sh
       - name: Copy files to host
