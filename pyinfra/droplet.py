@@ -62,4 +62,6 @@ def create_droplet():
     print(stdout)
     return droplet.ip_address
 
-print(f"::set-output name=pull_request_host::{create_droplet()}")
+ip_address = create_droplet()
+print(f"::set-output name=pull_request_host::{ip_address}")
+app_servers = [ip_address]
