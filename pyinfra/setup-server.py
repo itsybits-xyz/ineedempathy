@@ -19,10 +19,8 @@ python_apt_packages = ["python3.9", "python3.9-distutils", "python3.9-venv"]
 files.put(
     name="Copy wait-apt-get",
     src="templates/wait-apt-get",
-    dest=f"/bin/apt-get",
-    user="root",
-    group="root",
-    mode=600,
+    dest="/bin/apt-get",
+    mode=777,
 )
 
 # Install openssh only if running inside docker.
