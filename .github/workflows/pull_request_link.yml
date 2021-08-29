@@ -52,7 +52,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "newrelic.ini,static,templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
-          target: "ineedempathy"
+          target: "/var/www/ineedempathy"
       - name: Restart supervisord
         uses: appleboy/ssh-action@master
         with:
