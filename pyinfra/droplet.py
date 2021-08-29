@@ -5,6 +5,7 @@ import paramiko
 import paramiko.client
 
 token = os.getenv('DIGITAL_OCEAN_KEY')
+pr_number = os.getenv('PR_NUMBER')
 
 def create_droplet():
     manager = digitalocean.Manager(token=token)
@@ -19,7 +20,7 @@ def create_droplet():
     # create
     keys = manager.get_all_sshkeys()
     droplet = digitalocean.Droplet(token=token,
-        name='pr.1',
+        name=f"pr.{pr_number}",
         region=region_slug,
         image='ubuntu-20-04-x64',
         size_slug=size_slug,

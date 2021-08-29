@@ -39,8 +39,7 @@ files.put(
 if host.get_fact(File, path='/.dockerenv'):
     base_apt_packages.append('openssh-server')
 
-foo = apt.update()
-breakpoint()
+apt.update()
 apt.packages(packages=base_apt_packages, present=True)
 
 ppa_added = apt.ppa(name="Add python ppa.", src="ppa:deadsnakes/ppa")
