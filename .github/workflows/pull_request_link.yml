@@ -17,6 +17,10 @@ jobs:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: ${{ runner.os }}-poetry-
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
       - name: Install Dependencies
         run: |
           curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
@@ -30,10 +34,7 @@ jobs:
         id: setup_droplet
         env:
           DIGITAL_OCEAN_KEY: ${{ secrets.DIGITAL_OCEAN_KEY }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-          cat $SSH_KEY > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           cd pyinfra
           poetry install
           poetry run pyinfra droplet.py setup-server.py
