@@ -44,7 +44,7 @@ def create_droplet():
             client = paramiko.client.SSHClient()
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            private_key = paramiko.Ed25519Key.from_private_key_file("/home/runner/.ssh/id_rsa")
+            private_key = paramiko.Ed25519Key.from_private_key_file("/home/runner/.ssh/id_ed25519")
             client.connect(droplet.ip_address, username="root", pkey=private_key)
             stdin, stdout, stderr = client.exec_command('ps aux')
             stdout = stdout.readlines()[0]

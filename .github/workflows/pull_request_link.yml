@@ -20,6 +20,7 @@ jobs:
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
+          name: id_ed25519
           key: ${{ secrets.SSH_KEY }}
           known_hosts: unnecessary
       - name: Install Poetry
