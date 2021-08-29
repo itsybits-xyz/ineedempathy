@@ -40,13 +40,19 @@ ppa_added = apt.ppa(name="Add python ppa.", src="ppa:deadsnakes/ppa")
 if ppa_added.changed:
     apt.packages(packages=python_apt_packages, present=True)
 
+files.link(
+    name="Create python symlink",
+    target="/usr/bin/python3.9",
+    path="/usr/bin/python",
+)
+
 server.group(name="Web team group", group="webteam")
 
 server.user(name="Create user amjith", user="amjith", shell="/usr/bin/fish", groups=["sudo", "webteam"])
 
 server.user(name="Create user baylee", user="baylee", shell="/usr/bin/zsh", groups=["sudo", "webteam"])
 
-server.user(name="Create user web-runner", user="web-runner", groups=["webteam"])
+server.user(name="Create user web-runner", user="web-runner", groups=["sudo", "webteam"])
 
 files.line(
     name="Ensure amjith can run sudo without password",
@@ -155,6 +161,12 @@ files.link(
     name="Create a symlink from sites-available to sites-enabled.",
     target=f"/etc/nginx/sites-available/{host.data.app_name}",
     path=f"/etc/nginx/sites-enabled/{host.data.app_name}",
+)
+
+files.link(
+    name="Delete the default symlink sites-enabled.",
+    path="/etc/nginx/sites-enabled/default",
+    present=False,
 )
 
 files.template(
