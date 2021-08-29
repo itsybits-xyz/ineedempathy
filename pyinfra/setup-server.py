@@ -29,28 +29,6 @@ files.put(
 if host.get_fact(File, path='/.dockerenv'):
     base_apt_packages.append('openssh-server')
 
-class HasAptRunning(FactBase):
-    def command(self, key):
-        self.key = key # sorry
-        return 'ps aux'
-
-    def process(self, output):
-        pos = ''.join(output).find(self.key)
-        if pos == -1:
-            print(pos, output);
-        else:
-            print(pos);
-        return pos != -1
-
-while host.get_fact(HasAptRunning, key='apt'):
-    time.sleep(5);
-    pass
-
-while host.get_fact(HasAptRunning, key='snap wait'):
-    time.sleep(5);
-    pass
-
-
 apt.update()
 apt.packages(packages=base_apt_packages, present=True)
 
