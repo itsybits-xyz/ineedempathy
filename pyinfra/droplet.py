@@ -48,7 +48,7 @@ def create_droplet():
             print('debug', 3)
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             print('debug', 4)
-            private_key = paramiko.Ed25519Key.from_private_key_file("~/.ssh/id_rsa")
+            private_key = paramiko.Ed25519Key.from_private_key_file("/home/runner/.ssh/id_rsa")
             print('debug', 4.5)
             client.connect(droplet.ip_address, username="root", pkey=private_key)
             print('debug', 5)

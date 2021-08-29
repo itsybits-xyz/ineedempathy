@@ -22,16 +22,12 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: unnecessary
-      - name: Install Dependencies
+      - name: Install Poetry
         run: |
-          ls -lah ~/.ssh
           curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
           python get-poetry.py -y
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
           source $HOME/.poetry/env
-          poetry install --no-interaction
-          cd frontend
-          npm install
       - name: Setup Droplet
         id: setup_droplet
         env:
@@ -40,6 +36,11 @@ jobs:
           cd pyinfra
           poetry install
           poetry run pyinfra droplet.py setup-server.py
+      - name: Install Dependencies
+        run: |
+          poetry install --no-interaction
+          cd frontend
+          npm install
       - name: Build artifacts
         run: ./build.sh
       - name: Copy files to host
