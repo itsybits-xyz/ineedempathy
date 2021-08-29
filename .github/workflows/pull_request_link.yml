@@ -1,0 +1,51 @@
+on: pull_request
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up Poetry cache for Python dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: ${{ runner.os }}-poetry-
+      - name: Setup Droplet
+        id: setup_droplet
+        run: |
+          cd pyinfra
+          poetry install
+          poetry run pyinfra droplet.py setup-server.py
+      - name: Install Dependencies
+        run: |
+          curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+          python get-poetry.py -y
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          source $HOME/.poetry/env
+          poetry install --no-interaction
+          cd frontend
+          npm install
+      - name: Build artifacts
+        run: ./build.sh
+      - name: Copy files to host
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ steps.setup_droplet.outputs.pull_request_host }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "newrelic.ini,static,templates,ineedempathy.pyz,migrations,alembic.ini,supervisord.conf,latest_sha.txt"
+          target: "ineedempathy"
+      - name: Restart supervisord
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: sudo service supervisor restart
