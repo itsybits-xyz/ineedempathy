@@ -56,7 +56,9 @@ jobs:
       - name: Restart supervisord
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ steps.setup_droplet.outputs.pull_request_host }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: sudo service supervisor restart
+          script: |
+            sudo service supervisor restart
+            sudo service nginx restart

@@ -163,10 +163,11 @@ files.link(
     path=f"/etc/nginx/sites-enabled/{host.data.app_name}",
 )
 
-files.link(
+files.file(
     name="Delete the default symlink sites-enabled.",
     path="/etc/nginx/sites-enabled/default",
     present=False,
+    assume_present=True,
 )
 
 files.template(
