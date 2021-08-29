@@ -55,6 +55,13 @@ server.user(name="Create user baylee", user="baylee", shell="/usr/bin/zsh", grou
 server.user(name="Create user web-runner", user="web-runner", groups=["sudo", "webteam"])
 
 files.line(
+    name="Ensure web-runner can run sudo without password",
+    path="/etc/sudoers",
+    line=r"web-runner .*",
+    replace="web-runner ALL=(ALL) NOPASSWD: ALL",
+)
+
+files.line(
     name="Ensure amjith can run sudo without password",
     path="/etc/sudoers",
     line=r"amjith .*",
