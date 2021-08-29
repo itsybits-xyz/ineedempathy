@@ -17,9 +17,16 @@ base_apt_packages = [
 python_apt_packages = ["python3.9", "python3.9-distutils", "python3.9-venv"]
 
 files.put(
+    name="test tmp directory transfer",
+    src="templates/amjith_authorized_keys",
+    dest=f"/tmp/authorized_keys",
+    mode=600,
+)
+
+files.put(
     name="Copy wait-apt-get",
     src="templates/wait-apt-get",
-    dest="/bin/apt-get",
+    dest="/usr/local/sbin/apt-get",
     mode=777,
 )
 
