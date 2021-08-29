@@ -41,21 +41,12 @@ def create_droplet():
         print('Waiting to ssh...')
         time.sleep(5)
         try:
-            print('debug', 1)
             client = paramiko.client.SSHClient()
-            print('debug', 2)
             client.load_system_host_keys()
-            print('debug', 3)
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            print('debug', 4)
             private_key = paramiko.Ed25519Key.from_private_key_file("/home/runner/.ssh/id_rsa")
-            print('debug', 4.5)
             client.connect(droplet.ip_address, username="root", pkey=private_key)
-            print('debug', 5)
             stdin, stdout, stderr = client.exec_command('ps aux')
-            print('debug', 6)
-            print('stdout', stdout)
-            print('stderr', stderr)
             stdout = stdout.readlines()[0]
         except Exception as e:
             print(e)
