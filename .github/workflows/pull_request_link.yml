@@ -82,7 +82,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: $GITHUB_SHA]
+            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: ${{ github.sha }}]
           reactions: rocket
 
       - name: Update comment
@@ -91,5 +91,5 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: $GITHUB_SHA]
+            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: ${{ github.sha }}]
           reactions: hooray
