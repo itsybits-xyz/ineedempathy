@@ -73,4 +73,4 @@ jobs:
         with:
           issue-number: ${{ github.event.number }}
           body: |
-            - Visit ${{ steps.setup_droplet.outputs.pull_request_host }} to bask in the glory of these PR changes.
+            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes.
