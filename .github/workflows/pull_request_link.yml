@@ -67,3 +67,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: sudo service nginx restart
+
+      - name: Create a comment with the link to PR deploy
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            - Visit ${{ steps.setup_droplet.outputs.pull_request_host }} to bask in the glory of these PR changes.
