@@ -68,9 +68,28 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: sudo service nginx restart
 
-      - name: Create a comment with the link to PR deploy
+      - name: Find Bot Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: bask in the glory of these PR changes.
+
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ github.event.number }}
+          issue-number: ${{ github.event.pull_request.number }}
           body: |
-            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes.
+            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: $GITHUB_SHA]
+          reactions: rocket
+
+      - name: Update comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            - Visit [this link](http://${{ steps.setup_droplet.outputs.pull_request_host }}) to bask in the glory of these PR changes. [SHA: $GITHUB_SHA]
+          reactions: hooray
