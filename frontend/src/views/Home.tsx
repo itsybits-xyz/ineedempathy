@@ -50,20 +50,6 @@ export const Home: FC = () => {
         </Card>
       </Row>
       <JoinRoom />
-      <Row className="justify-content-md-center">
-        <Card className="responsive">
-          <Card.Body>
-            <Card.Title>
-              Play with our cute sounds :)
-            </Card.Title>
-            <Card.Text className="text-center">
-              <Button onClick={() => playMatch() }>Match Sound</Button>
-              <Button onClick={() => playToggle() }>Toggle Card</Button>
-              <Button onClick={() => playNudge() }>Nudge Person</Button>
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </Row>
     </Container>
   );
 };
