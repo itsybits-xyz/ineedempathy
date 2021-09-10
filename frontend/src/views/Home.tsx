@@ -1,16 +1,12 @@
 import React, { FC } from "react";
 import {
   Card,
-  Button,
   Container,
   Row
 } from "react-bootstrap";
-import { PlaySound } from "../components";
 import { JoinRoom } from ".";
 
 export const Home: FC = () => {
-  const { playToggle, playMatch, playNudge } = PlaySound();
-
   return (
     <Container className="content" fluid>
       <Row className="justify-content-md-center">
