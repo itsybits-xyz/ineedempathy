@@ -1,8 +1,70 @@
 from backend import crud
 from backend.schemas import CardCreate
 from backend.deps import get_db
+from backend.models import Story, Scene, Guess
 
 db = next(get_db())
+
+
+def upsert_guess(story_id, scene_id, card_id):
+    guess = db.query(Guess).\
+            filter(Guess.story_id == story_id).\
+            filter(Guess.scene_id == scene_id).\
+            filter(Guess.card_id == card_id).\
+            first()
+    if guess is None:
+        guess = Guess(
+            story_id=story_id,
+            scene_id=scene_id,
+            card_id=card_id,
+        )
+        db.add(guess)
+        db.commit()
+        db.refresh(guess)
+    return guess
+
+
+def upsert_scene(story_id, noun, position, description):
+    scene = db.query(Scene).\
+            filter(Scene.story_id == story_id).\
+            filter(Scene.position == position).\
+            first()
+    if scene is None:
+        scene = Scene(
+            story_id=story_id,
+            noun=noun,
+            position=position,
+            description=description
+        )
+        db.add(scene)
+        db.commit()
+        db.refresh(scene)
+    return scene
+
+
+def upsert_story(display_name, scenes):
+    story = db.query(Story).filter(Story.display_name == display_name).first()
+    if story is None:
+        story = Story(
+            display_name=display_name,
+        )
+        db.add(story)
+        db.commit()
+        db.refresh(story)
+
+    i = 0
+    for scene in scenes:
+        i += 1
+        db_scene = upsert_scene(
+            story_id=story.id,
+            noun=scene.get('noun'),
+            position=i,
+            description=scene.get('description')
+        )
+
+        upsert_guess(story.id, db_scene.id, scene.get('feeling_id'))
+        upsert_guess(story.id, db_scene.id, scene.get('need_id'))
+    return
 
 
 def upsert_card(display_name, name, type, level, definition, definition_source):
@@ -49,7 +111,7 @@ add_feeling(
     'Feeling or showing sorrow; unhappy.',
     'https://www.lexico.com/en/definition/sad',
 )
-add_feeling(
+scared = add_feeling(
     'Scared',
     'scared',
     1,
@@ -58,6 +120,21 @@ add_feeling(
 )
 
 # Feelings level 2
+# cold, compersion
+add_feeling(
+    'Cold',
+    'cold',
+    4,
+    'Lacking affection or warmth of feeling; unemotional.',
+    'https://www.lexico.com/en/definition/cold',
+)
+add_feeling(
+    'Compersion',
+    'Compersion',
+    4,
+    'Compersion is an empathetic state of happiness and joy experienced when another individual experiences happiness and joy.',
+    'https://www.definitions.net/definition/compersion',
+)
 add_feeling(
     'Confused',
     'confused',
@@ -307,7 +384,7 @@ add_feeling(
     'More or most likely to be exposed to the chance of being attacked or harmed, either physically or emotionally. ',
     'https://en.wiktionary.org/wiki/vulnerable',
 )
-add_feeling(
+hopeful = add_feeling(
     'Hopeful',
     'hopeful',
     4,
@@ -323,7 +400,7 @@ add_need(
     'A feeling of understanding and ease of communication between two or more people.',
     'https://en.wiktionary.org/wiki/connection',
 )
-add_need(
+harmony = add_need(
     'Harmony',
     'harmony',
     1,
@@ -561,6 +638,13 @@ add_need(
     'https://www.lexico.com/en/definition/learning',
 )
 add_need(
+    'Mutuality',
+    'mutuality',
+    4,
+    'The sharing of a feeling, action, or relationship between two or more parties.',
+    'https://www.lexico.com/en/definition/mutuality',
+)
+add_need(
     'Order',
     'order',
     4,
@@ -607,8 +691,34 @@ add_need(
     'trust',
     4,
     'confident expectation of something',
-    'https://www.dictionary.com/browse/something',
+    'https://www.lexico.com/en/definition/trust',
 )
 
-print('Card Count: ')
-print(len(crud.get_cards(db)))
+# Story 1
+upsert_story(display_name='The Itsy Bitsy Spider', scenes=[
+    {
+        'description': ' '.join([
+            'The Itsy Bisty Spider went up the water spout.',
+            'Down came the ran and washed the spider out.',
+        ]),
+        'noun': 'the spider',
+        'feeling_id': scared.id,
+        'need_id': harmony.id
+    },
+    {
+        'description': ' '.join([
+            'Up came the sun and dried up all the rain.',
+            'So the Itsy Bitsy Spider went up the spout again.',
+        ]),
+        'noun': 'the spider',
+        'feeling_id': hopeful.id,
+        'need_id': harmony.id
+    }
+])
+
+
+print('Count: ')
+print('Cards', len(crud.get_cards(db)))
+print('Story', len(db.query(Story).all()))
+print('Scenes', len(db.query(Scene).all()))
+print('Guess', len(db.query(Guess).all()))
