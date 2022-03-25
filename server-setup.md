@@ -1,7 +1,11 @@
+```
+sudo apt-get update
+```
+
 # supervisord
 
 ```
-sudo apt install supervisor
+sudo apt install nginx -y
 sudo service supervisor start
 sudo service supervisor status
 
@@ -19,6 +23,10 @@ files = /var/www/ineedempathy/supervisord.conf
 
 
 # Nginx
+
+```
+sudo apt install supervisor
+```
 
 `/etc/nginx/sites-available/ineedempathy`
 ~~~
@@ -112,12 +120,11 @@ events {
 
 # Python
 
-Install from source:
+Install from source
 
 ```
-sudo apt install wget build-essential checkinstall 
-sudo apt install libreadline-gplv2-dev libncursesw5-dev libssl-dev \
-    libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev 
+sudo apt install wget build-essential checkinstall -y
+sudo apt install libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev -y
 cd /opt
 sudo wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
 tar xzf Python-3.9.6.tgz
@@ -128,16 +135,6 @@ python3.9 -V
 sudo ln -s /usr/local/bin/pip3.9 /usr/bin/pip
 sudo ln -s /usr/local/bin/python3.9 /usr/bin/python
 python -V
-```
-
-
-# Project Files
-
-```
-cd /var/www
-mkdir ineedempathy
-chown root:www-data /var/www/ineedempathy
-chmod 775 /var/www/ineedempathy
 ```
 
 # Server Users
@@ -151,13 +148,16 @@ sudo adduser baylee
 sudo adduser web-runner
 
 ln -s /var/www/ineedempathy ~/ineedempathy
+runuser -l amjith -c 'ln -s /var/www/ineedempathy ~/ineedempathy'
+runuser -l baylee -c 'ln -s /var/www/ineedempathy ~/ineedempathy'
+runuser -l web-runner -c 'ln -s /var/www/ineedempathy ~/ineedempathy'
 
 # add group
 groupadd -g 10000 webteam
-sudo groupadd -g 10000 root
-sudo groupadd -g 10000 amjith
-sudo groupadd -g 10000 baylee
-sudo groupadd -g 10000 web-runner
+usermod -a -G webteam root
+usermod -a -G webteam amjith
+usermod -a -G webteam baylee
+usermod -a -G webteam web-runner
 
 # don't require passwords on sudo
 sudo update-alternatives --config editor
@@ -166,4 +166,27 @@ sudo visudo
 baylee ALL=(ALL) NOPASSWD: ALL
 amjith ALL=(ALL) NOPASSWD: ALL
 web-runner ALL=(ALL) NOPASSWD: ALL
+```
+
+## Permissions
+
+As root, ensure each user has the right authorized keys.
+
+Repeat for every user `amjith`, `baylee` and `web-runner`.
+
+```
+cd /home/web-runner
+mkdir -m 700 .ssh
+chown web-runner:web-runner .ssh
+cp ~/.ssh/authorized_keys ./.ssh
+chown web-runner:web-runner ./.ssh/authorized_keys
+```
+
+# Project Files
+
+```
+cd /var/www
+mkdir ineedempathy
+chown root:webteam /var/www/ineedempathy
+chmod 775 /var/www/ineedempathy
 ```
