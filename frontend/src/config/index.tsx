@@ -12,8 +12,8 @@ const configFor = (envString: string):EnvConfig => {
       SOCKET_URL: 'ws://ineedempathy.com/api',
     },
     development: {
-      BACKEND_URL: 'http://127.0.0.1:8000/api',
-      SOCKET_URL: 'ws://127.0.0.1:8000/api',
+      BACKEND_URL: 'http://127.0.0.1:8001/api',
+      SOCKET_URL: 'ws://127.0.0.1:8001/api',
     },
   };
   return confs[envString] || {
