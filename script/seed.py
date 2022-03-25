@@ -1,3 +1,4 @@
+from typing import List
 from backend import crud
 from backend.schemas import CardCreate
 from backend.deps import get_db
@@ -6,66 +7,37 @@ from backend.models import Story, Scene, Guess
 db = next(get_db())
 
 
-def upsert_guess(story_id, scene_id, card_id):
-    guess = db.query(Guess).\
-            filter(Guess.story_id == story_id).\
-            filter(Guess.scene_id == scene_id).\
-            filter(Guess.card_id == card_id).\
-            first()
-    if guess is None:
-        guess = Guess(
-            story_id=story_id,
-            scene_id=scene_id,
-            card_id=card_id,
-        )
-        db.add(guess)
-        db.commit()
-        db.refresh(guess)
-    return guess
-
-
-def upsert_scene(story_id, noun, position, description):
-    scene = db.query(Scene).\
-            filter(Scene.story_id == story_id).\
-            filter(Scene.position == position).\
-            first()
-    if scene is None:
-        scene = Scene(
-            story_id=story_id,
-            noun=noun,
-            position=position,
-            description=description
-        )
-        db.add(scene)
-        db.commit()
-        db.refresh(scene)
-    return scene
-
-
-def upsert_story(display_name, scenes):
-    story = db.query(Story).filter(Story.display_name == display_name).first()
-    if story is None:
-        story = Story(
-            display_name=display_name,
-        )
-        db.add(story)
-        db.commit()
-        db.refresh(story)
+def upsert_story(display_name: str, scenes: List[Scene]) -> Story:
+    story = crud.upsert_story(
+        db=db,
+        display_name=display_name,
+        scenes=scenes
+    )
 
     i = 0
     for scene in scenes:
         i += 1
-        db_scene = upsert_scene(
+        db_scene = crud.upsert_scene(
+            db=db,
             story_id=story.id,
             noun=scene.get('noun'),
             position=i,
             description=scene.get('description')
         )
 
-        upsert_guess(story.id, db_scene.id, scene.get('feeling_id'))
-        upsert_guess(story.id, db_scene.id, scene.get('need_id'))
-    return
-
+        crud.upsert_guess(
+            db=db,
+            story_id=story.id,
+            scene_id=db_scene.id,
+            card_id=scene.get('feeling_id')
+        )
+        crud.upsert_guess(
+            db=db,
+            story_id=story.id,
+            scene_id=db_scene.id,
+            card_id=scene.get('need_id')
+        )
+    return story
 
 def upsert_card(display_name, name, type, level, definition, definition_source):
     return crud.upsert_card(

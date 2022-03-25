@@ -1,13 +1,48 @@
 from typing import List, Optional
 from fastapi import Depends, WebSocket, WebSocketDisconnect, APIRouter
-from ..schemas import Card
+from ..schemas import Card, SmallStory, Story, Guess, LargeScene
 from ..schemas import Comment, CommentCreate
 from ..middleware import ConnectionManager
 from .. import crud, models
 from sqlalchemy.orm import Session
 from ..deps import get_db
 
+
 router = APIRouter()
+
+
+@router.get("/stories", response_model=List[SmallStory])
+def get_stories(
+    db: Session = Depends(get_db),
+) -> List[models.Story]:
+    return crud.get_stories(db)
+
+
+@router.get("/stories/{story_id}", response_model=Story)
+def get_story(
+    story_id: int,
+    db: Session = Depends(get_db),
+) -> Optional[models.Story]:
+    return crud.get_story(db, story_id)
+
+
+@router.get("/stories/{story_id}/scenes/{scene_id}", response_model=LargeScene)
+def get_scene(
+    story_id: int,
+    scene_id: int,
+    db: Session = Depends(get_db),
+) -> Optional[models.Scene]:
+    return crud.get_scene(db, story_id, scene_id)
+
+
+@router.post("/stories/{story_id}/scenes/{scene_id}/guesses/{card_id}", status_code=201, response_model=Guess)
+def create_guess(
+    story_id: int,
+    scene_id: int,
+    card_id: int,
+    db: Session = Depends(get_db),
+) -> models.Guess:
+    return crud.create_guess(db, story_id, scene_id, card_id)
 
 
 @router.get("/cards", response_model=List[Card])
@@ -21,7 +56,7 @@ def get_cards(
 def get_card_by_name(
     name: str,
     db: Session = Depends(get_db),
-) -> models.Card:
+) -> Optional[models.Card]:
     return crud.get_card(db, name)
 
 
@@ -29,12 +64,14 @@ def get_card_by_name(
 def get_comments(
     card_name: str,
     db: Session = Depends(get_db),
-) -> List[models.Card]:
-    return crud.get_comments(db, card_name)
+) -> List[models.Comment]:
+    if comments := crud.get_comments(db, card_name):
+        return comments
+    return []
 
 
 @router.post("/cards/{card_name}/comments", status_code=201, response_model=Comment)
-def create_comment(card_name: str, comment: CommentCreate, db: Session = Depends(get_db)) -> models.Comment:
+def create_comment(card_name: str, comment: CommentCreate, db: Session = Depends(get_db)) -> Optional[models.Comment]:
     return crud.create_comment(db, card_name, comment)
 
 

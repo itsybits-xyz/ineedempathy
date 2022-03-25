@@ -1,15 +1,19 @@
+from typing import List
 from sqlalchemy import Column, DateTime, ForeignKey
 from sqlalchemy import Integer, String, Text, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import relationship, validates
 
 from .database import Base
 from sqlalchemy.sql import func
+
 
 class Story(Base):
     __tablename__ = "stories"
     id = Column(Integer, primary_key=True, index=True)
     display_name = Column(String, nullable=False)
+    scenes = relationship("Scene", lazy="select", innerjoin=True)
+
 
 class Scene(Base):
     __tablename__ = "scenes"
@@ -18,6 +22,15 @@ class Scene(Base):
     noun = Column(String, nullable=False)
     position = Column(Integer, nullable=False, index=True)
     description = Column(Text, nullable=False)
+    guesses = relationship("Guess", lazy="select", innerjoin=True)
+
+    @hybrid_property
+    def card_guesses(self) -> List[int]:
+        return list(map(
+            lambda x: x.card_id,
+            self.guesses
+        ))
+
 
 class Guess(Base):
     __tablename__ = "guesses"
@@ -26,6 +39,7 @@ class Guess(Base):
     scene_id = Column(Integer, ForeignKey("scenes.id"))
     card_id = Column(Integer, ForeignKey("cards.id"))
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
+
 
 class Card(Base):
     __tablename__ = "cards"
