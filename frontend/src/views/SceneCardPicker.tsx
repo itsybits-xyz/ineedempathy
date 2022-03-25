@@ -1,8 +1,11 @@
 import React, { FC, useState } from 'react';
 import { BACKEND_URL } from '../config';
 import { Card, CardType } from '../schemas';
-import { Button, Row, Col, Container, Card as BootstrapCard } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Container, Card as BootstrapCard } from 'react-bootstrap';
+import { CardPage } from './card-page';
 import { ClickSound } from '../components';
+import { MdInfoOutline } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
 export interface SceneProps {
   setSelectedCard: (card: Card) => void,
@@ -16,6 +19,7 @@ export const SceneCardPicker: FC<SceneProps> = (props: SceneProps) => {
   const [ seeMore, setSeeMore ] = useState<boolean>(false);
   const [ selectedCard, setSelectedCard ] = useState<Card|undefined>(props.selectedCard);
   const { cardType, cards, noun } = props;
+  const [ infoCard, setInfoCard ] = useState<Card|undefined>();
 
   const isDefaultSelected = selectedCard && props.selectedCard && selectedCard.id === props.selectedCard.id;
 
@@ -46,39 +50,70 @@ export const SceneCardPicker: FC<SceneProps> = (props: SceneProps) => {
   const showSubmitButton = selectedCard && !isDefaultSelected;
 
   return (
-    <Container fluid>
-      <Row>
-        {slicedCards.map((card: Card) => {
-          const isSelected = selectedCard && card.id === selectedCard.id;
-          return (
-            <Col key={card.id} onClick={() => toggleSelectedCard(card)}>
-              <ClickSound>
-                <BootstrapCard role="button" className={isSelected ? 'active' : 'inactive'}>
-                  <BootstrapCard.Img
-                    alt={card.name}
-                    variant="top"
-                    src={ BACKEND_URL + card.image.md } />
-                  <BootstrapCard.Body>
-                    <BootstrapCard.Title>{card.displayName}</BootstrapCard.Title>
-                  </BootstrapCard.Body>
-                </BootstrapCard>
-              </ClickSound>
-            </Col>
-          );
-        })}
-      </Row>
-      <Row>
-      {!showSubmitButton && (
-        <Button onClick={() => { setSeeMore(!seeMore) }} variant="success">
-          See { seeMore ? 'Less' : 'All'} { cardType === CardType.feeling ? 'Feelings' : 'Needs' }
-        </Button>
+    <>
+      <Container fluid>
+        <Row>
+          {slicedCards.map((card: Card) => {
+            const isSelected = selectedCard && card.id === selectedCard.id;
+            return (
+              <Col className="scene-card" key={card.id}>
+                <ClickSound>
+                  <BootstrapCard
+                    onClick={() => toggleSelectedCard(card)}
+                    className={isSelected ? 'active' : 'inactive'}>
+                    <BootstrapCard.Img
+                      alt={card.name}
+                      variant="top"
+                      src={ BACKEND_URL + card.image.md } />
+                    <BootstrapCard.Body onClick={() => setInfoCard(card)}>
+                      <BootstrapCard.Title>{card.displayName}</BootstrapCard.Title>
+                    </BootstrapCard.Body>
+                  </BootstrapCard>
+                  <div className='more-info'>
+                    <Link
+                      to={'#'}
+                      onClick={() => setInfoCard(card)}
+                      title={`Read more information on ${card.displayName}`}>
+                      <MdInfoOutline size={16} />
+                      <span>Info</span>
+                    </Link>
+                  </div>
+                </ClickSound>
+              </Col>
+            );
+          })}
+        </Row>
+        <Row>
+        {!showSubmitButton && (
+          <Button onClick={() => { setSeeMore(!seeMore) }} variant="success">
+            See { seeMore ? 'Less' : 'All'} { cardType === CardType.feeling ? 'Feelings' : 'Needs' }
+          </Button>
+        )}
+        {showSubmitButton && (
+          <Button onClick={() => handleSubmit(selectedCard)} variant="success">
+            Maybe {noun} was { cardType === CardType.feeling ? 'feeling' : 'needing' } <strong>{selectedCard.displayName}</strong>?
+          </Button>
+        )}
+        </Row>
+      </Container>
+      { infoCard && (
+        <Modal
+          show={true}
+          size='lg'
+          onHide={() => setInfoCard(undefined) }>
+          <Modal.Header closeButton>
+            <Modal.Title>More information on {infoCard.displayName}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <CardPage match={{ params: infoCard }} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setInfoCard(undefined) }>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-      {showSubmitButton && (
-        <Button onClick={() => handleSubmit(selectedCard)} variant="success">
-          Maybe {noun} was { cardType === CardType.feeling ? 'feeling' : 'needing' } <strong>{selectedCard.displayName}</strong>?
-        </Button>
-      )}
-      </Row>
-    </Container>
+    </>
   );
 };

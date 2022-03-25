@@ -72,7 +72,7 @@ export const SceneViewer: FC<SceneProps> = (props: SceneProps) => {
 
   return (
     <>
-      <div className="content">
+      <div className="content scene-viewer">
         <Container fluid>
           <Row>
             <Col xs={12} md={4} lg={3} className="nav-bar">
