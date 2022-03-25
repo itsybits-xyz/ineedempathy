@@ -2,7 +2,6 @@ import React, { FC, useState, useEffect } from 'react';
 import { getCard } from '../utils';
 import { ClickSound, Hidden } from '../components';
 import { CardHeader } from './card-header';
-import { CardComments } from './card-comments';
 import { Card } from '../schemas';
 import { Link } from 'react-router-dom';
 import { Container, Button, Row } from 'react-bootstrap';
@@ -49,7 +48,7 @@ export const CardPage: FC<CardPageProps> = (props: CardPageProps) => {
         </Row>
       ) }
       <CardHeader card={card} />
-      <CardComments card={card} />
+      { /* TODO Stories using this card */ }
     </Container>
   ) : (
     <p role="alert">Loading...</p>

@@ -1,35 +1,19 @@
 import { FC, useState } from "react";
 import {
   Card,
-  InputGroup,
-  FormControl,
   Button,
-  Row
-} from "react-bootstrap";
+  Row } from "react-bootstrap";
 import { generateName } from "../utils";
 import { Redirect } from "react-router-dom";
 import { PlaySound } from "../components";
 
-export interface JoinRoomProps {
-  oldRoomName?: string;
-}
-
-export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
-  const { oldRoomName } = props;
+export const JoinRoom: FC = () => {
   const [gotoRoomName, setGotoRoomName] = useState<string>();
-  const [roomName, setRoomName] = useState<string>(oldRoomName || '');
   const { playToggle } = PlaySound();
 
   const handleNewRoom = () => {
     playToggle();
     setGotoRoomName(generateName());
-  };
-
-  const handleJoinRoom = () => {
-    playToggle();
-    if (roomName !== oldRoomName && String(roomName).length > 0) {
-      setGotoRoomName(roomName);
-    }
   };
 
   return gotoRoomName ? (
@@ -47,28 +31,6 @@ export const JoinRoom: FC<JoinRoomProps> = (props: JoinRoomProps) => {
                 Create an Empathy Room
               </Button>
             </Card.Text>
-          </Card.Body>
-        </Card>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Card className="responsive">
-          <Card.Body>
-            <Card.Title>
-              Join an existing Empathy Room
-            </Card.Title>
-            <Card.Title>
-              <InputGroup size="lg">
-                <FormControl
-                  placeholder="Type the Empathy Room key here"
-                  value={roomName}
-                  onChange={(event) => {
-                    setRoomName(event.target.value);
-                  }} />
-              </InputGroup>
-              <Button variant="success" onClick={handleJoinRoom}>
-                Join Empathy Room
-              </Button>
-            </Card.Title>
           </Card.Body>
         </Card>
       </Row>

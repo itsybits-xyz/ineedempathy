@@ -7,6 +7,8 @@ import {
   RoomProps,
   CardPageProps,
   About,
+  Stories,
+  SceneViewer,
   Inventory,
   CardPage,
 } from './views';
@@ -24,6 +26,8 @@ export const Routes: FC = () => {
           <Route exact path="/" component={Home} />
           <Route path="/room/:name" component={(props: RoomProps) => <Room {...props} /> } />
           <Route path="/about" component={About} />
+          <Route path="/stories" component={Stories} />
+          <Route path="/story/:storyId/scene/:position" component={SceneViewer} />
           <Route path="/:type(feeling|need)/:name" component={(props: CardPageProps) => {
             const newProps = Object.assign({}, props, {
               backButton: true,

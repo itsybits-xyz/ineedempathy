@@ -39,11 +39,22 @@ a[role="link"]:focus {
     height: 50px;
   }
 
+  .progress-col {
+    min-width: 200px;
+    padding-top: 30px;
+  }
+
   .card {
     width: 10rem;
     border: none;
     outline: none;
     transition: .1s;
+    &[role=button] {
+      cursor: pointer;
+    }
+    &.active {
+      box-shadow: 0 0 3pt 2pt cornflowerblue;
+    }
     &:focus, &:hover {
       box-shadow: 0 0 3pt 2pt cornflowerblue;
     }

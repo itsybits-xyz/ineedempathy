@@ -19,6 +19,7 @@ export const Home: FC = () => {
           </Card.Body>
         </Card>
       </Row>
+      <JoinRoom />
       <Row className="justify-content-md-center">
         <Card className="responsive">
           <Card.Body>
@@ -45,7 +46,6 @@ export const Home: FC = () => {
           </Card.Body>
         </Card>
       </Row>
-      <JoinRoom />
     </Container>
   );
 };

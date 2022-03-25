@@ -7,3 +7,5 @@ export * from './BoardGame';
 export * from './CardListViewer';
 export * from './BoardGamePicker';
 export * from './JoinRoom';
+export * from './Stories';
+export * from './SceneViewer';
