@@ -98,16 +98,28 @@ export const SceneViewer: FC<SceneProps> = (props: SceneProps) => {
               <p className="scene-description">{ scene.description }</p>
             </Col>
           </Row>
-          {!hasNextScene && madeGuess && (
-            <Row>
-              <span>You finished this story, would you like to&nbsp;</span>
-              <Link
-                title={`Browse more stories`}
-                to={`/stories`}>
-                Browse more stories
-              </Link>
-              <span>?</span>
-            </Row>
+          {madeGuess && (
+            hasNextScene ? (
+              <Row>
+                <span>You finished this scene, would you like to go to the&nbsp;</span>
+                <Link
+                  title={`Next Scene`}
+                  to={`/story/${storyId}/scene/${position+1}`}>
+                  next scene
+                </Link>
+                <span>?</span>
+              </Row>
+            ) : (
+              <Row>
+                <span>You finished this story, would you like to&nbsp;</span>
+                <Link
+                  title={`Browse more stories`}
+                  to={`/stories`}>
+                  Browse more stories
+                </Link>
+                <span>?</span>
+              </Row>
+            )
           )}
           <hr />
           <Row>
