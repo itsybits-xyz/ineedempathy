@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '../config';
-import { Card, Comment, CommentCreate, Room } from '../schemas';
+import { Card, Comment, CommentCreate, Story, Scene, Guess, Room } from '../schemas';
 import {PromiseFn} from 'react-async';
 
 function http<T>(path: string, authenticated: boolean = true, config: RequestInit): Promise<T> {
@@ -35,6 +35,31 @@ export function put<T, U>(
   const init = { method: 'put', body: JSON.stringify(body), ...config };
   return http<U>(path, authenticated, init);
 }
+
+export const getStories: PromiseFn<Story[]> = () => {
+  return get<Story[]>(`${BACKEND_URL}/stories`);
+};
+
+export const getStory: PromiseFn<Story> = ({storyId}) => {
+  return get<Story>(`${BACKEND_URL}/stories/${storyId}`);
+};
+
+export const getScene: PromiseFn<Scene> = ({sceneId, storyId}) => {
+  return get<Scene>(`${BACKEND_URL}/stories/${storyId}/scenes/${sceneId}`);
+};
+
+export const createGuess: PromiseFn<Guess> = ({sceneId, storyId}, card: Card) => {
+  const url = [
+    BACKEND_URL,
+    'stories',
+    storyId,
+    'scenes',
+    sceneId,
+    'guesses',
+    card.id,
+  ].join('/')
+  return post<null, Guess>(url, null);
+};
 
 export const getCards = () => {
   return get<Card[]>(`${BACKEND_URL}/cards`);
