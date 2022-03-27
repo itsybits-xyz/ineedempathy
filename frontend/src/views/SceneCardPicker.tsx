@@ -65,17 +65,17 @@ export const SceneCardPicker: FC<SceneProps> = (props: SceneProps) => {
                       alt={card.name}
                       variant="top"
                       src={ BACKEND_URL + card.image.md } />
-                    <BootstrapCard.Body onClick={() => setInfoCard(card)}>
+                    <BootstrapCard.Body>
                       <BootstrapCard.Title>{card.displayName}</BootstrapCard.Title>
                     </BootstrapCard.Body>
                   </BootstrapCard>
                   <div className='more-info'>
                     <Link
-                      to={'#'}
                       onClick={() => setInfoCard(card)}
+                      to={'#'}
                       title={`Read more information on ${card.displayName}`}>
                       <MdInfoOutline size={16} />
-                      <span>Info</span>
+                      <span>More Info</span>
                     </Link>
                   </div>
                 </ClickSound>
@@ -85,12 +85,12 @@ export const SceneCardPicker: FC<SceneProps> = (props: SceneProps) => {
         </Row>
         <Row>
         {!showSubmitButton && (
-          <Button onClick={() => { setSeeMore(!seeMore) }} variant="success">
+          <Button size="lg" onClick={() => { setSeeMore(!seeMore) }} variant="success">
             See { seeMore ? 'Less' : 'All'} { cardType === CardType.feeling ? 'Feelings' : 'Needs' }
           </Button>
         )}
         {showSubmitButton && (
-          <Button onClick={() => handleSubmit(selectedCard)} variant="success">
+          <Button size="lg" onClick={() => handleSubmit(selectedCard)} variant="success">
             Maybe {noun} was { cardType === CardType.feeling ? 'feeling' : 'needing' } <strong>{selectedCard.displayName}</strong>?
           </Button>
         )}

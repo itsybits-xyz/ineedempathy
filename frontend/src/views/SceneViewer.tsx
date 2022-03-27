@@ -101,23 +101,27 @@ export const SceneViewer: FC<SceneProps> = (props: SceneProps) => {
           {madeGuess && (
             hasNextScene ? (
               <Row>
-                <span>You finished this scene, would you like to go to the&nbsp;</span>
-                <Link
-                  title={`Next Scene`}
-                  to={`/story/${storyId}/scene/${position+1}`}>
-                  next scene
-                </Link>
-                <span>?</span>
+                <h3>
+                  <span>You finished this scene, would you like to go to the&nbsp;</span>
+                  <Link
+                    title={`Next Scene`}
+                    to={`/story/${storyId}/scene/${position+1}`}>
+                    next scene
+                  </Link>
+                  <span>?</span>
+                </h3>
               </Row>
             ) : (
               <Row>
-                <span>You finished this story, would you like to&nbsp;</span>
-                <Link
-                  title={`Browse more stories`}
-                  to={`/stories`}>
-                  Browse more stories
-                </Link>
-                <span>?</span>
+                <h3>
+                  <span>You finished this story, would you like to&nbsp;</span>
+                  <Link
+                    title={`Browse more stories`}
+                    to={`/stories`}>
+                    Browse more stories
+                  </Link>
+                  <span>?</span>
+                </h3>
               </Row>
             )
           )}

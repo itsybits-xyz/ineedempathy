@@ -1,23 +1,41 @@
 $purple: #9c27b0;
 $softGray: #3C4858;
+$indigo-500: #3f51b5 !default;
 
 .main-panel {
+  .guess {
+    p {
+      font-size: large;
+    }
+  }
+  .more-info {
+    margin-left: 5px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    a {
+      text-align: left;
+      font-size: large;
+      a, svg, span {
+        color: $indigo-500;
+      }
+      svg {
+        position: relative;
+        top: 2px;
+        padding-right: 3px;
+      }
+      &:hover {
+        cursor: pointer;
+        a, svg, span {
+          color: $purple;
+        }
+      }
+    }
+  }
   .scene-card {
     .card {
       margin-bottom: 0;
       &:hover {
         cursor: pointer;
-      }
-    }
-    .more-info {
-      text-align: left;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      &:hover {
-        cursor: pointer;
-        a, svg, a span {
-          color: darken($purple, 20%);
-        }
       }
     }
   }

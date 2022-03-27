@@ -1,7 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { BACKEND_URL } from '../config';
 import { Card, CardType } from '../schemas';
-import { ProgressBar, Card as CardEl, Row, Col, Container } from 'react-bootstrap';
+import { Button, Modal, ProgressBar, Card as CardEl, Row, Col, Container } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
+import { Link } from 'react-router-dom';
+import { CardPage } from './card-page';
 
 export interface EmpathyResultsProps {
   cardGuesses: number[]
@@ -16,6 +19,7 @@ export interface Result {
 
 export const EmpathyResults: FC<EmpathyResultsProps> = (props: EmpathyResultsProps) => {
   const { cards, cardGuesses } = props;
+  const [ infoCard, setInfoCard ] = useState<Card|undefined>();
   const totalGuesses = cardGuesses.length;
 
   const getCard = (id: number): Card|undefined => {
@@ -68,6 +72,15 @@ export const EmpathyResults: FC<EmpathyResultsProps> = (props: EmpathyResultsPro
                 now={count} />
             </div>
             <p>{count} Guesses</p>
+            <div className='more-info'>
+              <Link
+                onClick={() => setInfoCard(card)}
+                to={'#'}
+                title={`Read more information on ${card.displayName}`}>
+                <MdInfoOutline size={16} />
+                <span>More Info</span>
+              </Link>
+            </div>
           </Col>
         </Row>
       </Container>
@@ -90,6 +103,24 @@ export const EmpathyResults: FC<EmpathyResultsProps> = (props: EmpathyResultsPro
           </Col>
         </Row>
       </Container>
+      { infoCard && (
+        <Modal
+          show={true}
+          size='lg'
+          onHide={() => setInfoCard(undefined) }>
+          <Modal.Header closeButton>
+            <Modal.Title>More information on {infoCard.displayName}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <CardPage match={{ params: infoCard }} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setInfoCard(undefined) }>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };

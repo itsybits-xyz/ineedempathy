@@ -52,21 +52,21 @@ export const EmpathyGuess: FC<EmpathyGuessProps> = (props: EmpathyGuessProps) =>
   }
 
   return feelingCard && needCard ? (
-    <Container fluid>
+    <Container className="guess" fluid>
       <Row>
         <h3>Empathy Guess</h3>
       </Row>
       <Row>
-        <p>Is {noun} feeling {feelingCard.displayName} and needing {needCard.displayName}?</p>
+        <p>Is {noun} feeling <strong>{feelingCard.displayName}</strong> and needing <strong>{needCard.displayName}</strong>?</p>
       </Row>
       <Row>
-        <Button variant="primary" onClick={handleSubmit}>Ask {noun}</Button>
+        <Button size="lg" variant="primary" onClick={handleSubmit}>Ask {noun}</Button>
       </Row>
     </Container>
   ) : (
-    <>
+    <Container fluid>
       <div className="content fn-cards">
-        <p>What do you think { noun } was <strong>{ cardType === CardType.feeling ? 'feeling' : 'needing' }</strong>?</p>
+        <h3>What do you think { noun } was <strong>{ cardType === CardType.feeling ? 'feeling' : 'needing' }</strong>?</h3>
         <SceneCardPicker
           noun={noun}
           cardType={cardType}
@@ -74,6 +74,6 @@ export const EmpathyGuess: FC<EmpathyGuessProps> = (props: EmpathyGuessProps) =>
           selectedCard={cardType === CardType.feeling ? feelingCard : needCard}
           cards={cards} />
       </div>
-    </>
+    </Container>
   );
 };
