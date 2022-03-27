@@ -46,7 +46,7 @@ export const SideBar: FC<SideBarProps> = (props: SideBarProps) => {
                 <NavLink
                   to="/stories"
                   className="nav-link"
-                  isActive={isActiveFor(/^\/stories.*$/)}
+                  isActive={isActiveFor(/^\/(stories|story).*$/)}
                   activeClassName="active">
                   <MdBook size={24}/>
                   <p>
