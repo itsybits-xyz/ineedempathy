@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { MdBook, MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 import { VolumeControl } from "../components";
 import { ClickSound } from '.';
+import { Badge } from 'react-bootstrap';
 
 export interface SideBarProps {
   handleClick: () => void,
@@ -51,6 +52,7 @@ export const SideBar: FC<SideBarProps> = (props: SideBarProps) => {
                   <MdBook size={24}/>
                   <p>
                     Stories
+                    &nbsp;<Badge pill variant="warning">New</Badge>
                   </p>
                 </NavLink>
               </ClickSound>
