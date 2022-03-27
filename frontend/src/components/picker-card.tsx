@@ -13,7 +13,6 @@ export const PickerCard: FC<PickerCardProps> = (props: PickerCardProps) => {
   const card: CardSchema = props.card;
   return (
     <Link
-      role="link"
       tabIndex={0}
       title={`${card.displayName} - ${card.definition}`}
       to={`/${card.type}/${card.name}`}>

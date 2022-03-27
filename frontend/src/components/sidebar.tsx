@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
+import { MdBook, MdWbSunny, MdDashboard, MdLayers, MdFavorite } from 'react-icons/md';
 import { VolumeControl } from "../components";
 import { ClickSound } from '.';
+import { Badge } from 'react-bootstrap';
 
 export interface SideBarProps {
   handleClick: () => void,
@@ -37,6 +38,21 @@ export const SideBar: FC<SideBarProps> = (props: SideBarProps) => {
                   <MdDashboard size={24}/>
                   <p>
                     Start
+                  </p>
+                </NavLink>
+              </ClickSound>
+            </li>
+            <li className="nav-item">
+              <ClickSound>
+                <NavLink
+                  to="/stories"
+                  className="nav-link"
+                  isActive={isActiveFor(/^\/(stories|story).*$/)}
+                  activeClassName="active">
+                  <MdBook size={24}/>
+                  <p>
+                    Stories
+                    &nbsp;<Badge pill variant="warning">New</Badge>
                   </p>
                 </NavLink>
               </ClickSound>

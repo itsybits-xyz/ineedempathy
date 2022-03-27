@@ -21,7 +21,7 @@ poetry install
 ./run.sh
 ```
 
-Check http://localhost:8000/
+Check http://localhost:8001/
 
 ## Migrations
 

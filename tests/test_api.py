@@ -65,6 +65,134 @@ def test_get_card():
     }
 
 
+def upsert_story(db, display_name, scenes):
+    story = crud.upsert_story(
+        db=db,
+        display_name=display_name,
+        scenes=scenes
+    )
+
+    db_scenes = []
+    db_guesses = []
+
+    i = 0
+    for scene in scenes:
+        i += 1
+        db_scene = crud.upsert_scene(
+            db=db,
+            story_id=story.id,
+            noun=scene.get('noun'),
+            position=i,
+            description=scene.get('description')
+        )
+
+        db_scenes.append(db_scene)
+
+        db_guesses.append(crud.upsert_guess(
+            db=db,
+            story_id=story.id,
+            scene_id=db_scene.id,
+            card_id=scene.get('feeling_id')
+        ))
+        db_guesses.append(crud.upsert_guess(
+            db=db,
+            story_id=story.id,
+            scene_id=db_scene.id,
+            card_id=scene.get('need_id')
+        ))
+    return story
+
+
+def test_full_story():
+    db = TestingSessionLocal()
+    scared = crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Scared",
+            name="scared",
+            type="feeling",
+            level=4,
+            definition=":,(",
+            definition_source="",
+        ),
+    )
+    hopeful = crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Hopeful",
+            name="hopeful",
+            type="feeling",
+            level=4,
+            definition=":o !",
+            definition_source="",
+        ),
+    )
+    harmony = crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Harmony",
+            name="harmony",
+            type="need",
+            level=4,
+            definition=":<3",
+            definition_source="",
+        ),
+    )
+    ease = crud.upsert_card(
+        db=db,
+        card=CardCreate(
+            display_name="Ease",
+            name="ease",
+            type="need",
+            level=4,
+            definition="<3",
+            definition_source="",
+        ),
+    )
+    story = upsert_story(
+        db=db,
+        display_name='The Itsy Bitsy Spider',
+        scenes=[
+            {
+                'description': ' '.join([
+                    'The Itsy Bisty Spider went up the water spout.',
+                    'Down came the ran and washed the spider out.',
+                ]),
+                'noun': 'the spider',
+                'feeling_id': scared.id,
+                'need_id': harmony.id
+            },
+            {
+                'description': ' '.join([
+                    'Up came the sun and dried up all the rain.',
+                    'So the Itsy Bitsy Spider went up the spout again.',
+                ]),
+                'noun': 'the spider',
+                'feeling_id': hopeful.id,
+                'need_id': harmony.id
+            }
+        ]
+    )
+    scenes = crud.get_scenes(db=db, story_id=story.id)
+    # New Guess
+    response = test_client.post(f"/api/stories/{story.id}/scenes/{scenes[0].id}/guesses/{ease.id}")
+    assert response.status_code == 201
+
+    # Test Story
+    response = test_client.get(f"/api/stories/{story.id}")
+    assert response.status_code == 200
+    res_story = response.json()
+    assert res_story["displayName"] == "The Itsy Bitsy Spider"
+
+    # Test Scene
+    response = test_client.get(f"/api/stories/{story.id}/scenes/{scenes[0].id}")
+    res_scene = response.json()
+    assert len(res_scene["cardGuesses"]) == 3
+    response = test_client.get(f"/api/stories/{story.id}/scenes/{scenes[1].id}")
+    res_scene = response.json()
+    assert len(res_scene["cardGuesses"]) == 2
+
+
 def test_upsert_new_card():
     db = TestingSessionLocal()
     crud.upsert_card(
