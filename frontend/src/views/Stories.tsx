@@ -23,8 +23,19 @@ export const Stories: FC = () => {
         </Row>
         <Row>
           <p>
-            Learn to make an <strong>Empathy Guess</strong> by joining others
-            and making guesses on short stories.
+            Learn to make an <strong>Empathy Guess</strong> by reading some
+            short stories and seeing how others responded.
+          </p>
+          <p>
+            An <strong>Empathy Guess</strong> usually consists of 1 feeling
+            and 1 need in the form of a question. This is often a question
+            because <strong>only</strong> the being experiencing the situation
+            can tell you how they feel or what they need. We often only use one
+            or two cards in an <strong>Empathy Guess</strong> so that we don't
+            confuse or overwhelm others.
+          </p>
+          <p>
+            Click a story below to get started.
           </p>
         </Row>
         <Row>

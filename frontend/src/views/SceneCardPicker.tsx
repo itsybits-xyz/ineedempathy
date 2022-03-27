@@ -31,6 +31,7 @@ export const SceneCardPicker: FC<SceneProps> = (props: SceneProps) => {
   }
 
   const handleSubmit = (card: Card) => {
+    setSeeMore(false);
     setSelectedCard(undefined);
     props.setSelectedCard(selectedCard)
   }
