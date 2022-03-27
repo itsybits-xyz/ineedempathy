@@ -24,7 +24,8 @@ export const Stories: FC = () => {
         <Row>
           <p>
             Learn to make an <strong>Empathy Guess</strong> by reading some
-            short stories and seeing how others responded.
+            short stories, and let us walk you through the process. You can even
+            see how others responded.
           </p>
           <p>
             An <strong>Empathy Guess</strong> usually consists of 1 feeling
