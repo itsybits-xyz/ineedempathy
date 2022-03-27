@@ -19,7 +19,7 @@ def get_stories(db: Session) -> List[Story]:
 
 def get_story(db: Session, story_id: int) -> Optional[Story]:
     return db.query(Story).\
-        filter(Scene.story_id == story_id).\
+        filter(Story.id == story_id).\
         first()
 
 
