@@ -102,7 +102,7 @@ cold = add_feeling(
 )
 compersion = add_feeling(
     'Compersion',
-    'Compersion',
+    'compersion',
     4,
     'Compersion is an empathetic state of happiness and joy experienced when another individual experiences happiness and joy.',
     'https://www.definitions.net/definition/compersion',
